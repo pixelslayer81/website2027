@@ -1,0 +1,549 @@
+/* Page 04: Always On Social. Built from the design spec JSON the user supplied
+   2026-10-21: a 1440 x 2350 dark page. Every measurement below is the spec's
+   pixel value times --u (= page width / 1440), so proportions hold at any
+   width up to the 1560px cap. Tokens are the spec's. */
+:root,
+:host {
+  --bg4: #2a2a2a;
+  --text: #f3f0ea;
+  --text-strong: #ffffff;
+  --text-body: #d9d6cf;
+  --text-muted: #9a9893;
+  --text-subtle: #8e8c88;
+  --rule: #5c5b58;
+  --outline: #e6e3dc;
+  --green: #aab393; /* the sage green of the app card's progress bar (assets/app-card.png) */
+  --card: #ffffff;
+  --card-ghost: #f0efef;
+  --card-dark: #262626;
+  --app-surface: #faf9f6;
+  --app-border: #e3e0da;
+  --app-text: #1f1f1f;
+  --app-muted: #6b6964;
+  --app-button: #262626;
+  --grad-next: linear-gradient(90deg, #c95fc0 0%, #e2833f 38%, #4fae6a 66%, #3d8ae0 100%);
+  --grad-card: radial-gradient(circle at 88% 92%, rgba(240, 196, 212, 0.55), transparent 45%),
+    radial-gradient(circle at 10% 15%, rgba(222, 226, 246, 0.45), transparent 42%), #ffffff;
+  --font: "Inter", system-ui, sans-serif;
+  --u: calc(min(100vw, 1560px) / 1440);
+}
+
+body {
+  background: var(--bg4);
+  color: var(--text);
+  font-family: var(--font);
+}
+/* hosted in the stitched site (root index.html): the section stands in for body */
+:host {
+  display: block;
+  background: var(--bg4);
+  color: var(--text);
+  font-family: var(--font);
+}
+
+button,
+select,
+textarea {
+  font-family: var(--font);
+}
+
+.page {
+  max-width: 1560px;
+  margin: 0 auto;
+  /* spec padding: 92 top, 95 right, 108 left; the page is 2350 tall */
+  padding: calc(92 * var(--u)) calc(95 * var(--u)) calc(44 * var(--u)) calc(108 * var(--u));
+}
+
+/* outline type (section number, PRESSPLAY marquee). Not -webkit-text-stroke:
+   Google's variable Inter has overlapping contours, so a stroke draws stray
+   lines inside the heavy glyphs. Instead the glyph is filled with the page
+   colour and a ring of eight text-shadows in the outline colour sits behind
+   it: the fill hides every overlap and only a clean 1.4px edge remains. */
+/* a hovered solid PRESSPLAY word takes the outline too (and a hovered outline word fills) */
+.outline,
+.marquee-item:not(.outline):hover {
+  --ring: var(--outline);
+  --stroke: 1.4px; /* ring width; the diagonals are 0.71 of it */
+  --d: calc(var(--stroke) * 0.71);
+  color: var(--bg4);
+  -webkit-text-fill-color: var(--bg4);
+  -webkit-text-stroke: 0;
+  text-shadow:
+    var(--stroke) 0 0 var(--ring), calc(-1 * var(--stroke)) 0 0 var(--ring),
+    0 var(--stroke) 0 var(--ring), 0 calc(-1 * var(--stroke)) 0 var(--ring),
+    var(--d) var(--d) 0 var(--ring), calc(-1 * var(--d)) var(--d) 0 var(--ring),
+    var(--d) calc(-1 * var(--d)) 0 var(--ring), calc(-1 * var(--d)) calc(-1 * var(--d)) 0 var(--ring);
+}
+
+/* ── header ── */
+.display {
+  font-size: calc(131 * var(--u));
+  font-weight: 900;
+  line-height: 0.86;
+  letter-spacing: -0.045em;
+  text-transform: uppercase;
+  color: var(--text);
+  white-space: nowrap;
+}
+.subtitle {
+  margin-top: calc(-6 * var(--u)); /* tucked right under the title's baseline (2026-10-21) */
+  font-size: calc(25 * var(--u));
+  font-weight: 200;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: var(--green); /* the app's sage green (2026-10-30; was --text-muted) */
+}
+
+/* ── intro (spec y 258 -> gallery y 485) ── */
+.intro {
+  display: grid;
+  grid-template-columns: calc(150 * var(--u)) 1fr;
+  column-gap: calc(28 * var(--u));
+  row-gap: 0; /* the WHY block sets its own gap below the 02 row */
+  margin-top: calc(29 * var(--u)); /* lands the intro on spec y 258 (the subtitle moved up, this did not) */
+  width: calc(1237 * var(--u));
+  max-width: 100%;
+  min-height: calc(199 * var(--u)); /* keeps the gallery on spec y 485 whatever the copy wraps to */
+  align-content: start;
+}
+/* the 02 is filled with the site cream (2026-10-30), its outline ring kept */
+.intro-num.outline {
+  color: var(--bg);
+  -webkit-text-fill-color: var(--bg);
+}
+.intro-num {
+  grid-column: 1;
+  grid-row: 1;
+  font-size: calc(104 * var(--u));
+  font-weight: 700; /* bold (2026-10-30; was 900 black) */
+  letter-spacing: -0.02em;
+  line-height: 0.8;
+}
+.intro-copy {
+  grid-column: 2; /* WHAT IS IT: the copy column, right of the 02 */
+  grid-row: 1;
+}
+.intro-why {
+  grid-column: 1 / -1; /* WHY WE MADE IT: its own block, full width, from the left edge */
+  grid-row: 2;
+  margin-top: calc(12 * var(--u));
+}
+.intro-copy p,
+.intro-why p {
+  font-size: calc(14 * var(--u)); /* 14px at 1440 (was 12) */
+  font-weight: 400;
+  line-height: 1.42;
+  color: var(--text-body);
+}
+.intro-copy strong,
+.intro-why strong {
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--green); /* the app's sage green (2026-10-30; was --text) */
+}
+
+/* ── gallery: 4 columns (279 / 319 / 274 / 274) x 2 rows of 276, gaps 8 / 12 ── */
+.gallery {
+  display: grid;
+  grid-template-columns: calc(279 * var(--u)) calc(319 * var(--u)) calc(274 * var(--u)) calc(274 * var(--u));
+  grid-template-rows: calc(276 * var(--u)) calc(276 * var(--u));
+  column-gap: calc(8 * var(--u));
+  row-gap: calc(12 * var(--u));
+  margin-top: calc(28 * var(--u)); /* gallery on spec y 485 */
+}
+.card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 3px;
+  /* black fill, white outline (2026-10-30; was var(--grad-card) with --card-dark text); the
+     outline is an inset shadow so the grid keeps its exact sizes */
+  background: #000;
+  box-shadow: inset 0 0 0 1px #fff;
+  color: #fff;
+}
+.card--1 { grid-column: 1; grid-row: 1; }
+.card--2 { grid-column: 1; grid-row: 2; }
+.card--3 { grid-column: 2; grid-row: 1 / span 2; }
+.card--feature { grid-column: 3 / span 2; grid-row: 1; }
+.card--5 { grid-column: 3; grid-row: 2; }
+.card--6 { grid-column: 4; grid-row: 2; }
+/* ghost text: large, almost-white, bottom-left, until the real posts arrive */
+.card-ghost {
+  position: absolute;
+  left: calc(22 * var(--u));
+  bottom: calc(14 * var(--u));
+  font-size: calc(56 * var(--u));
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 0.9;
+  color: rgba(255, 255, 255, 0.08); /* faint on black, as --card-ghost was on white */
+  white-space: nowrap;
+}
+.card--feature {
+  padding: calc(46 * var(--u)) calc(62 * var(--u));
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.feature-line {
+  font-size: calc(44 * var(--u));
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+}
+.feature-line--gradient {
+  background: var(--grad-next);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  width: max-content;
+}
+.feature-line--small {
+  margin-top: calc(10 * var(--u));
+  font-size: calc(34 * var(--u));
+  font-weight: 700;
+}
+
+/* ── rules + statement: rules run from x 53 to 1345, past the content's left edge ── */
+.rule {
+  border: 0;
+  height: 1px;
+  background: var(--rule);
+  width: calc(1292 * var(--u));
+  margin: 0 0 0 calc(-55 * var(--u));
+}
+.rule--1 { margin-top: calc(52 * var(--u)); }
+.rule--2 { margin-top: calc(50 * var(--u)); } /* spec y 1347 */
+.statement {
+  margin-top: calc(36 * var(--u));
+  width: calc(1250 * var(--u));
+  max-width: 100%;
+  font-size: calc(54 * var(--u));
+  font-weight: 800;
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+  color: var(--text);
+}
+
+/* draw-on (.draw: the title and the statement): the script splits the text
+   into words of letters; a letter is dim until the scroll reaches it, then
+   lit (see mountDrawOn in sketch.js). No clipping, so descenders stay whole. */
+.draw .w {
+  display: inline-block;
+  white-space: nowrap;
+}
+.draw .c {
+  color: rgba(243, 240, 234, 0.16);
+}
+.draw .c.on {
+  color: var(--text);
+}
+@media (prefers-reduced-motion: reduce) {
+  .draw .c { color: var(--text); }
+}
+
+/* ── PRESSPLAY marquee: outline / outline / solid, drifting left ── */
+.marquee {
+  margin-top: calc(42 * var(--u));
+  margin-left: calc(15 * var(--u));
+  overflow: hidden;
+  white-space: nowrap;
+  cursor: pointer; /* any PRESSPLAY word opens the viewer */
+}
+.marquee-track {
+  display: inline-flex;
+  gap: calc(10 * var(--u));
+  padding-right: calc(10 * var(--u));
+  animation: marquee-drift 36s linear infinite;
+  will-change: transform;
+}
+.marquee-item {
+  font-size: calc(31 * var(--u));
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.03em; /* spec -0.02em, opened up by 5% (2026-10-21) */
+  text-transform: uppercase;
+  color: var(--green); /* the solid words: the app's sage green (2026-10-30; was --text) */
+}
+.marquee-item.outline,
+.marquee-item:not(.outline):hover {
+  --stroke: 0.8px; /* thinner ring on the PRESSPLAY words (2026-10-21) */
+}
+/* hover swaps the styles: outline words fill, filled words become outlines */
+.marquee-item.outline:hover {
+  color: var(--green);
+  -webkit-text-fill-color: var(--green);
+  text-shadow: none;
+}
+@keyframes marquee-drift {
+  to { transform: translateX(-50%); } /* the track holds two copies of the items */
+}
+
+/* ── demo: app card (462 x 847) + steps, 19 apart, indented to x 123 ── */
+.demo {
+  display: grid;
+  grid-template-columns: calc(462 * var(--u)) 1fr;
+  gap: calc(19 * var(--u));
+  margin-top: calc(38 * var(--u));
+  margin-left: calc(15 * var(--u));
+  align-items: start;
+}
+.app-wrap {
+  position: relative;
+  width: calc(462 * var(--u));
+  height: calc(847 * var(--u));
+}
+.app {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+}
+/* Press play, centred on the card (as the Style Shift stage button): dark
+   block, white type, play triangle; hover inverts to white fill, dark outline
+   and dark type */
+.app-play {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7em;
+  padding: 0.45em 1em 0.45em 1.1em;
+  border: 1.5px solid var(--app-button);
+  border-radius: 6px;
+  background: var(--app-button);
+  color: #fff;
+  font-weight: 700;
+  font-size: calc(14.3 * var(--u)); /* 35% smaller than the first cut (2026-10-21); padding and triangle follow in em */
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+.app-play__tri {
+  width: 0;
+  height: 0;
+  border-left: 0.55em solid currentColor;
+  border-top: 0.38em solid transparent;
+  border-bottom: 0.38em solid transparent;
+}
+.app-play:hover {
+  background: #fff;
+  color: var(--app-button);
+}
+
+/* Press play, top-left of the system still */
+.app-play--tl {
+  left: 3.2%;
+  top: 6%;
+  transform: none;
+}
+
+/* ── Touchstone system: display heading + the system still (16 : 9.2) ── */
+.system {
+  margin-top: calc(70 * var(--u));
+}
+/* the heading rises as one block from behind the still below it (which
+   paints over it) once it is in view: .system-title.is-in, set by the script */
+.system-title {
+  position: relative;
+  z-index: 0;
+  transform: translateY(150%); /* far enough down that the still hides it across the gap */
+  transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  white-space: nowrap;
+  font-size: calc(113 * var(--u)); /* smaller than the page title so the longer words span exactly the content width */
+}
+.system-title.is-in {
+  transform: translateY(0);
+  transition-delay: 300ms; /* a beat after it comes into view before it rises */
+}
+@media (prefers-reduced-motion: reduce) {
+  .system-title { transform: none; transition: none; }
+}
+.system-media {
+  position: relative;
+  z-index: 1; /* above the heading: it comes out from behind the still */
+  margin-top: calc(45 * var(--u));
+  width: calc(1237 * var(--u));
+  max-width: 100%;
+  aspect-ratio: 1387 / 797;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.system-still {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* scroll parallax (sketch.js SYSTEM_PARALLAX): drifts against the scroll,
+     zoomed so no edge shows */
+  transform: translate3d(0, var(--px-img, 0px), 0) scale(var(--px-zoom, 1));
+  will-change: transform;
+}
+.system-media .app-play--tl {
+  transform: translate3d(0, var(--px-type, 0px), 0);
+  will-change: transform;
+}
+
+/* steps: rows of 80, columns 56 / 251 / rest */
+.steps-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--rule); /* thin rules above the first step and under every step */
+}
+.step {
+  position: relative;
+  display: grid;
+  grid-template-columns: calc(56 * var(--u)) calc(251 * var(--u)) 1fr;
+  align-items: start;
+  min-height: calc(80 * var(--u));
+  padding-top: calc(12 * var(--u));
+  border-bottom: 1px solid var(--rule);
+}
+/* hover, as the Style Shift audit rows (and the app's ledger): the number and
+   title spring-slide 26px right and hold; the row's divider draws in from the
+   left in the light text colour over the grey rule */
+.step-num,
+.step-title {
+  transition: transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.step:hover .step-num,
+.step:hover .step-title {
+  transform: translateX(26px);
+}
+.step::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 1.5px;
+  background: var(--text);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+.step:hover::after {
+  transform: scaleX(1);
+}
+.step-num {
+  font-size: calc(25 * var(--u));
+  font-weight: 700;
+  line-height: 1;
+  color: var(--green); /* the app's sage green (2026-10-30; was --text-strong) */
+}
+.step-title {
+  padding-top: calc(5 * var(--u));
+  font-size: calc(16 * var(--u));
+  font-weight: 700;
+  color: var(--text);
+}
+.step-body {
+  padding-top: calc(4 * var(--u));
+  font-size: calc(16 * var(--u));
+  font-weight: 300;
+  line-height: 1.4;
+  color: var(--text-body);
+}
+.closing {
+  margin-top: calc(26 * var(--u));
+  font-size: calc(29 * var(--u));
+  font-weight: 300;
+  line-height: 1.05;
+  color: var(--text-body);
+}
+
+@media (max-width: 760px) {
+  .page { padding: 48px 16px 32px; }
+  .display { font-size: clamp(40px, 12vw, 80px); white-space: normal; }
+  .intro { grid-template-columns: 1fr; width: auto; }
+  .gallery { grid-template-columns: 1fr 1fr; grid-template-rows: none; grid-auto-rows: 44vw; }
+  .card--3 { grid-column: 2; grid-row: 1 / span 2; }
+  .card--feature { grid-column: 1 / span 2; grid-row: 3; }
+  .card--5 { grid-column: 1; grid-row: 4; }
+  .card--6 { grid-column: 2; grid-row: 4; }
+  .rule { width: auto; margin-left: 0; }
+  .statement { font-size: clamp(26px, 7vw, 44px); width: auto; }
+  .demo { grid-template-columns: 1fr; margin-left: 0; }
+  .app-wrap { width: auto; height: auto; aspect-ratio: 462 / 847; }
+  .step { grid-template-columns: 40px 1fr; }
+  .step-body { grid-column: 2; }
+}
+
+/* ── Press play viewer: the Style Shift page's expansion, in this page's palette.
+   Fixed to the viewport; the picture opens to 90vw x 88.5vh (the same size the
+   Style Shift stage opens to) with the close pill under it. ── */
+.viewer {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(10, 10, 10, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-out;
+}
+.viewer[hidden] {
+  display: none;
+}
+.viewer-stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: default;
+}
+.viewer img,
+.viewer video {
+  max-width: 90vw;
+  max-height: 82vh; /* leaves room for the pill under a portrait card */
+  object-fit: contain;
+  border-radius: 6px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+}
+.viewer img {
+  cursor: zoom-out; /* a second click shrinks it back down */
+}
+.viewer video {
+  width: 90vw; /* the frame takes the full width... */
+  aspect-ratio: 16 / 9; /* ...and holds a 16:9 frame before the video's own size arrives */
+  background: #000;
+}
+.viewer video[hidden],
+.viewer img[hidden] {
+  display: none;
+}
+.viewer-hint {
+  margin-top: 20px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--text);
+  color: var(--bg4);
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  cursor: pointer;
+}
+.viewer-hint:hover {
+  background: var(--text-strong);
+}
+.viewer-label {
+  position: fixed;
+  left: 20px;
+  bottom: 16px;
+  color: var(--text);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}

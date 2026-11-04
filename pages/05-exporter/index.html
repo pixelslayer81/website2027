@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Exporter</title>
+  <meta name="description" content="Exporter: a Figma-to-Adobe Express bridge. Select a frame, press Send, and it lands on the Express canvas with every text layer live and editable.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@200;300;400;500;600;700;800;900&family=Space+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../shared/reset.css">
+  <link rel="stylesheet" href="../../shared/tokens.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="page" id="page">
+    <!-- The whole page is the spec's red-lined frame (1300 x 1206 at 76, 64);
+         every layer sits at its spec coordinate, minus the frame's origin.
+         The frame opens as the user scrolls (--open 0 -> 1, set by the script):
+         the copy band between the header and the video grows from nothing to
+         its 210-unit height, everything below it slides down, and the black
+         copy types on. -->
+    <div class="frame" id="frame" style="--open: 1">
+
+      <!-- ============================================================ header band (frame y 0..192) -->
+      <div class="grid grid--top" aria-hidden="true"></div>
+      <div class="rule rule--h256" aria-hidden="true"></div>
+      <div class="rule rule--v985" aria-hidden="true"></div>
+      <div class="rule rule--v1018" aria-hidden="true"></div>
+      <div class="rule rule--v1342" aria-hidden="true"></div>
+      <!-- each letter rises into the box in turn (the box clips them) once the frame comes into view -->
+      <h1 class="title" aria-label="Exporter"><span class="l" style="--i: 0">E</span><span class="l" style="--i: 1">X</span><span class="l" style="--i: 2">P</span><span class="l" style="--i: 3">O</span><span class="l" style="--i: 4">R</span><span class="l" style="--i: 5">T</span><span class="l" style="--i: 6">E</span><span class="l" style="--i: 7">R</span></h1>
+      <div class="tag tag--number">03</div>
+      <div class="tag tag--plugin">Plugin</div>
+
+      <!-- ============================================================ copy band (frame y 192..482, spec 402 + 80 for the 14px copy): grows with --open -->
+      <div class="band" id="band">
+        <div class="rule rule--h323" aria-hidden="true"></div>
+        <div class="rule rule--h433" aria-hidden="true"></div>
+        <h2 class="heading heading--what"><span class="type" data-col="left">What is it:</span></h2>
+        <p class="body body--what"><span class="type" data-col="left">EXPORTER is a Figma-to-Adobe Express bridge. Select a frame in Figma, press Send to Adobe Express, and seconds later it appears on your Express canvas &mdash; the artwork as a pixel-perfect image, and every text layer live and editable, matching the original font, weight, size, spacing, and alignment exactly. No exporting files, no copy-and-paste: design in Figma, finish and localize in Express.</span></p>
+        <h2 class="heading heading--why"><span class="type" data-col="right">Why we built it:</span></h2>
+        <p class="body body--why"><span class="type" data-col="right">Designers build in Figma, but the people who actually customize and ship those designs &mdash; swapping headlines, localizing copy, resizing for a channel &mdash; live in Adobe Express. Getting work between the two meant re-exporting flat images or rebuilding layouts by hand, and every handoff drifted a little from the original. We made EXPORTER so the design arrives in Express exactly as it was approved, with the type still editable, so designers stay in control of the system and everyone else can safely make it their own.</span></p>
+        <a class="cta" id="cta-play" href="#video" title="Play the Exporter demo">
+          <span class="cta-text"><span class="type" data-col="right">Click to play</span></span>
+          <span class="cta-icon" aria-hidden="true"><svg viewBox="0 0 22 22" width="22" height="22" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 3L4 18"/><path d="M4 8v10h10"/></svg></span>
+        </a>
+      </div>
+
+      <!-- ============================================================ below the band (frame y 482..1286): slides with --open -->
+      <div class="below" id="below">
+        <div class="grid grid--bottom" aria-hidden="true"></div>
+        <div class="rule rule--h466" aria-hidden="true"></div>
+        <div class="rule rule--h606" aria-hidden="true"></div>
+
+        <!-- video (placeholder field until the file plays in the viewer) -->
+        <div class="video" id="video" title="Play the Exporter demo">
+          <span class="video-label">Send your design to Adobe Express</span>
+        </div>
+
+        <!-- bottom bar + tagline -->
+        <div class="bar" aria-hidden="true"></div>
+        <div class="tagline" aria-label="Load. Click. Send."><span class="marquee" aria-hidden="true"><span class="marquee__item">Load. Click. Send.</span><span class="marquee__item">Load. Click. Send.</span><span class="marquee__item">Load. Click. Send.</span><span class="marquee__item">Load. Click. Send.</span></span></div>
+
+        <!-- plugin panel -->
+        <aside class="panel" aria-label="The Exporter plugin">
+          <div class="panel-meta"><span>Exporter</span><span>Plugin no. 02</span></div>
+          <div class="panel-title">Exporter.</div>
+          <div class="panel-tag">Send your design to Adobe Express</div>
+
+          <div class="card">
+            <div class="card-head"><span class="card-label">Layers</span><span class="card-num">01</span></div>
+            <div class="card-body">
+              <div class="option">
+                <span class="option-dot" aria-hidden="true"></span>
+                <span class="option-label">Flatten to PNG</span>
+              </div>
+              <p class="option-desc">One pixel-perfect PNG &mdash; only text stays editable on top.</p>
+            </div>
+          </div>
+
+          <div class="preview">
+            <div class="preview-frame">
+              <span class="preview-name">QUOTE_SHORT</span>
+              <span class="preview-dims">412 &times; 515</span>
+            </div>
+            <span class="preview-caption">Preview /02</span>
+          </div>
+
+          <button type="button" class="btn btn--primary" id="btn-send">Send to Adobe Express &rarr;</button>
+          <button type="button" class="btn btn--secondary" id="btn-json">Get JSON code</button>
+          <p class="status" id="status">&check; Sent 4 layers (code 5EBN). Express picks it up automatically.</p>
+        </aside>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Viewer: CLICK TO PLAY expands the video block over the dimmed page and
+       plays the demo. Click the backdrop, "Click to close" or press Esc to close. -->
+  <div class="viewer" id="viewer" role="dialog" aria-label="Exporter demo" hidden>
+    <div class="viewer-stage">
+      <video id="viewer-video" controls playsinline preload="none"></video>
+      <button type="button" class="viewer-hint" id="viewer-close">Click to close</button>
+    </div>
+    <div class="viewer-label">Exporter</div>
+  </div>
+
+  <script src="sketch.js"></script>
+  <script>
+    window.ExporterSketch.mount(document.getElementById("page"));
+  </script>
+</body>
+</html>

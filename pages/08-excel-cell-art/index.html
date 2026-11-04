@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Excel &mdash; Cell Art</title>
+  <meta name="description" content="Make your own amazing, beautiful chart.">
+  <link rel="stylesheet" href="../../shared/reset.css">
+  <link rel="stylesheet" href="../../shared/tokens.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- The experiential Excel page (Claude_immersive/site/index.html), ported
+       whole: click the green box, then scrolling drives it (pinned) and carries on past it. Everything is
+       placed by sketch.js each frame. -->
+  <!-- the runway: one screen tall, plus the scroll that drives the phases once expanded (sketch.js RUNWAY); the page is pinned inside it -->
+  <div class="runway">
+  <main class="page" id="page">
+    <div id="container">
+      <div id="gridlines-under"></div>
+      <div id="gridlines"></div>
+      <div id="gridlines-over"></div>
+      <div id="exit-green-fill">
+        <div id="sheet-wrap">
+          <div id="sheet-scroll">
+            <table class="sheet" id="sheetTable"></table>
+          </div>
+        </div>
+        <div id="thumb-overlays"></div>
+      </div>
+      <div id="beyond-banner"><span><span class="beyond-grid"></span></span><span id="create-text">create</span></div>
+      <img id="photo1" src="assets/photo.png" alt="">
+      <div id="white-rect"><span class="text-line" id="tline1">My secret talent is that I can make an amazing, beautiful,</span><span class="text-line" id="tline2">detailed chart in Excel and then IMMEDIATELY forget</span><span class="text-line" id="tline3">how I did it and never be able to recreate it 😒</span></div>
+      <div id="exit-text1" class="exit-text">Make</div>
+      <div id="exit-text2" class="exit-text">your own</div>
+      <div id="exit-text3" class="exit-text">amazing, beautiful <span class="green-word"><span id="ch-text">ch</span><video id="scribble" src="assets/scribble.mp4" muted playsinline preload="auto"></video><span id="art-text">art.</span></span></div>
+      <div id="x-square">&#x2715;</div>
+      <div id="click-banner"><span id="click-banner-inner"></span></div>
+      <div id="click-label7" class="click-label">erase</div>
+      <div id="click-label1" class="click-label">erase all</div>
+      <div id="click-label4" class="click-label">color</div>
+      <div id="color-swatches">
+        <div class="color-swatch" data-color="#005E31"></div>
+        <div class="color-swatch" data-color="#BEE1B0"></div>
+        <div class="color-swatch" data-color="#48A346"></div>
+        <div class="color-swatch" data-color="#7BD960"></div>
+      </div>
+      <div id="grid-hover1" class="grid-hover"></div>
+      <div id="grid-hover2" class="grid-hover"></div>
+      <div id="prompt-fill"></div>
+      <div id="click-label5" class="click-label">prompt</div>
+      <div id="click-label6" class="click-label">generate</div>
+      <div id="click-label2" class="click-label">save</div>
+      <div id="saved-thumbs"></div>
+      <div id="username" aria-label="Mermanda2694"><div class="u-track" aria-hidden="true"><div class="u-copy"><span>M</span><span>e</span><span>r</span><span>m</span><span>a</span><span>n</span><span>d</span><span>a</span><span>2</span><span>6</span><span>9</span><span>4</span></div><div class="u-copy"><span>M</span><span>e</span><span>r</span><span>m</span><span>a</span><span>n</span><span>d</span><span>a</span><span>2</span><span>6</span><span>9</span><span>4</span></div><div class="u-copy"><span>M</span><span>e</span><span>r</span><span>m</span><span>a</span><span>n</span><span>d</span><span>a</span><span>2</span><span>6</span><span>9</span><span>4</span></div><div class="u-copy"><span>M</span><span>e</span><span>r</span><span>m</span><span>a</span><span>n</span><span>d</span><span>a</span><span>2</span><span>6</span><span>9</span><span>4</span></div></div></div>
+      <img id="chart-img1" class="chart-img" src="assets/chart.png" alt="">
+      <img id="chart-img2" class="chart-img" src="assets/chart.png" alt="">
+      <img id="chart-img3" class="chart-img" src="assets/chart.png" alt="">
+      <div id="start-box1"></div>
+      <div id="start-box2"><span id="start-box2-inner"></span></div>
+    </div>
+  </main>
+  </div>
+
+  <script src="sketch.js"></script>
+  <script>
+    window.ExcelArtSketch.mount(document.getElementById("page"));
+  </script>
+</body>
+</html>

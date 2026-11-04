@@ -1,0 +1,369 @@
+/* Page 09: About. Built from the "Résumé (Dark index A)" spec the user supplied
+   2026-10-26: a dark index page. Same width as every other page (1440 units,
+   --u = page width / 1440, capped at 1560px); the spec's 1360 container is the
+   page less 40 units a side, and its full-bleed bands (ticker, Experience,
+   Contact) run edge to edge of the page. */
+:root,
+:host {
+  --bg: #161616; /* one black for every background */
+  --text: #fcf9f4; /* the main index's warm white (was #ffffff) */
+  --text-muted: #d8d8d8;
+  --rule: #3a3a3a;
+  --coral: #ff4f30;
+  --coral-dark-text: #c2341b;
+  --ink: #111111;
+  --ink-body: #333333;
+  --paper: #fcf9f4; /* the main index's warm white (was #ffffff) */
+  --sans: "Inter", system-ui, sans-serif;
+  --mono: "Space Mono", ui-monospace, monospace;
+  --u: calc(min(100vw, 1560px) / 1440);
+  --pad: calc(40 * var(--u)); /* (1440 - 1360) / 2 */
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+}
+/* hosted in the stitched site (root index.html): the section stands in for body */
+:host {
+  display: block;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+}
+
+/* the site header's buttons take this page's coral here (they use --accent) */
+.site-header {
+  --accent: var(--coral);
+}
+
+.page {
+  width: calc(1440 * var(--u));
+  margin: 0 auto;
+  padding: 0 var(--pad);
+  overflow: hidden; /* the ticker track runs past the edges */
+}
+.page a {
+  color: inherit;
+  text-decoration: none;
+}
+/* full-bleed: edge to edge of the page */
+.ticker,
+.index--paper,
+.contact {
+  margin-left: calc(-1 * var(--pad));
+  margin-right: calc(-1 * var(--pad));
+  padding-left: var(--pad);
+  padding-right: var(--pad);
+}
+
+/* ── type ── */
+.label {
+  font-family: var(--mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.lead {
+  margin: 0;
+  font-size: clamp(22px, 2.4vw, 32px);
+  font-weight: 400;
+  line-height: 1.28;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+.body {
+  margin: 28px 0 0;
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 1.65;
+  color: var(--text-muted);
+}
+.small {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.6;
+}
+.muted {
+  color: var(--text-muted);
+}
+
+/* ── top bar ── */
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 24px;
+  padding: 22px 0;
+  border-bottom: 1px solid var(--rule);
+}
+.bar__nav {
+  display: flex;
+  gap: 22px;
+}
+.bar__nav a:hover {
+  color: var(--coral);
+}
+
+/* ── name ── */
+.name {
+  display: flex;
+  flex-direction: column;
+  margin: 36px 0 28px;
+  color: var(--coral);
+  font-size: clamp(68px, 13.5vw, 196px);
+  font-weight: 400;
+  line-height: 0.82;
+  letter-spacing: -0.065em;
+}
+
+/* ── image strip ── */
+.strip {
+  position: relative;
+  margin: 0;
+  aspect-ratio: 2.6;
+  overflow: hidden;
+}
+.strip img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 28%;
+  filter: grayscale(1) contrast(1.1);
+}
+.strip__tag {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 12px 16px;
+  background: var(--coral);
+  color: var(--ink);
+}
+.strip__yrs {
+  padding: 0 5px;
+  background: var(--ink);
+  color: var(--text);
+}
+
+/* ── ticker: client names scrolling left, forever (the track holds two
+   identical halves and slides by one, so it never seams) ── */
+.ticker {
+  margin-top: 48px;
+  padding-top: 16px;
+  padding-bottom: 16px;
+  background: var(--coral);
+  color: var(--ink);
+  overflow: hidden;
+}
+.ticker__track {
+  display: flex;
+  width: max-content;
+  white-space: nowrap;
+  font-size: clamp(22px, 2.6vw, 34px);
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  animation: ticker 26s linear infinite;
+}
+@keyframes ticker {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ticker__track { animation: none; }
+}
+
+/* ── index sections: big coral number + title left, content right ── */
+.index {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px 48px;
+  padding: 88px 0 72px;
+  border-top: 1px solid var(--rule);
+}
+.index:first-of-type,
+.ticker + .index {
+  border-top: 0;
+}
+.index__head {
+  flex: 0 1 300px;
+}
+.index__num {
+  display: block;
+  color: var(--coral);
+  font-size: clamp(80px, 10vw, 144px);
+  font-weight: 300;
+  line-height: 0.8;
+  letter-spacing: -0.07em;
+}
+.index__title {
+  margin: 18px 0 0;
+  font-size: 34px;
+  font-weight: 400;
+  letter-spacing: -0.04em;
+}
+.index__body {
+  flex: 1 1 560px;
+  min-width: 0;
+}
+
+/* 02: once a white band, now the page's black like every background, still
+   edge to edge with its content in line with the page's; light type on it */
+.index.index--paper {
+  padding-left: var(--pad);
+  padding-right: var(--pad);
+  background: var(--bg);
+  color: var(--text);
+  border-top: 0;
+}
+.job {
+  padding: 26px 0;
+  border-bottom: 1px solid var(--rule);
+}
+.job:first-child {
+  padding-top: 0;
+}
+.job__top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 24px;
+}
+.job__title {
+  margin: 0;
+  font-size: clamp(30px, 3.4vw, 46px);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.045em;
+}
+.job__role {
+  margin: 12px 0 10px;
+  color: var(--coral);
+}
+.job__desc {
+  color: var(--text-muted);
+}
+
+/* 03 */
+.cap {
+  display: grid;
+  gap: 6px;
+  padding: 22px 0;
+  border-top: 1px solid var(--rule);
+}
+.cap:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+.cap__code {
+  color: var(--coral);
+}
+.cap__title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+/* 04 */
+.skill {
+  display: grid;
+  grid-template-columns: minmax(160px, 240px) 1fr;
+  gap: 8px 32px;
+  padding: 18px 0;
+  border-top: 1px solid var(--rule);
+}
+.skill:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+.skill__area {
+  font-size: 17px;
+  font-weight: 500;
+}
+.edu {
+  display: grid;
+  gap: 8px;
+  margin-top: 32px;
+  padding-top: 22px;
+  border-top: 1px solid var(--coral);
+}
+.edu__top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 24px;
+}
+.edu__dates {
+  color: var(--coral);
+}
+
+/* 05 */
+.strengths {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 32px;
+}
+.strength {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  padding-top: 18px;
+  border-top: 2px solid var(--coral);
+}
+.strength__title {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 400;
+  letter-spacing: -0.03em;
+}
+
+/* ── contact: a coral band ── */
+.contact {
+  padding-top: 72px;
+  padding-bottom: 36px;
+  background: var(--coral);
+  color: var(--ink);
+}
+.contact__title {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  font-size: clamp(56px, 10vw, 150px);
+  font-weight: 400;
+  line-height: 0.84;
+  letter-spacing: -0.06em;
+}
+.contact__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 32px;
+  margin: 48px 0 56px;
+  font-family: var(--mono);
+  font-size: 14px;
+}
+.contact__links a:hover {
+  text-decoration: underline;
+}
+.contact__bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--ink);
+}
+
+/* phones: the index rows stack */
+@media (max-width: 760px) {
+  .index { padding: 56px 0 48px; }
+  .skill { grid-template-columns: 1fr; }
+}

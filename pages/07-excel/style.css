@@ -1,0 +1,338 @@
+/* Page 07: Excel - Beyond the Grid. Built from the design spec JSON the user
+   supplied 2026-10-23 (kept as spec.json), then re-gridded 2026-10-26 to the
+   user's reference screenshot: 20 columns of 72, rows of 31.22, a 1440 x 1976
+   page. Every layer sits at its coordinate times --u (= page width / 1440). */
+:root,
+:host {
+  --bg: #0e3d28;
+  --grid-top: #0e3d28;
+  --grid-line-top: #238757;
+  --grid-line-lower: #238757;
+  --cell: #1d5e40;
+  --cell-dark: #134a32;
+  --cell-border: #3a8a62;
+  --cell-border-soft: #2f7a55;
+  --mint: #4ff0a0;
+  --number: #3f9a6c;
+  --text: #ffffff;
+  --body: #e4efe9;
+  --display: "Open Sans", "Segoe UI", sans-serif;
+  --serif: "Tinos", "Times New Roman", serif;
+  --sans: "Inter", system-ui, sans-serif;
+  --mono: "Space Mono", ui-monospace, monospace;
+  --col: 72; /* grid column width (units): 20 across the page */
+  --row: 31.22; /* grid row height (units) */
+  --u: calc(min(100vw, 1560px) / 1440);
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+}
+/* hosted in the stitched site (root index.html): the section stands in for body */
+:host {
+  display: block;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+}
+
+.page {
+  position: relative;
+  width: calc(1440 * var(--u));
+  height: calc(1976 * var(--u));
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+/* every spec layer is placed absolutely; paint order follows the markup (= the spec's) */
+.page > * {
+  position: absolute;
+  margin: 0;
+}
+
+/* ── grids ── */
+.grid {
+  left: 0;
+  width: calc(1440 * var(--u));
+  /* the outer left and right edges get a line too (inset: over the background,
+     under the row and column lines, without shifting the gradient grid) */
+  box-shadow: inset 1px 0 var(--grid-line-top), inset -1px 0 var(--grid-line-top);
+}
+.grid--top {
+  top: 0;
+  height: calc(28 * var(--row) * var(--u)); /* 28 rows: 874.16 */
+  background-color: var(--grid-top);
+  background-image:
+    linear-gradient(to right, var(--grid-line-top) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line-top) 1px, transparent 1px);
+  background-size: calc(var(--col) * var(--u)) calc(var(--row) * var(--u));
+}
+.grid--lower {
+  top: calc(28 * var(--row) * var(--u));
+  height: calc((1976 - 28 * var(--row)) * var(--u));
+  background-color: var(--bg);
+}
+/* the lower grid's few lines (sketch.js places them: LOWER_ROWS, LOWER_COLS) */
+.grid-row {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--grid-line-lower);
+}
+.grid-col {
+  position: absolute;
+  width: 1px;
+  background: var(--grid-line-lower);
+}
+
+/* the lit cells under the cursor (sketch.js), over the grids, under everything else */
+.grid-glow {
+  left: 0;
+  top: 0;
+  width: calc(1440 * var(--u));
+  height: calc(1976 * var(--u));
+  pointer-events: none;
+}
+
+/* ── plain cells: positioned from inline --x / --y / --w / --h ── */
+.rect {
+  left: calc(var(--x) * var(--u));
+  top: calc(var(--y) * var(--u));
+  width: calc(var(--w) * var(--u));
+  height: calc(var(--h) * var(--u));
+}
+.rect--mint {
+  /* fills its grid cell inside the lines, like the lit cells (sketch.js drawGlow) */
+  left: calc(var(--x) * var(--u) + 1px);
+  top: calc(var(--y) * var(--u) + 1px);
+  width: calc(var(--w) * var(--u) - 1px);
+  height: calc(var(--h) * var(--u) - 1px);
+  background: var(--mint);
+}
+.rect--cell { background: var(--cell); }
+
+/* ── text boxes ── */
+.box {
+  box-sizing: border-box;
+  background: var(--cell);
+  display: flex;
+  align-items: center;
+}
+.box--number {
+  left: calc(1296 * var(--u));
+  top: calc(93.66 * var(--u));
+  width: calc(72 * var(--u));
+  height: calc(62.44 * var(--u));
+  justify-content: center;
+  color: var(--mint); /* light green, like the TRIM outlines */
+  font-size: calc(30 * var(--u));
+  font-weight: 800;
+  line-height: 1;
+}
+.box--tagline {
+  left: calc(936 * var(--u));
+  top: calc(156.1 * var(--u));
+  width: calc(360 * var(--u));
+  height: calc(62.44 * var(--u));
+  justify-content: center;
+  border: 1px solid var(--cell-border);
+  color: var(--text);
+  font-family: var(--serif);
+  font-size: calc(38 * var(--u));
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden; /* masks the marquee to the box */
+}
+.box--tagline em {
+  margin-left: 0.25em;
+  color: var(--mint);
+  font-style: italic;
+}
+/* "Beyond the Grid" scrolls right to left through the box, forever: the
+   track holds the phrase four times (two identical halves) and slides by one
+   half per cycle, so the loop has no seam */
+.box--tagline {
+  justify-content: flex-start;
+}
+.marquee {
+  display: flex;
+  flex: none;
+  animation: tagline-marquee 12s linear infinite;
+}
+.marquee__item {
+  padding-right: 1.2em; /* the gap between repeats */
+}
+@keyframes tagline-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee { animation: none; }
+}
+.box--title {
+  left: calc(216 * var(--u));
+  top: calc(312.2 * var(--u));
+  width: calc(576 * var(--u));
+  height: calc(187.3 * var(--u));
+  padding-left: calc(40 * var(--u));
+  padding-bottom: calc(13 * var(--u)); /* letters sit a touch above centre, as in the reference */
+  border: 1px solid var(--cell-border);
+  color: var(--text);
+  font-family: var(--display);
+  font-size: calc(173 * var(--u));
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden; /* masks the letters as they rise */
+}
+/* the Style Shift title's rise: letters come up from below the box one after
+   another, E first, once the title is in view (.is-in, set by the script) */
+.box--title .l {
+  display: inline-block;
+  transform: translateY(120%);
+  transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--i, 0) * 120ms);
+}
+.box--title.is-in .l {
+  transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .box--title .l { transform: none; transition: none; }
+}
+
+/* body copy boxes */
+.box--what,
+.box--why {
+  /* the copy (one span, so label and text stay one paragraph) sits centred
+     top to bottom in its box */
+  display: flex;
+  align-items: center;
+  color: var(--body);
+  font-size: calc(14 * var(--u)); /* 14px at 1440 (was 11) */
+  line-height: 1.4;
+}
+.box--what strong,
+.box--why strong {
+  color: var(--text);
+  font-weight: 700;
+}
+.box--what {
+  left: calc(648 * var(--u));
+  top: calc(530.7 * var(--u));
+  width: calc(576 * var(--u));
+  height: calc(156.1 * var(--u)); /* 5 grid rows (was 4) so the 14px copy fits */
+  padding: calc(28 * var(--u)) calc(30 * var(--u));
+  border: 1px solid var(--cell-border);
+}
+.box--why {
+  left: calc(936 * var(--u)); /* starts where the portrait ends, never over it */
+  top: calc(982.4 * var(--u));
+  width: calc(432 * var(--u));
+  height: calc(208.6 * var(--u));
+  padding: calc(24 * var(--u)) calc(22 * var(--u));
+  border: 1px solid var(--cell-border-soft);
+  line-height: 1.42;
+}
+
+/* formula cells */
+.box--formula1 {
+  left: calc(722.5 * var(--u));
+  top: calc(873.4 * var(--u));
+  width: calc(430.5 * var(--u));
+  height: calc(55 * var(--u));
+  padding-left: calc(20 * var(--u));
+  background: var(--cell-dark);
+  border: 1px solid var(--mint); /* light green outline, like the car's TRIM box */
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: calc(22 * var(--u));
+  /* tracking follows the portrait scrub (sketch.js SCRUB.track): wide -> tight */
+  letter-spacing: var(--track, 0.9em);
+  white-space: nowrap;
+  overflow: hidden;
+}
+.box--formula2 {
+  left: calc(431.3 * var(--u));
+  top: calc(1682 * var(--u));
+  width: calc(240 * var(--u)); /* past the column line at x 648, over the car's front bumper */
+  height: calc(56 * var(--u));
+  border: 1px solid var(--mint);
+  padding-left: calc(16 * var(--u));
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: calc(23 * var(--u));
+  /* tracking follows the car scrub (sketch.js SCRUB.clips): wide -> tight */
+  letter-spacing: var(--track, 0.7em);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* ── photos (placeholders until the original files land; then an <img> with
+   object-fit: cover goes in each) ── */
+.photo {
+  overflow: hidden;
+  isolation: isolate; /* its outline layer (::after) stays within the photo: what overlaps the photo still covers it */
+  background: var(--cell-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* a thin green outline in the grid's line colour, just inside each photo
+   frame and over its clip (a layer on top: the clip's canvas would cover a
+   plain outline), so each photo sits on the grid */
+.photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border: 1px solid var(--grid-line-lower);
+  pointer-events: none;
+}
+.photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* the portrait clip (hair.mp4): a square picture centred in a landscape
+   frame, so a centred cover crop shows just the picture */
+.photo__video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 50%;
+}
+.photo__video--car {
+  object-position: 50% 50%;
+}
+/* the stills a frame-drawn scrub paints (sketch.js FRAMES), over its clip */
+.photo__frames {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.photo__note {
+  color: var(--number);
+  font-family: var(--mono);
+  font-size: calc(14 * var(--u));
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.photo--portrait {
+  left: calc(216 * var(--u)); /* two columns right (was 72) */
+  top: calc(842.94 * var(--u)); /* two rows down (was 780.5) */
+  width: calc(720 * var(--u)); /* 10 columns (was 12) */
+  height: calc(708.1 * var(--u)); /* down to the row line the car starts on, 1488.6 (was 861.7) */
+}
+.photo--car {
+  left: calc(577 * var(--u));
+  top: calc(1489 * var(--u));
+  width: calc(792 * var(--u));
+  height: calc(426 * var(--u));
+}

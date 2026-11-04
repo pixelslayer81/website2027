@@ -1,0 +1,359 @@
+{
+  "name": "Style Shift Flow",
+  "version": 1,
+  "columnLabels": { "look": "Looks profiles" },
+  "lookNote": "In Style Shift, each visual look is defined by its own YAML configuration file, which acts as a creative blueprint for the AI. These files contain specific instructions for lighting, colour grading, contrast, texture, atmosphere, and overall photographic treatment. When a user selects a look, Claude combines these predefined style instructions with its analysis of the uploaded photo to construct a detailed, image-specific prompt. The YAML controls how the image should look, while Claude determines how to apply those instructions without changing the original subjects, composition, or important details.",
+  "nodes": [
+    {
+      "id": "app",
+      "type": "app",
+      "label": "Style Shift app",
+      "action": "Upload"
+    },
+    {
+      "id": "claude-code",
+      "type": "terminal",
+      "label": "Claude Code",
+      "steps": [
+        "Analyse photo",
+        "Load looks",
+        "Read rules"
+      ]
+    },
+    {
+      "id": "look-candid",
+      "type": "look",
+      "lookId": "candid"
+    },
+    {
+      "id": "look-8mm",
+      "type": "look",
+      "lookId": "8mm"
+    },
+    {
+      "id": "look-pantone-blue",
+      "type": "look",
+      "lookId": "pantone-blue"
+    },
+    {
+      "id": "look-pantone-green",
+      "type": "look",
+      "lookId": "pantone-green"
+    },
+    {
+      "id": "look-pantone-pink",
+      "type": "look",
+      "lookId": "pantone-pink"
+    },
+    {
+      "id": "prompt-candid",
+      "type": "prompt",
+      "lookId": "candid"
+    },
+    {
+      "id": "prompt-8mm",
+      "type": "prompt",
+      "lookId": "8mm"
+    },
+    {
+      "id": "prompt-pantone-blue",
+      "type": "prompt",
+      "lookId": "pantone-blue"
+    },
+    {
+      "id": "prompt-pantone-green",
+      "type": "prompt",
+      "lookId": "pantone-green"
+    },
+    {
+      "id": "prompt-pantone-pink",
+      "type": "prompt",
+      "lookId": "pantone-pink"
+    },
+    {
+      "id": "global-rules",
+      "type": "rules",
+      "label": "Global rules",
+      "rules": ["Six content locks on every prompt."],
+      "detail": {
+        "title": "Global rules",
+        "accent": "#F5C6CF",
+        "paragraphs": [
+          "Global rules are the content locks Style Shift applies to every prompt, whatever look is selected. A look may change only the photographic style (light, colour and film texture), never what is in the photo.",
+          "The backend writes these rules into every prompt ahead of the look's own treatment, next to Claude's description of the uploaded photo, so the model knows exactly what must stay. An output that breaks a rule counts as a failed generation: it is re-rolled, never delivered."
+        ],
+        "rules": [
+          { "name": "People", "text": "The same real people, with the same faces, features, bodies, hair and expressions. Each keeps their position in the frame, pose and gesture." },
+          { "name": "Wardrobe", "text": "Every garment keeps its colour, cut, fit and folds. Nobody is re-dressed, and no jewellery or accessories are added." },
+          { "name": "Camera", "text": "Same angle, viewpoint, height, distance, lens and perspective. No reframing, zooming, tilting, mirroring or flipping." },
+          { "name": "Composition", "text": "Subjects stay exactly where they are in the frame, even off-centre. Nobody is re-centred." },
+          { "name": "Era lock", "text": "Every object keeps its make, model and era; the film treatment never ages the scene, so modern screens, laptops and phones stay modern. Existing logos, signs and text stay exactly as they are." },
+          { "name": "Nothing added or removed", "text": "No new people, objects, furniture, decor, text or logos, and nothing that is there disappears." }
+        ],
+        "exceptionsTitle": "Exceptions",
+        "exceptions": [
+          { "name": "16:9 extension", "text": "When the photo is widened to 16:9, the edges may be extended, but only as a plain continuation of surfaces already there (more of the same wall, floor or sky), and the subject keeps the same relative position in the frame." },
+          { "name": "Recolour looks", "text": "The Pantone looks may change the colours of garments, objects and surfaces. Shapes, cut and structure stay locked." }
+        ]
+      }
+    },
+    {
+      "id": "published-graph",
+      "type": "publish",
+      "label": "Published graph",
+      "logo": "exports/firefly-logo.png",
+      "logoHover": "exports/firefly-logo-red.png",
+      "logoAlt": "Adobe Firefly",
+      "graph": {
+        "title": "Published graph",
+        "accent": "#E82017",
+        "input": "exports/graph-input.jpg",
+        "output": "exports/graph-output.jpg",
+        "aspect": "16:9",
+        "model": "Gemini 3.0 / Nano-Banana Pro",
+        "prompt": "Restyle @photo. Change only its photographic treatment (light, colour, film texture); its content stays exactly as shot.\n\nSCENE (must match @photo exactly)\nContent: a young man with a buzz cut in a washed grey tee holds a silver laptop against his chest, rings on both hands, in front of a plain pale-blue wall; he looks straight into the lens.\n\nKEEP UNCHANGED\n- People: the same real people, with the same faces, features, bodies, hair and expressions. Each person keeps their position in the frame, pose and gesture.\n- Wardrobe: every garment keeps its colour, cut, fit and folds. Never re-dress anyone. Add no jewellery or accessories.\n- Camera: same angle, viewpoint, height, distance, lens and perspective. Do not reframe, zoom, tilt, mirror or flip.\n- Composition: subjects stay exactly where they are in the frame, even off-centre. Do not re-centre anyone.\n- Environment and objects: same setting, same surfaces, same objects. Every object keeps its make, model and era; the film treatment never ages the scene (modern screens, laptops and phones stay modern). Existing logos, signs and text stay exactly as they are.\n- Add nothing and remove nothing: no new people, objects, furniture, decor, text or logos, and nothing that is there disappears.\n\nTREATMENT TO APPLY\nLook: A raw, candid documentary snapshot taken on a cheap 35mm point-and-shoot with consumer colour film. Gritty, unposed and unpolished. The scene stays contemporary.\nLight: A harsh direct on-camera flash, fired at close range, relights the scene over its existing ambient light (window daylight, or neon at night). The flash spreads wide and even across the whole frame: all four corners as bright as the centre, no vignette, no radial darkening. Faces and skin read hottest and clearly flash-lit, matte with no shiny hotspots; light fabrics keep their weave and folds and never clip to white. The surroundings are only slightly dimmer than the subject and stay bright, open and readable; people in the background stay clearly visible. When a wall sits directly behind the subject, the flash lights it and it carries the subject's crisp, hard-edged drop shadow; in open scenes there is no such shadow. Very bright light sources in frame (bare bulbs, blown-out windows, lamps) get a soft halation glow, never a flare.\nColour: Desaturated, washed, slightly muddy film colour with only a faint residual warmth. Soft, dense blacks that keep their detail. Skin looks flat and natural under the flash. Every colour keeps its hue, just muted by the film.\nTexture: Fine visible film grain, soft-focus lens imperfection, gentle halation and a slight motion smear of a real moment.\nFraming: Keep the photo's own amateur, imperfect framing exactly as shot. Spontaneous and observational, never posed.\n\nAVOID\nvignette or darkened corners; studio, softbox, beauty or cinematic lighting; glossy, vivid, punchy or HDR colour; digital sharpness, smooth or retouched skin; lens flare, starbursts or bokeh orbs; dust, scratches or white specks; added text, logos or watermarks.",
+        "paragraphs": [
+          "Style Shift uses a published Adobe Firefly Graph as its core image generation engine. The graph consists of three primary nodes: a text input, an image input, and an AI image generation node connected to the final output. Rather than defining a fixed visual style within Firefly, the graph acts as a reusable workflow that dynamically receives instructions from the app.",
+          "Before execution, Claude analyzes the uploaded photograph and helps construct a detailed prompt using the selected look's YAML configuration. Each YAML defines the creative treatment, while the prompt incorporates instructions to preserve the original image's subjects, composition, and important details.",
+          "The Python backend uploads the reference image to cloud storage and generates a secure URL. Using Adobe's Workflow API, it authenticates through Adobe IMS and executes the published graph, passing the prompt and reference image into their corresponding input nodes.",
+          "Firefly processes both inputs to generate the restyled image. The backend monitors the execution, verifies that the reference image was used, and retrieves the completed result for additional post-processing.",
+          "The key advantage of this approach is flexibility: a single published Firefly Graph can support multiple visual styles without rebuilding or republishing the workflow. Each new look is controlled through its YAML configuration and dynamically generated prompt, making the system easier to maintain and expand."
+        ]
+      }
+    },
+    {
+      "id": "colorist",
+      "type": "post",
+      "label": "Colorist",
+      "description": "Applies post pass",
+      "detail": {
+        "title": "Colorist",
+        "panelClass": "dx-body--colorist",
+        "accent": "#F2C200",
+        "paragraphs": [
+          "The Colorist is the final pass in Style Shift: an automated grading step in the Python backend (backend/colorist.py), not a person. It runs after Firefly returns the image and grades each photo individually, so every output lands on the same look.",
+          "Its targets come from the look's hero reference photos, measured once and saved as a colorist profile: white balance, exposure, levels, saturation and contrast."
+        ],
+        "rules": [
+          {
+            "name": "Calculation step",
+            "text": "It measures the photo and works out the colour adjustments needed to match the hero references."
+          },
+          {
+            "name": "Claude step",
+            "text": "At colorist.py:184 it calls Claude in headless mode (claude -p) with a \"senior colorist\" prompt. Claude looks at the photo beside the hero references and fine-tunes the numbers."
+          }
+        ],
+        "exceptionsTitle": "Safeguards",
+        "exceptions": [
+          {
+            "name": "Fixed limits",
+            "text": "Every adjustment stays inside fixed bounds, whether it comes from the calculation or from Claude, so an unusual photo can't produce an extreme grade."
+          }
+        ],
+        "photos": [
+          { "label": "Original", "src": "exports/colorist-original.jpg" },
+          { "label": "Firefly output", "src": "exports/colorist-firefly.jpg" },
+          { "label": "Colorist grade", "src": "exports/colorist-grade.jpg" }
+        ]
+      },
+      "branch": {
+        "label": "Audit:",
+        "text": "When enabled, Claude compares the generated image against the original, assigning a quality score from 0–100 and flagging issues by severity. Images with critical failures are automatically regenerated and never delivered. Enabling this feature adds additional time to the overall generation process. Must be turned on."
+      }
+    },
+    {
+      "id": "outputs",
+      "type": "outputs",
+      "label": "Outputs",
+      "image": "exports/outputs/{look}/{photo}.jpg",
+      "full": "exports/outputs-full/{look}/{photo}.jpg",
+      "photos": [
+        "clo24-portraits-101",
+        "clo26-microsoft-expressive-portraits-101",
+        "com26-microsoft-expressive-portraits-014",
+        "com26-microsoft-expressive-portraits-015"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "from": "app",
+      "to": "claude-code"
+    },
+    {
+      "from": "claude-code",
+      "to": "look-candid"
+    },
+    {
+      "from": "look-candid",
+      "to": "prompt-candid"
+    },
+    {
+      "from": "prompt-candid",
+      "to": "global-rules"
+    },
+    {
+      "from": "claude-code",
+      "to": "look-8mm"
+    },
+    {
+      "from": "look-8mm",
+      "to": "prompt-8mm"
+    },
+    {
+      "from": "prompt-8mm",
+      "to": "global-rules"
+    },
+    {
+      "from": "claude-code",
+      "to": "look-pantone-blue"
+    },
+    {
+      "from": "look-pantone-blue",
+      "to": "prompt-pantone-blue"
+    },
+    {
+      "from": "prompt-pantone-blue",
+      "to": "global-rules"
+    },
+    {
+      "from": "claude-code",
+      "to": "look-pantone-green"
+    },
+    {
+      "from": "look-pantone-green",
+      "to": "prompt-pantone-green"
+    },
+    {
+      "from": "prompt-pantone-green",
+      "to": "global-rules"
+    },
+    {
+      "from": "claude-code",
+      "to": "look-pantone-pink"
+    },
+    {
+      "from": "look-pantone-pink",
+      "to": "prompt-pantone-pink"
+    },
+    {
+      "from": "prompt-pantone-pink",
+      "to": "global-rules"
+    },
+    {
+      "from": "global-rules",
+      "to": "published-graph"
+    },
+    {
+      "from": "published-graph",
+      "to": "colorist"
+    },
+    {
+      "from": "colorist",
+      "to": "outputs"
+    }
+  ],
+  "looks": [
+    {
+      "id": "candid",
+      "name": "Candid",
+      "headerColor": "#5C4F42",
+      "headerInk": "#FFFFFF",
+      "collage": "exports/1x1/candid.png",
+      "elements": {
+        "Concept": "Raw candid documentary snapshot from a cheap 35mm point-and-shoot. Contemporary, gritty, unposed.",
+        "Light": "Harsh direct on-camera flash over existing light (window daylight, or neon at night). Faces are hottest and matte; the rest of the scene is only slightly dimmer and stays readable.",
+        "Flash spread": "Wide and even to all four corners: no vignette, no radial darkening.",
+        "Drop shadow": "A crisp drop shadow only when a wall is directly behind the subject.",
+        "Highlights": "Light fabrics keep their weave and never clip to white. Bright lights in frame get a soft glow, never flare.",
+        "Colour": "Desaturated, washed, slightly muddy, with a faint warmth (about +0.05). Every colour keeps its hue.",
+        "Blacks": "Dense but detailed: neither crushed nor milky.",
+        "Texture": "Fine grain from generation, heavy grain added in post, slight lens softness, gentle halation, slight motion smear.",
+        "Framing": "Kept exactly as shot: amateur, off-centre, partially cropped.",
+        "Mood": "Creative-community gatherings: observational, social, anti-glossy."
+      }
+    },
+    {
+      "id": "8mm",
+      "name": "8mm",
+      "headerColor": "#605E5C",
+      "headerInk": "#FFFFFF",
+      "collage": "exports/1x1/super-8.png",
+      "elements": {
+        "Concept": "Analog black-and-white film with a silver-gelatin feel: shot spontaneously, developed chemically, scanned from the negative. Not a digital greyscale conversion.",
+        "Colour": "None. A rich greyscale: charcoal blacks, graphite shadows, broad mid-greys, pale-grey highlights, softly glowing whites.",
+        "Contrast": "High overall contrast (a black coat beside a pale face) with soft local contrast (transitions across a face stay smooth).",
+        "Shadows": "Some reach near-black, but most keep texture and grain. Smooth transitions into black, never crushed flat.",
+        "Highlights": "Soft film rolloff: grey → light grey → pale near-white → softly glowing white. Skin sits light-grey to off-white, never harsh digital white.",
+        "Grain": "Irregular silver grain that follows the image’s tones, not uniform noise. Strongest in midtones and shadows, still present in highlights.",
+        "Optics": "Soft, with fine detail where it matters (eyes, lashes, hair). No sharpening, edge enhancement or HDR. Subtle halation.",
+        "Depth of field": "Shallow to moderately shallow with a gradual falloff. Existing foreground objects go soft; the background softens with distance but stays recognisable. Soft foreground → defined subject → dissolving background.",
+        "Light": "Natural, available light: overcast, window light, open shade, mist, soft backlight. Faces aren’t evenly filled, and parts of the frame can fall into shade.",
+        "Imperfection": "Slight focus misses, motion softness, haze, partial blocking of the view, deep shadow and imperfect exposure are kept.",
+        "Mood": "Intimate, quiet, melancholic, quietly cinematic, tactile."
+      }
+    },
+    {
+      "id": "pantone-blue",
+      "name": "Pantone Blue",
+      "headerColor": "#1A3FC4",
+      "headerInk": "#FFFFFF",
+      "collage": "exports/1x1/blue.png",
+      "elements": {
+        "Concept": "Ultra-luxury tone-on-tone Pantone editorial: cobalt colour-blocking with complementary blue-orange contrast. Polished magazine-cover look, Mediterranean-modernist styling.",
+        "Wardrobe (~60%)": "Cobalt / royal blue #0047ab / #1a3fc4: suits, tailoring, outerwear, eyewear",
+        "Surroundings (~20%)": "Existing surfaces recoloured toward cerulean sky blue #7ec8e3 or crisp white",
+        "Accents (~15%)": "Solid vermilion red #e3342f or tangerine orange #f28c28: neckties, handbags, eyewear, a red lip",
+        "Contrast (~5%)": "White / ivory #ffffff / #f6f1e9 on trim, plus subtle gold on jewellery and hardware",
+        "Grade": "Highly saturated but controlled; clean graphic separation",
+        "Light": "Bright, airy daylight luminosity with soft diffused falloff",
+        "Lens": "Medium-format (Hasselblad) character: ultra-sharp faces, soft background blur",
+        "Finish": "Premium commercial, natural skin texture (never plastic). No grain, no vignette.",
+        "Mood": "Composed, art-directed, quietly confident. The colour story is the subject."
+      }
+    },
+    {
+      "id": "pantone-green",
+      "name": "Pantone Green",
+      "headerColor": "#B3CF3D",
+      "headerInk": "#1B1A19",
+      "collage": "exports/1x1/green.png",
+      "elements": {
+        "Concept": "Pantone-swatch monochrome: one colour family owns the whole frame. Variation comes from different shades of green on different items, never from other hues. Ultra-luxury, colour-drenched, designer-campaign.",
+        "Wardrobe": "Chartreuse / lime / kelly / sage (#c8d94a, #b3cf3d), with pale chartreuse-cream #e3e8b0 for light garments. Each item may take a different shade.",
+        "Walls / backdrop": "The existing walls recoloured sage to forest (#87a96b → #2e5c3f). A soft gradient is allowed.",
+        "Accents": "Solid lime green #a4c639 or solid warm yellow #f2c200, on a necktie, scarf, handbag, eyewear or one prop. A tie is ideal.",
+        "Materials": "Textured knitwear, tailored blazers, silk, designer-leather bags. Existing eyewear can turn translucent lime acetate.",
+        "Makeup": "The only face colour that may change; soft green eyeshadow is on-palette",
+        "Grade": "Rich and saturated but controlled: colours read as painted swatches, with no fade and no vintage cast",
+        "Light": "Soft, diffused studio light with a large-softbox feel and gentle shadow falloff",
+        "Lens": "Medium focal length, ultra-sharp on the subject, shallow depth of field",
+        "Finish": "Polished premium-campaign magazine finish. No grain, no grit, no vignette.",
+        "Mood": "Composed, art-directed, still. The colour story is the subject."
+      }
+    },
+    {
+      "id": "pantone-pink",
+      "name": "Pantone Pink",
+      "headerColor": "#F5C6CF",
+      "headerInk": "#1B1A19",
+      "collage": "exports/1x1/pink.png",
+      "elements": {
+        "Concept": "High-contrast pastel-meets-neon: soft romantic pinks against vivid acid greens. Surreal luxury editorial: Gucci-inspired colour, “Barbiecore meets Medievalcore”, playful tension.",
+        "Backgrounds and accessories": "Powder pink #f5c6cf, blush #efb8c1, pastel rose #f4d3d8. Existing walls are recoloured toward powder pink, and a soft gradient is allowed.",
+        "Accent greens": "Solid chartreuse #8cc63e (the attention-grabber) or solid sage #b8c38a (the harmoniser), one colour per item",
+        "Neutrals": "Cream / ivory #eee4d1 on vintage props and lace",
+        "Metallics": "Antique gold / oxidised brass on jewellery and hardware",
+        "Warm accent": "Fiery amber #ff8a3d, for dramatic warm contrast",
+        "Materials": "Knitwear, tailoring, silk, leather. Existing eyewear can take retro translucent pink or green acetate.",
+        "Makeup": "The only face colour that may change; soft rose eyeshadow is on-palette",
+        "Grade": "Soft pastels against vivid greens, olive-gold reflections, a warm cinematic glow, slightly vintage",
+        "Light": "Beauty-campaign light: soft, diffused, large-softbox feel, warm glow",
+        "Lens": "Medium-format (Hasselblad) character: ultra-sharp face, soft background, magazine-cover framing",
+        "Finish": "High-end commercial retouching, natural skin texture. No grain, no vignette.",
+        "Mood": "Composed and art-directed, with a playful, surreal edge"
+      }
+    }
+  ]
+}

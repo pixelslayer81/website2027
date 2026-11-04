@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Excel &mdash; Beyond the Grid</title>
+  <meta name="description" content="Excel: beyond the grid.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&family=Open+Sans:wght@300;400&family=Space+Mono&family=Tinos:ital@0;1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../shared/reset.css">
+  <link rel="stylesheet" href="../../shared/tokens.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Built from the spec JSON (spec.json), re-gridded to the user's reference
+       (72-unit columns, 31.22-unit rows): a 1440 x 1976 dark-green page; every
+       layer sits at its coordinate times --u, painted in the spec's layer order.
+       The lower grid's few lines are placed by sketch.js. -->
+  <main class="page" id="page">
+
+    <!-- ============================================================ grids -->
+    <div class="grid grid--top" aria-hidden="true"></div>
+    <div class="grid grid--lower" id="grid-lower" aria-hidden="true"></div>
+    <!-- cells light up under the cursor (sketch.js); under the boxes and photos -->
+    <canvas class="grid-glow" id="grid-glow" aria-hidden="true"></canvas>
+
+    <!-- ============================================================ mint cells (each one whole grid cell: column x 72, row y 31.22) -->
+    <div class="rect rect--mint" style="--x: 72; --y: 62.44; --w: 72; --h: 31.22" aria-hidden="true"></div>
+    <div class="rect rect--mint" style="--x: 720; --y: 124.88; --w: 72; --h: 31.22" aria-hidden="true"></div>
+    <div class="rect rect--mint" style="--x: 360; --y: 561.96; --w: 72; --h: 31.22" aria-hidden="true"></div>
+    <div class="rect rect--mint" style="--x: 1224; --y: 718.06; --w: 72; --h: 31.22" aria-hidden="true"></div>
+    <div class="rect rect--mint" style="--x: 0; --y: 749.28; --w: 72; --h: 31.22" aria-hidden="true"></div>
+    <div class="rect rect--cell" style="--x: 184.8; --y: 281; --w: 31.2; --h: 31.2" aria-hidden="true"></div>
+
+    <!-- ============================================================ header cells -->
+    <div class="box box--number" aria-hidden="true">05</div>
+    <!-- the tagline runs as a marquee, masked by its box: two identical halves slide left by one half, so it loops seamlessly -->
+    <p class="box box--tagline" aria-label="Beyond the Grid"><span class="marquee" aria-hidden="true"><span class="marquee__item">Beyond the <em>Grid</em></span><span class="marquee__item">Beyond the <em>Grid</em></span><span class="marquee__item">Beyond the <em>Grid</em></span><span class="marquee__item">Beyond the <em>Grid</em></span></span></p>
+    <!-- each letter rises into the box in turn (the box clips them), like the Style Shift title -->
+    <h1 class="box box--title" id="title" aria-label="Excel"><span class="l" style="--i: 0">E</span><span class="l" style="--i: 1">X</span><span class="l" style="--i: 2">C</span><span class="l" style="--i: 3">E</span><span class="l" style="--i: 4">L</span></h1>
+
+    <p class="box box--what"><span class="box__copy"><strong>What is it:</strong> An interactive web experience that turns Excel into a creative canvas. Users can explore different approaches to spreadsheet art and create their own compositions using the familiar structure of Excel cells, colors, and patterns. The project takes something normally associated with data and productivity and reimagines it as a playful space for creativity, experimentation, and visual expression.</span></p>
+
+    <!-- ============================================================ portrait + formula + why -->
+    <!-- the portrait is a clip scrubbed by the scroll (sketch.js): the hair shrinks as the page moves -->
+    <div class="photo photo--portrait">
+      <video class="photo__video" id="portrait-video" src="assets/hair.mp4" muted playsinline preload="auto" aria-label="Profile portrait of a person with a curly mullet in a green suit; the hair shrinks as you scroll"></video>
+    </div>
+    <div class="box box--formula1" id="formula-1" aria-hidden="true">= TRIM(cell)</div>
+    <p class="box box--why"><span class="box__copy"><strong>Why we built it:</strong> Excel is known for spreadsheets, formulas, and data, but we wanted to show a completely different side of it. By turning the familiar Excel grid into a place to make art, we created a fun and unexpected way for people to play with the brand. It&rsquo;s less about teaching someone how to use Excel and more about creating a moment of discovery that gets people experimenting, sharing, and seeing Excel in a new way.</span></p>
+
+    <!-- ============================================================ car + formula -->
+    <!-- the car is a clip scrubbed by the scroll, like the portrait (sketch.js) -->
+    <div class="photo photo--car">
+      <video class="photo__video photo__video--car" id="car-video" src="assets/car.mp4" muted playsinline preload="auto" aria-label="Silver vintage sedan parked in front of a grassy hill lined with bare trees"></video>
+    </div>
+    <div class="box box--formula2" id="formula-2" aria-hidden="true">=TRIM(cell)</div>
+
+  </main>
+
+  <script src="sketch.js"></script>
+  <script>
+    window.ExcelSketch.mount(document.getElementById("page"));
+  </script>
+</body>
+</html>

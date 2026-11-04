@@ -1,0 +1,192 @@
+/* Page 00: Splash. Not a scroll section: these rules are loaded into page 01's
+   shadow root by the site loader (site.js) and drive page 01's own elements
+   from the splash's start frame to the CT index layout. Everything here hangs
+   off .splash (set on page 01's .page while the splash runs) and is removed
+   when it ends, so page 01 is untouched afterwards.
+   Reference: assets/splash_anim_ref_v001.mp4. */
+
+.splash {
+  position: relative;
+  /* timings, read by sketch.js too */
+  --splash-rise: 1200ms;
+  --splash-widen: 1200ms; /* the border opens out over the whole rise */
+  --splash-margin: 24px; /* the page margin (sketch.js SPLASH.margin) */
+  --splash-ease: cubic-bezier(0.25, 0.8, 0.25, 1); /* the reference's rise: steady, then a long settle */
+  --splash-mask-ease: cubic-bezier(0.19, 1, 0.22, 1); /* the CT index hover banner's curve */
+}
+
+/* ── the masthead (2026-10-30 redesign, after the user's mockup): a light
+   PIXELSLAYER wordmark across the page, a rule, then an info row (red tags,
+   credentials and two buttons; its description line was removed 2026-10-30). It sits above the
+   photo's start position; the rising photo covers (masks off) all of it.
+   Sizes are the mockup's (1845 wide) scaled to the 1440 reference. ── */
+.splash__head {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 0;
+  padding: 20px var(--splash-margin) 0;
+  color: #1b1a19;
+}
+.splash__mark {
+  margin: 0;
+  color: var(--accent);
+  font-size: 14.8vw; /* ~213px at 1440: ends ~90% across, as in the mockup */
+  font-weight: 400;
+  line-height: 0.86;
+  letter-spacing: -0.04em; /* Inter runs wider than the mockup's face */
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.splash__info {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr; /* tags left, credentials and buttons right */
+  column-gap: var(--splash-margin);
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(27, 26, 25, 0.8);
+}
+.splash__meta,
+.splash__tags {
+  margin: 0;
+  font-family: "Space Mono", ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.splash__meta {
+  grid-column: 3;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  line-height: 16px;
+}
+.splash__tags {
+  grid-column: 1;
+  grid-row: 2;
+  align-self: end;
+  margin-top: 16px;
+  padding: 0;
+  list-style: none;
+  color: var(--accent);
+  line-height: 19px;
+}
+.splash__ctas {
+  grid-column: 3;
+  grid-row: 2;
+  align-self: end;
+  justify-self: end;
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+.splash__cta {
+  height: 47px;
+  padding: 0 20px;
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #1b1a19;
+  background: transparent;
+  border: 1.5px solid #1b1a19;
+  cursor: pointer;
+  transition: background-color 160ms ease, color 160ms ease;
+}
+.splash__cta--tech {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.splash__cta--tech:hover,
+.splash__cta--tech:focus-visible {
+  background: #1b1a19;
+  border-color: #1b1a19;
+  color: #fff;
+  outline: none;
+}
+.splash__cta--motion {
+  cursor: default; /* not wired yet */
+}
+
+/* ── the photo: never scaled. The box keeps its CT index size and the picture
+   its CT index scale (width-fitted, top-aligned); only the borders (a clip)
+   and positions animate. It starts lowered by --splash-drop and rises to its
+   CT index place. ── */
+.splash .hero {
+  z-index: 1;
+  translate: 0 var(--splash-drop, 0px);
+  overflow: visible; /* the picture may run below the box; the clip crops it */
+  /* the start frame's borders: left and right the page margin, and the bottom
+     edge that same gap above the window's bottom (sketch.js sets both) */
+  clip-path: inset(0 var(--splash-gap, 24px) var(--splash-clip-b, 0px) var(--splash-gap, 24px));
+}
+/* the picture at its natural shape (width-fitted: the CT index's own scale,
+   since its frame is wider than the video) so it can show below the box on the
+   start frame; parallax: it sits --splash-par higher and drifts down to rest
+   as the box rises, so it moves slower than the box */
+.splash .hero__photo {
+  height: auto;
+  /* --splash-shift: where the CT index crop sits on the video (page 01's
+     --hero-focus-y), plus the parallax head start */
+  translate: 0 calc(-1 * (var(--splash-shift, 0px) + var(--splash-par, 0px)));
+}
+/* CT Index: the borders animate out to the CT index crop (full bleed, the
+   box's own bottom) while the photo rises, on the same timing */
+.splash.is-wide .hero {
+  clip-path: inset(0 0 0 0);
+  transition: clip-path var(--splash-widen) var(--splash-ease);
+}
+.splash.is-wide.is-rising .hero {
+  translate: 0 0;
+  transition: clip-path var(--splash-widen) var(--splash-ease), translate var(--splash-rise) var(--splash-ease);
+}
+.splash.is-rising .hero__photo {
+  translate: 0 calc(-1 * var(--splash-shift, 0px)); /* the CT index crop */
+  transition: translate var(--splash-rise) var(--splash-ease);
+}
+/* the glitch layer: hidden on the waiting start frame, on from the moment
+   Creative Tech is pressed. It draws the picture at its CT index scale, which
+   the splash keeps throughout, so it only needs the picture's parallax offset
+   to stay registered with it */
+.splash .hero__glitch {
+  visibility: hidden;
+  translate: 0 calc(-1 * var(--splash-par, 0px));
+}
+.splash.is-wide .hero__glitch {
+  visibility: visible;
+}
+.splash.is-rising .hero__glitch {
+  translate: 0 0;
+  transition: translate var(--splash-rise) var(--splash-ease);
+}
+
+/* ── DESIGN / & TECHNOLOGY: each line rises into place through a mask that
+   stays put (the line moves up while its clip opens by the same amount) ── */
+.splash .hero__design,
+.splash .hero__sub {
+  translate: 0 100%;
+  clip-path: inset(0 0 100% 0);
+}
+.splash .hero__design.is-in,
+.splash .hero__sub.is-in {
+  translate: 0 0;
+  clip-path: inset(0 0 0 0);
+  transition: translate 900ms var(--splash-mask-ease), clip-path 900ms var(--splash-mask-ease);
+}
+
+/* ── index rows: hidden until their red banner (the hover marquee) has wiped
+   over them ── */
+.splash .index__row.is-pre {
+  border-color: transparent;
+}
+/* fully invisible until its own wipe starts: while the photo resizes, the rows
+   shift by sub-pixels and a parked banner's edge could flash as a thin line */
+.splash .index__row.is-pre:not(.is-wiping) {
+  visibility: hidden;
+}
+.splash .index__row.is-pre .index__link {
+  opacity: 0;
+}

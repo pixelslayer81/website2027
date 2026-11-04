@@ -4,10 +4,16 @@ body {
   font-family: var(--font-sans);
   overflow: hidden;
 }
+/* hosted in the stitched site (root index.html): the section stands in for body */
+:host {
+  display: block;
+  background: var(--bg);
+  font-family: var(--font-sans);
+}
 
 .page {
   position: relative;
-  width: 100vw;
+  width: 100%; /* 100vw would run under the stitched site's scrollbar */
   height: 100vh;
   height: 100dvh;
   display: grid;

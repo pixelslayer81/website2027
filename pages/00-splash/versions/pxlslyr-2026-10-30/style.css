@@ -1,0 +1,101 @@
+/* Page 00: Splash. Not a scroll section: these rules are loaded into page 01's
+   shadow root by the site loader (site.js) and drive page 01's own elements
+   from the splash's start frame to the CT index layout. Everything here hangs
+   off .splash (set on page 01's .page while the splash runs) and is removed
+   when it ends, so page 01 is untouched afterwards.
+   Reference: assets/splash_anim_ref_v001.mp4. */
+
+.splash {
+  position: relative;
+  /* timings, read by sketch.js too */
+  --splash-rise: 1200ms;
+  --splash-widen: 1200ms; /* the border opens out over the whole rise */
+  --splash-ease: cubic-bezier(0.25, 0.8, 0.25, 1); /* the reference's rise: steady, then a long settle */
+  --splash-mask-ease: cubic-bezier(0.19, 1, 0.22, 1); /* the CT index hover banner's curve */
+}
+
+/* ── PXLSLYR!: set like DESIGN, parked above the photo; the rising photo covers
+   it (masks it off) from the bottom up ── */
+.splash__type {
+  position: absolute;
+  left: 24px;
+  top: var(--splash-type-top, 160px);
+  z-index: 0;
+  margin: 0;
+  color: var(--accent);
+  font-size: clamp(72px, 13.4vw, 196px);
+  font-weight: 900;
+  line-height: 0.84;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* ── the photo: never scaled. The box keeps its CT index size and the picture
+   its CT index scale (width-fitted, top-aligned); only the borders (a clip)
+   and positions animate. It starts lowered by --splash-drop and rises to its
+   CT index place. ── */
+.splash .hero {
+  z-index: 1;
+  translate: 0 var(--splash-drop, 0px);
+  overflow: visible; /* the picture may run below the box; the clip crops it */
+  /* the start frame's borders: left and right as wide as the gap between the
+     window edge and the P of PXLSLYR!, and the bottom edge that same gap above
+     the window's bottom (sketch.js measures both) */
+  clip-path: inset(0 var(--splash-gap, 24px) var(--splash-clip-b, 0px) var(--splash-gap, 24px));
+}
+/* the picture at its natural shape (width-fitted: the CT index's own scale,
+   since its frame is wider than the video) so it can show below the box on the
+   start frame; parallax: it sits --splash-par higher and drifts down to rest
+   as the box rises, so it moves slower than the box */
+.splash .hero__photo {
+  height: auto;
+  translate: 0 calc(-1 * var(--splash-par, 0px));
+}
+/* CT Index: the borders animate out to the CT index crop (full bleed, the
+   box's own bottom) while the photo rises, on the same timing */
+.splash.is-wide .hero {
+  clip-path: inset(0 0 0 0);
+  transition: clip-path var(--splash-widen) var(--splash-ease);
+}
+.splash.is-wide.is-rising .hero {
+  translate: 0 0;
+  transition: clip-path var(--splash-widen) var(--splash-ease), translate var(--splash-rise) var(--splash-ease);
+}
+.splash.is-rising .hero__photo {
+  translate: 0 0;
+  transition: translate var(--splash-rise) var(--splash-ease);
+}
+/* the glitch layer assumes the resting crop: keep it out of the move */
+.splash .hero__glitch {
+  visibility: hidden;
+}
+
+/* ── DESIGN / & TECHNOLOGY: each line rises into place through a mask that
+   stays put (the line moves up while its clip opens by the same amount) ── */
+.splash .hero__design,
+.splash .hero__sub {
+  translate: 0 100%;
+  clip-path: inset(0 0 100% 0);
+}
+.splash .hero__design.is-in,
+.splash .hero__sub.is-in {
+  translate: 0 0;
+  clip-path: inset(0 0 0 0);
+  transition: translate 900ms var(--splash-mask-ease), clip-path 900ms var(--splash-mask-ease);
+}
+
+/* ── index rows: hidden until their red banner (the hover marquee) has wiped
+   over them ── */
+.splash .index__row.is-pre {
+  border-color: transparent;
+}
+/* fully invisible until its own wipe starts: while the photo resizes, the rows
+   shift by sub-pixels and a parked banner's edge could flash as a thin line */
+.splash .index__row.is-pre:not(.is-wiping) {
+  visibility: hidden;
+}
+.splash .index__row.is-pre .index__link {
+  opacity: 0;
+}

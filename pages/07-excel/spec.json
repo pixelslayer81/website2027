@@ -1,0 +1,175 @@
+{
+  "page": {
+    "id": "excel",
+    "title": "Excel — Beyond the Grid",
+    "width": 1440,
+    "height": 1962,
+    "background": "#0f3b27"
+  },
+  "tokens": {
+    "colors": {
+      "background": "#0f3b27",
+      "gridTop": "#134a31",
+      "gridLineTop": "rgba(110,200,150,0.32)",
+      "gridLineLower": "rgba(110,200,150,0.22)",
+      "cell": "#1d5e40",
+      "cellDark": "#134a32",
+      "cellBorder": "#3a8a62",
+      "cellBorderSoft": "#2f7a55",
+      "mint": "#4ff0a0",
+      "number": "#3f9a6c",
+      "text": "#ffffff",
+      "body": "#e4efe9"
+    },
+    "fonts": {
+      "display": { "family": "Open Sans", "fallback": "Segoe UI, sans-serif", "weights": [300, 400] },
+      "serif": { "family": "Tinos", "fallback": "Times New Roman, serif", "styles": ["normal", "italic"] },
+      "sans": { "family": "Inter", "weights": [400, 500, 700, 800] },
+      "mono": { "family": "Space Mono" },
+      "source": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&family=Open+Sans:wght@300;400&family=Space+Mono&family=Tinos:ital@0;1&display=swap"
+    },
+    "type": {
+      "display":  { "font": "display", "size": 152, "weight": 400, "lineHeight": 1, "letterSpacing": "-0.01em" },
+      "tagline":  { "font": "serif", "size": 38 },
+      "number":   { "font": "sans", "size": 30, "weight": 800 },
+      "body":     { "font": "sans", "size": 11, "lineHeight": 1.4 },
+      "bodyLabel":{ "font": "sans", "size": 11, "weight": 700 },
+      "formulaSpaced": { "font": "mono", "size": 22, "letterSpacing": "0.55em" },
+      "formula":  { "font": "mono", "size": 23, "letterSpacing": "0.1em" }
+    },
+    "grid": {
+      "columnWidth": 71.4,
+      "rowHeight": 24
+    }
+  },
+  "layers": [
+    {
+      "id": "grid-top",
+      "type": "grid",
+      "frame": { "x": 0, "y": 0, "w": 1440, "h": 773 },
+      "fill": "gridTop",
+      "cell": [71.4, 24],
+      "lineColor": "gridLineTop"
+    },
+    {
+      "id": "grid-lower",
+      "type": "grid",
+      "frame": { "x": 0, "y": 773, "w": 1440, "h": 1189 },
+      "fill": "background",
+      "columnWidth": 71.4,
+      "rowLinesY": [843, 1484, 1630, 1676, 1719, 1766, 1813, 1860, 1903],
+      "lineColor": "gridLineLower"
+    },
+
+    { "id": "mint-1", "type": "rect", "frame": { "x": 72,   "y": 62,  "w": 70, "h": 28 }, "fill": "mint" },
+    { "id": "mint-2", "type": "rect", "frame": { "x": 714,  "y": 124, "w": 70, "h": 30 }, "fill": "mint" },
+    { "id": "mint-3", "type": "rect", "frame": { "x": 358,  "y": 571, "w": 68, "h": 30 }, "fill": "mint" },
+    { "id": "mint-4", "type": "rect", "frame": { "x": 1218, "y": 712, "w": 70, "h": 30 }, "fill": "mint" },
+    { "id": "mint-5", "type": "rect", "frame": { "x": 0,    "y": 745, "w": 72, "h": 30 }, "fill": "mint" },
+    { "id": "cell-accent", "type": "rect", "frame": { "x": 181, "y": 279, "w": 32, "h": 28 }, "fill": "cell" },
+
+    {
+      "id": "number",
+      "type": "box",
+      "frame": { "x": 1287, "y": 94, "w": 70, "h": 58 },
+      "fill": "cell",
+      "align": "center",
+      "text": { "value": "05", "style": "number", "color": "number" }
+    },
+    {
+      "id": "tagline",
+      "type": "box",
+      "frame": { "x": 927, "y": 151, "w": 358, "h": 60 },
+      "fill": "cell",
+      "border": { "width": 1, "color": "cellBorder" },
+      "align": "center",
+      "text": {
+        "style": "tagline",
+        "runs": [
+          { "value": "Beyond the ", "color": "text" },
+          { "value": "Grid", "color": "mint", "italic": true }
+        ]
+      }
+    },
+    {
+      "id": "title",
+      "type": "box",
+      "frame": { "x": 213, "y": 309, "w": 571, "h": 185 },
+      "fill": "cell",
+      "border": { "width": 1, "color": "cellBorder" },
+      "padding": { "left": 48 },
+      "align": "center-left",
+      "text": { "value": "EXCEL", "style": "display", "color": "text" }
+    },
+    {
+      "id": "what",
+      "type": "box",
+      "frame": { "x": 643, "y": 528, "w": 569, "h": 121 },
+      "fill": "cell",
+      "border": { "width": 1, "color": "cellBorder" },
+      "padding": { "x": 30, "y": 28 },
+      "text": {
+        "style": "body",
+        "color": "body",
+        "runs": [
+          { "value": "What is it: ", "style": "bodyLabel", "color": "text" },
+          { "value": "Style Shift is a web app that re-renders any uploaded photograph in a chosen editorial “look” while guaranteeing the photo’s content never changes. It takes the brand-aware generation workflow built in Claude and Runway and turns it into a designer-friendly tool, bringing all the AI and automation under the hood without requiring any coding." }
+        ]
+      }
+    },
+    {
+      "id": "photo-portrait",
+      "type": "image",
+      "frame": { "x": 72, "y": 773, "w": 856, "h": 858 },
+      "fit": "cover",
+      "src": "/_blob/5f67444681fc91526696c03261aa34da",
+      "srcNote": "Stand-in cropped from screenshot — replace with the original file",
+      "alt": "Profile portrait of a person with a curly mullet in a green suit against a teal backdrop"
+    },
+    {
+      "id": "formula-1",
+      "type": "box",
+      "frame": { "x": 716, "y": 865, "w": 428, "h": 55 },
+      "fill": "cellDark",
+      "border": { "width": 1, "color": "cellBorder" },
+      "padding": { "left": 20 },
+      "align": "center-left",
+      "text": { "value": "= TRIM(cell)", "style": "formulaSpaced", "color": "text" }
+    },
+    {
+      "id": "why",
+      "type": "box",
+      "frame": { "x": 927, "y": 976, "w": 430, "h": 207 },
+      "fill": "cell",
+      "border": { "width": 1, "color": "cellBorderSoft" },
+      "padding": { "x": 22, "y": 24 },
+      "text": {
+        "style": "body",
+        "lineHeight": 1.42,
+        "color": "body",
+        "runs": [
+          { "value": "Why we built it: ", "style": "bodyLabel", "color": "text" },
+          { "value": "Style Shift makes consistent, on-brand image transformation simple for everyone. It allows non-designers to easily restyle existing photography without having to understand prompts, design tools, or complex AI workflows. Visual styles are built into the tool, making results repeatable and consistent across images, campaigns, and channels. Users simply choose the look they want and Style Shift handles the complexity behind the scenes. The result is an easy-to-use system that helps teams create consistent imagery, reuse existing assets, and scale content without scaling complexity." }
+        ]
+      }
+    },
+    {
+      "id": "photo-car",
+      "type": "image",
+      "frame": { "x": 573, "y": 1480, "w": 784, "h": 422 },
+      "fit": "cover",
+      "src": "/_blob/374012fac2ba49b6f042f57faf32c23a",
+      "srcNote": "Stand-in cropped from screenshot — replace with the original file",
+      "alt": "Silver vintage sedan parked in front of a grassy hill lined with bare trees"
+    },
+    {
+      "id": "formula-2",
+      "type": "box",
+      "frame": { "x": 413, "y": 1672, "w": 357, "h": 53 },
+      "fill": "cell",
+      "padding": { "left": 16 },
+      "align": "center-left",
+      "text": { "value": "=TRIM(cell)", "style": "formula", "color": "text" }
+    }
+  ]
+}

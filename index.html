@@ -2,14 +2,77 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Style Shift</title>
-  <!-- The site currently opens straight on the Style Shift page. The other
-       pages stay in pages/ but are not linked from anywhere. -->
-  <meta http-equiv="refresh" content="0; url=pages/03-styleshift/index.html">
-  <link rel="canonical" href="pages/03-styleshift/index.html">
-  <script>location.replace("pages/03-styleshift/index.html");</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Design &amp; Technology</title>
+  <meta name="description" content="Joseph Andrade: design and technology projects. Vibe-coded tools, AI workflows and the Style Shift photo restyle app.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wdth,wght@62..125,100..900&family=Inter:wght@200;300;400;500;600;700;800;900&family=Open+Sans:wght@300;400&family=Space+Mono&family=Tinos:ital@0;1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="shared/reset.css">
+  <link rel="stylesheet" href="shared/tokens.css">
+  <link rel="stylesheet" href="site.css">
 </head>
 <body>
-  <a href="pages/03-styleshift/index.html">Style Shift</a>
+  <!-- Site header: fixed over every section; Creative Tech (id site-index, the CT index) returns to the top (page 01).
+       Motion Design is a placeholder for the motion design section (not wired yet);
+       About opens the about page (pages/09-about) on its own, outside the stitched scroll. -->
+  <header class="site-header" id="site-header">
+    <a class="site-brand" href="#intro">Pixelslayer.tv</a>
+    <nav class="site-nav" aria-label="Indexes">
+      <a class="site-index" href="#intro" id="site-index">Creative Tech</a>
+      <button type="button" class="site-index" id="site-index-md">Motion Design</button>
+      <a class="site-index" href="pages/09-about/index.html" id="site-about">About</a>
+    </nav>
+  </header>
+
+  <!-- The hero site: every page in pages/ is one section, in folder order.
+       site.js fetches each page's index.html into the section's shadow root,
+       so pages stay independent (own CSS, own ids) and edits show up here
+       with no build step. To add a page: one more <section data-page>. -->
+  <main id="site">
+    <section class="site-page" id="intro" data-page="01-intro"></section>
+    <section class="site-page" id="ai-task-force" data-page="02-flock"></section>
+    <section class="site-page" id="styleshift" data-page="03-styleshift"></section>
+    <section class="site-page" id="always-on-social" data-page="04-always-on-social"></section>
+    <section class="site-page" id="exporter" data-page="05-exporter"></section>
+    <section class="site-page" id="azure-retexture" data-page="06-azure-retexture"></section>
+    <section class="site-page" id="excel" data-page="07-excel"></section>
+    <section class="site-page" id="excel-cell-art" data-page="08-excel-cell-art"></section>
+  </main>
+
+  <!-- Shown when the pages cannot be fetched (opened from file://, or no server) -->
+  <nav class="site-fallback" id="site-fallback" hidden aria-label="Pages">
+    <p class="site-fallback__note">The stitched site needs a web server (from the repo root: <code>python -I tools/serve.py</code>, then open <code>http://127.0.0.1:8080/</code>). The pages still open on their own:</p>
+    <ol>
+      <li><a href="pages/01-intro/index.html">Design &amp; Technology</a></li>
+      <li><a href="pages/02-flock/index.html">AI Task Force</a></li>
+      <li><a href="pages/03-styleshift/index.html">Style Shift</a></li>
+      <li><a href="pages/04-always-on-social/index.html">Always On Social</a></li>
+      <li><a href="pages/05-exporter/index.html">Exporter</a></li>
+      <li><a href="pages/06-azure-retexture/index.html">Azure Visual Expansion</a></li>
+      <li><a href="pages/07-excel/index.html">Excel</a></li>
+      <li><a href="pages/08-excel-cell-art/index.html">Excel Cell Art</a></li>
+      <li><a href="pages/09-about/index.html">About</a></li>
+    </ol>
+  </nav>
+  <noscript>
+    <nav class="site-fallback" aria-label="Pages">
+      <ol>
+        <li><a href="pages/01-intro/index.html">Design &amp; Technology</a></li>
+        <li><a href="pages/02-flock/index.html">AI Task Force</a></li>
+        <li><a href="pages/03-styleshift/index.html">Style Shift</a></li>
+        <li><a href="pages/04-always-on-social/index.html">Always On Social</a></li>
+        <li><a href="pages/05-exporter/index.html">Exporter</a></li>
+        <li><a href="pages/06-azure-retexture/index.html">Azure Visual Expansion</a></li>
+        <li><a href="pages/07-excel/index.html">Excel</a></li>
+        <li><a href="pages/08-excel-cell-art/index.html">Excel Cell Art</a></li>
+        <li><a href="pages/09-about/index.html">About</a></li>
+      </ol>
+    </nav>
+  </noscript>
+
+  <!-- the splash over page 01 on a fresh load (pages/00-splash); before site.js, which runs it -->
+  <script src="pages/00-splash/sketch.js"></script>
+  <script src="site.js"></script>
 </body>
 </html>

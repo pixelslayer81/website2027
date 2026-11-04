@@ -32,3 +32,29 @@ are classic `<script src>` files rather than ES modules: Chrome/Edge refuse `imp
 - No bundler/linter means syntax errors surface only in the browser. A duplicate `const`
   in one scope once broke the entire page 02. After editing, re-read the edited scope for
   redeclared names and unbalanced braces.
+- Update 2026-10-21: Node LTS (winget) and Python 3.12
+  (`C:\Users\v-andradej\AppData\Local\Programs\Python\Python312\python.exe`) are now installed.
+  "Spin up a local server" = `Start-Process python.exe -ArgumentList "-I tools/serve.py 8080"
+  -WorkingDirectory <repo> -WindowStyle Hidden`, then open `http://127.0.0.1:8080/` (or
+  `/pages/NN-slug/index.html`). Use `tools/serve.py`, NOT plain `-m http.server`: the plain
+  server sends no Cache-Control, and on 2026-10-21 the user's browser kept a stale
+  `pages/01-intro/style.css` and showed the stitched index unstyled (serif, no hero) while the
+  headless check passed. `serve.py` sends `no-store`; `site.js` also stamps page-file URLs with
+  `?v=` on localhost. If a user reports an unstyled section, first ask for a hard reload
+  (Ctrl+Shift+R). Pages still must work from `file://` too.
+  Before starting, check whether 8080 is already taken (`Get-NetTCPConnection -LocalPort 8080
+  -State Listen`): on 2026-10-27 a leftover `serve.py` from an earlier session still held 8080
+  but timed out on every request. The auto-mode classifier refuses `Stop-Process` on it, so
+  either start a new one on 8081 or ask the user to run `! Stop-Process -Id <pid>`.
+- Browser automation IS possible since 2026-10-21: `tools/headless-shot.js` drives headless
+  Edge over the DevTools protocol with Node's built-in WebSocket (no npm):
+  `node tools/headless-shot.js <url> <out.png> [waitMs] [jsExpression]` prints console output,
+  4xx/5xx URLs and the expression's JSON value (evaluate inside shadow roots via
+  `document.getElementById('styleshift').shadowRoot`), then saves a 1440x900 viewport
+  screenshot; Read the PNG to see it. Works for `file://` URLs too. Do NOT trust Edge's plain
+  `--headless --screenshot --virtual-time-budget` flag for this site: the pages' rAF loops burn
+  the virtual time before fetch-loaded sections mount, so later sections screenshot blank.
+- The Bash tool's git (Git for Windows under MSYS) refuses the repo with "dubious ownership"
+  (seen 2026-10-21): `E:\Claude_Code\Projects\website` is owned by a different SID than the
+  REDMOND user. Run `git config --global --add safe.directory E:/Claude_Code/Projects/website`
+  once, or run git from the PowerShell tool, which has worked before.

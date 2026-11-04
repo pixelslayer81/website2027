@@ -1,26 +1,70 @@
 ---
 name: styleshift-page-sources
-description: Page 03 (Style Shift) is built from the "342450 Give Photo" app project; where its CSS, copy, photos and the Runway outpaint recipe come from
+description: Page 03 (Style Shift, aka "the photo style site") is built from the "342450 Give Photo" app project; where its CSS, copy, photos and the Runway outpaint recipe come from
 metadata:
   type: reference
 ---
 
-Page 03 (`pages/03-styleshift/`) is a static case study of the real Style Shift app at
-`E:\Claude_Code\Projects\342450 Give Photo` (React frontend + FastAPI backend). Built
-2026-10-12/13 to match a Figma frame and a Design-canvas artboard the user supplied.
+Page 03 (`pages/03-styleshift/`; the user refers to it as "the photo style web site", "the
+library on the website" means its Library section, and "spin up" means open it with
+`Start-Process`) is a static case study of the real Style Shift app at
+`C:\Users\v-andradej\Microsoft\Commercial Brand - 342450 Give Photo` (React frontend + FastAPI
+backend; a OneDrive/SharePoint sync folder, moved there from `E:\Claude_Code\Projects\342450 Give
+Photo` by 2026-10-21). Built 2026-10-12/13 to match a Figma frame and a Design-canvas artboard
+the user supplied.
+
+**Upstream since 2026-10-30:** the page was replaced wholesale by the info-site version at
+`D:\repos\commercial-creative-design\projects\web-style-shift-info\pages\style-shift` (itself a
+fork of this page: grey instead of blue, Press play demo video, step cards replaced by the
+interactive workflow graph from its `pages/workflow/`). Port recipe when it changes again:
+concatenate its `style.css` + `../workflow/workflow.css` + `combined.css` into our `style.css`
+(the loader only loads `style.css`); drop its `site.js`/`header.css` tab header and
+`data-root`; move its trailing inline `<script>` into `sketch.js` (the loader never runs inline
+scripts); the graph lives in `workflow/` (`workflow.js` adapted to `mount(shadowRoot)`, json,
+`exports/` images). Pre-port copy: `versions/pre-app-2026-10-30/`.
+Re-synced 2026-11-03 (workflow only: Global rules / Published graph / Colorist detail panels).
+Fast path: upstream's git HEAD (commit 0296853, 2026-10-30) is what we ported, so
+`git -c safe.directory='*' diff` in that repo shows exactly what changed. `workflow.js` adaptation
+is mechanical: our header + `mount()` (fetch + the modal-click/keydown listeners, keydown uses
+`e.composedPath()[0]`), upstream body with `document.getElementById(` -> `$id(` and
+`document.querySelectorAll(".flow-intro` -> `dom.querySelectorAll(`, guard
+`if (!modal.classList.contains("open")) return;` in `closeDrawer`, then
+`window.StyleShiftWorkflow = { mount }; })();`. CSS: our block between the `===== workflow graph`
+and `===== workflow in the How it works panel` markers is upstream `workflow.css` with
+`body {` -> `body, :host {`. JSON is copied verbatim; any new `exports/...` path it names is
+copied from upstream's project-root `exports/` into `pages/03-styleshift/workflow/exports/`.
+Verify by serving upstream (`python -I -m http.server 8091 -d <upstream>`) and comparing
+headless shots of the same open panel. The sections below
+describe the older, original build.
 
 **Where things come from:**
 - UI strings, colours and type sizes: `frontend/src/styles.css` and `frontend/src/App.tsx`
   in that project (blue `#1a4cf5`, cream `#f5f1e9`, Inter from Google Fonts, 13px radii,
   1.5px borders). The page's `style.css` is a port of them.
-- The library gallery is the app's `AccordionGallery.tsx` with the app's props
-  (expandRatio 0.29, gap 2, radius 4, no labels).
+- The library gallery is a port of the app's `AccordionGallery.tsx` plus the `renderOverlay`
+  and lightbox JSX in `App.tsx` (search "Library:" and "full-size viewer") and the
+  "AccordionGallery (library)" / "full-size image viewer" blocks of `styles.css`. Re-ported
+  2026-10-21 to be identical: `LIB_EXPAND` 0.45 hero, one-row heart · Save · Crop · View ·
+  Delete pills with the staggered fade and `ag-panel--btn-*` size tiers, row-wide
+  `.ag--ready` load fade, click on the open hero opens the viewer (site class `.viewer*`,
+  the app's `.lightbox*` renamed to avoid the Looks lightbox). When the app's library
+  changes, re-diff those blocks rather than restyling by eye.
+- Site-only, user-requested in Oct 2026 sessions and deliberately kept: slivers expand on a
+  660 ms hover dwell (the app expands on click only) and the slide runs 1.1 s. The header
+  keeps the Figma layout (arrow left, title right), unlike the app (title left).
 - Workflow card copy was transcribed from `style_shift_workflow.png` at that project's root;
   it exists nowhere as text. The intro / Looks / Audit paragraphs exist only in the Figma
   frame, not in the project.
-- Photos: `library/*.png` renders (2752x1536) in that project, converted to 1376px JPEGs in
-  `pages/03-styleshift/assets/` by the scratch script in the session; the man-on-the-steps
-  set is the Looks grid, `0001fff100a6.png` is the yellow-jacket library hero.
+- Library photos: since 2026-10-21 the site mirrors the app's whole library. The app's
+  `library/library.json` (newest first; that order IS the gallery order) drives
+  `pages/03-styleshift/assets/build-library.py`, which writes one 1376px JPEG per entry to
+  `assets/library/<id>.jpg` and `library-data.js` (`window.StyleShiftLibrary`: id, name,
+  look, favorite, aspect). Run it again whenever the app's library changes:
+  `python -I pages/03-styleshift/assets/build-library.py "<app>/library" pages/03-styleshift`.
+  Not every render is 16:9 (portrait and square saves exist), so the hero width is set per
+  panel from `aspect`, as the app's `heroPctFor` does. The old hand-picked `lib-NN.jpg`
+  placeholders were deleted that day.
+- Looks grid photos: the man-on-the-steps set (`look-*.jpg`), from the same renders folder.
 - Layout proportions come from a Figma spec JSON the user pasted (4036px-wide design,
   scaled by `--u = pageWidth/4036`) and from the Design artboard
   https://claude.ai/artifact/1zFX5tACYKGf4r374K1KcQ (audit card + how-it-works board,

@@ -1,0 +1,643 @@
+/* Page 08: Excel cell art - the experiential page from Claude_immersive/site
+   (index.html, 2026-03-16), ported as a stitched page under page 07. Its
+   animation is unchanged; only its start guides are pinned to page 07's grid
+   (sketch.js GUIDES) so the two pages' guides run on into each other. */
+:root,
+:host {
+  --u: calc(min(100vw, 1560px) / 1440); /* page 07's unit: the page is 1440 of them wide */
+}
+
+body {
+  background: #fff;
+}
+/* hosted in the stitched site (root index.html): the section stands in for body */
+:host {
+  display: block;
+  background: #fff;
+}
+
+/* the runway the page is pinned in: one screen tall until the click, then
+   taller by the scroll that drives the phases (sketch.js sets its height) */
+.runway {
+  position: relative;
+}
+/* the page: page 07's width, centred, one screen tall (under the site header),
+   pinned while its runway scrolls by */
+.page {
+  position: sticky;
+  top: var(--header-h, 0px);
+  width: calc(1440 * var(--u));
+  height: calc(100vh - var(--header-h, 0px));
+  margin: 0 auto;
+  overflow: hidden;
+  /* outlines down the page's left and right edges, in the guides' green (as
+     page 07's grid edges) */
+  box-shadow: inset 1px 0 #0F4F32, inset -1px 0 #0F4F32;
+}
+
+/* the original page's reset, kept to this page (zero specificity, so every
+   rule below still wins) */
+:where(.page, .page *) { margin: 0; padding: 0; box-sizing: border-box; }
+
+#container {
+  width: 100%; height: 200%;
+  position: relative; overflow: visible;
+}
+
+#gridlines-under {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+#gridlines {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  pointer-events: none;
+}
+
+#gridlines-over {
+  position: absolute;
+  inset: 0;
+  z-index: 22;
+  pointer-events: none;
+}
+
+#exit-green-fill {
+  position: absolute;
+  z-index: 23;
+  pointer-events: none;
+  background: #0F4F32;
+  overflow: hidden;
+}
+
+/* ── Spreadsheet inside green fill ──────────────────────────── */
+#exit-green-fill.active-sheet {
+  pointer-events: auto;
+}
+#sheet-wrap {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+#exit-green-fill.active-sheet #sheet-wrap { opacity: 1; }
+
+#sheet-scroll {
+  flex: 1;
+  overflow: auto;
+  position: relative;
+}
+
+table.sheet {
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+table.sheet th.sh-corner {
+  background: #0a3d26;
+  border: 1px solid #1a6b45;
+  width: 34px; min-width: 34px;
+  height: 20px;
+  position: sticky; top: 0; left: 0;
+  z-index: 3;
+}
+table.sheet th.sh-col {
+  background: #0a3d26;
+  border: 1px solid #1a6b45;
+  min-width: 40px; width: 40px; max-width: 40px; height: 20px;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 10px; font-weight: 600;
+  color: #73D961;
+  text-align: center;
+  position: sticky; top: 0; z-index: 2;
+}
+table.sheet th.sh-col.sh-active {
+  background: #135a38;
+  color: #fff;
+}
+table.sheet th.sh-row {
+  background: #0a3d26;
+  border: 1px solid #1a6b45;
+  width: 34px; min-width: 34px; height: 20px;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 10px; font-weight: 600;
+  color: #73D961;
+  text-align: center;
+  position: sticky; left: 0; z-index: 1;
+}
+table.sheet th.sh-row.sh-active {
+  background: #135a38;
+  color: #fff;
+}
+table.sheet td.sh-cell {
+  border: 1px solid #1a6b45;
+  width: 40px; min-width: 40px; max-width: 40px; height: 20px;
+  padding: 0 3px;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 11px;
+  color: #d0f0d0;
+  background: #0F4F32;
+  cursor: cell;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  position: relative;
+  user-select: none;
+}
+table.sheet td.sh-cell.sh-hl {
+  background: #73D961;
+  border-color: #73D961;
+}
+table.sheet td.sh-cell.sh-anchor {
+  outline: 2px solid #73D961;
+  outline-offset: -2px;
+  z-index: 1;
+}
+table.sheet td.sh-cell.sh-editing {
+  outline: 2px solid #73D961;
+  outline-offset: -2px;
+  z-index: 1;
+}
+.sh-editor {
+  display: none;
+  position: absolute; inset: 0;
+  border: none; outline: none;
+  padding: 0 3px;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 11px;
+  color: #fff;
+  background: rgba(0,0,0,0.25);
+}
+table.sheet td.sh-cell.sh-editing .sh-editor { display: block; }
+
+/* Scrollbar dark theme */
+#sheet-scroll::-webkit-scrollbar { width: 10px; height: 10px; }
+#sheet-scroll::-webkit-scrollbar-track { background: #0a3d26; }
+#sheet-scroll::-webkit-scrollbar-thumb { background: #1a6b45; border-radius: 5px; }
+#sheet-scroll::-webkit-scrollbar-thumb:hover { background: #73D961; }
+#sheet-scroll::-webkit-scrollbar-corner { background: #0a3d26; }
+
+.exit-text {
+  position: absolute;
+  z-index: 21;
+  pointer-events: none;
+  font-family: 'Times New Roman', Georgia, serif;
+  font-size: 80px;
+  font-weight: 900;
+  line-height: 1;
+  color: #000;
+  white-space: nowrap;
+}
+.exit-text .green-word {
+  color: #0F4F32;
+  position: relative;
+}
+#exit-text2 {
+  line-height: 1.2;
+}
+#exit-text3 {
+  line-height: 1.3;
+}
+#ch-text {
+  position: relative;
+}
+#art-text {
+  color: #0F4F32;
+  transition: color 0.6s ease;
+}
+#scribble {
+  position: absolute;
+  left: -3px;
+  top: 20px;
+  width: 71.4px;
+  height: auto;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0;
+  mix-blend-mode: multiply;
+  object-fit: contain;
+}
+
+#beyond-banner {
+  position: absolute;
+  z-index: 4;
+  pointer-events: none;
+  background: #fff; /* white, with the create type in green (was green with light-green type) */
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  padding: 0 20px 14px 5px;
+}
+#beyond-banner span {
+  font-family: 'Times New Roman', serif;
+  font-weight: 400;
+  color: #0e3d28; /* green type on the white banner (was white on green) */
+  white-space: nowrap;
+  line-height: 1;
+}
+#create-text {
+  position: absolute;
+  left: 20px;
+  bottom: 14px;
+  font-family: 'Times New Roman', serif;
+  font-weight: 400;
+  color: #0e3d28; /* page 07's green on the white banner */
+  white-space: nowrap;
+  line-height: 1;
+  transform: translateY(100%);
+  transition: transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  opacity: 0;
+}
+#create-text.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+#beyond-banner .beyond-grid {
+  font-style: italic;
+  color: #73D961;
+}
+
+#photo1 {
+  position: absolute;
+  z-index: 21;
+  object-fit: cover;
+  pointer-events: none;
+  transform-origin: top left;
+}
+
+#white-rect {
+  position: absolute;
+  z-index: 21;
+  pointer-events: none;
+  background: #fff;
+  border: 1px solid #0F4F32;
+  padding: 30px 24px 30px 34px;
+  overflow: hidden;
+}
+.emoji-spring {
+  display: inline-block;
+  animation: emojiSpring 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+@keyframes emojiSpring {
+  0% { transform: scale(0) rotate(-20deg); opacity: 0; }
+  30% { transform: scale(1.6) rotate(10deg); opacity: 1; }
+  50% { transform: scale(0.8) rotate(-5deg); }
+  70% { transform: scale(1.2) rotate(3deg); }
+  85% { transform: scale(0.95) rotate(-1deg); }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+#x-square {
+  position: absolute;
+  z-index: 22;
+  pointer-events: auto;
+  cursor: pointer;
+  background: #0F4F32;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #73D961;
+  font-weight: 300;
+  line-height: 1;
+  transition: background 0.2s ease;
+}
+#x-square:hover {
+  background: #73D961;
+  color: #0F4F32;
+}
+
+.text-line {
+  display: block;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 28px;
+  font-weight: 400;
+  color: #000;
+  line-height: 1.4;
+}
+.text-line span {
+  display: inline-block;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.2s ease;
+  cursor: default;
+}
+.text-line span:hover {
+  transform: translateY(-8px) !important;
+  color: #73D961 !important;
+}
+
+#username {
+  position: absolute;
+  z-index: 21;
+  pointer-events: auto;
+  cursor: default;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 39px;
+  font-weight: 400;
+  color: #000;
+  white-space: nowrap;
+  background: #fff;
+  padding: 10px 17px;
+  border: 2px dashed #0F4F32;
+  overflow: hidden; /* one name wide (sketch.js sets the width): masks the marquee */
+}
+/* the name runs left to right like the CLICK strip: four copies, two identical
+   halves, sliding one half per cycle (bannerScroll: -50% -> 0) so it never seams */
+#username .u-track {
+  display: flex;
+  width: max-content;
+  animation: bannerScroll 8s linear infinite;
+}
+#username .u-copy {
+  display: flex;
+  padding-right: 0.6em; /* the gap between repeats */
+}
+#username span {
+  display: inline-block;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.2s ease;
+}
+#username span:hover {
+  transform: translateY(-12px) !important;
+  color: #73D961 !important;
+}
+
+#click-banner {
+  position: absolute;
+  z-index: 21;
+  overflow: hidden;
+  pointer-events: none;
+}
+#click-banner-inner {
+  display: inline-block;
+  white-space: nowrap;
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  color: #000;
+  letter-spacing: 0.05em;
+  animation: bannerScroll 24s linear infinite;
+}
+@keyframes bannerScroll {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
+}
+
+.click-label {
+  position: absolute;
+  z-index: 21;
+  pointer-events: auto;
+  cursor: pointer;
+  font-family: 'Times New Roman', Georgia, serif;
+  font-size: 23px;
+  font-weight: 600;
+  color: #000;
+  white-space: nowrap;
+  overflow: hidden;
+  display: none;
+  line-height: 1;
+  padding: 0 10px;
+  transition: color 0.2s ease, font-style 0.2s ease, background 0.2s ease, font-weight 0.2s ease;
+}
+#color-swatches {
+  position: absolute;
+  z-index: 21;
+  display: none;
+  flex-direction: row;
+}
+.color-swatch {
+  flex: 1;
+  cursor: pointer;
+  border: 1px solid #1a6b45;
+  box-sizing: border-box;
+  transition: opacity 0.2s ease;
+}
+.color-swatch:hover {
+}
+.color-swatch {
+  position: relative;
+}
+.color-swatch.swatch-active::after {
+  content: attr(data-color);
+  position: absolute;
+  top: 2px;
+  left: 3px;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 8px;
+  color: #fff;
+  line-height: 1;
+}
+.grid-hover {
+  position: absolute;
+  z-index: 21;
+  pointer-events: auto;
+  cursor: pointer;
+  display: none;
+  transition: background 0.2s ease;
+}
+.grid-hover:hover {
+  background: #0F4F32;
+}
+.click-label.erase-active {
+  color: #73D961;
+  font-style: italic;
+  font-weight: 100;
+  background: #0F4F32;
+}
+.click-label:hover {
+  color: #73D961;
+  font-style: italic;
+  font-weight: 100;
+  background: #0F4F32;
+}
+#click-label6 {
+  color: #73D961;
+  font-style: italic;
+  font-weight: 100;
+  font-size: 24px;
+  background: #0F4F32;
+}
+#click-label6:hover {
+  color: #fff;
+}
+#saved-thumbs {
+  position: absolute;
+  z-index: 21;
+  display: none;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 3px;
+  align-items: flex-start;
+  align-content: flex-start;
+  justify-content: flex-start;
+  overflow: hidden;
+}
+.thumb-wrap {
+  position: relative;
+  width: var(--thumb, 100px); /* the column right of the spreadsheet sets it (sketch.js) */
+  height: var(--thumb, 100px);
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.thumb-wrap::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: #0F4F32;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+.thumb-wrap:hover::after {
+  opacity: 1;
+}
+.thumb-wrap.thumb-selected::after {
+  opacity: 1;
+  background: #BEE1B0;
+}
+#saved-thumbs canvas {
+  border: 1px solid #1a6b45;
+  /* the save script sizes each canvas 100px inline; they fit the column instead */
+  width: var(--thumb, 100px) !important;
+  height: var(--thumb, 100px) !important;
+}
+#thumb-overlays {
+  position: absolute;
+  inset: 0;
+  z-index: 24;
+  pointer-events: none;
+}
+.overlay-frame {
+  position: absolute;
+  pointer-events: auto;
+  cursor: grab;
+  transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.overlay-frame canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+  border: 8px solid #fff;
+  border-top-width: 38px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+}
+.overlay-close {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  width: 21px;
+  height: 21px;
+  background: #0F4F32;
+  border: 1px solid #0F4F32;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  pointer-events: auto;
+  font-size: 12px;
+  font-family: sans-serif;
+  color: #73D961;
+  line-height: 1;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+.overlay-close:hover,
+.overlay-btn:hover {
+  background: #fff;
+  color: #000;
+  border-color: #000;
+}
+.overlay-btn {
+  position: absolute;
+  top: 8px;
+  width: 21px;
+  height: 21px;
+  background: #0F4F32;
+  border: 1px solid #0F4F32;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  pointer-events: auto;
+  font-size: 12px;
+  font-family: sans-serif;
+  color: #73D961;
+  line-height: 1;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.overlay-comment {
+  position: absolute;
+  top: 8px;
+  left: 40px;
+  right: 65px;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 12px;
+  font-style: italic;
+  color: #0F4F32;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+  line-height: 21px;
+}
+.chart-img {
+  position: absolute;
+  z-index: 23;
+  pointer-events: none;
+  width: 250px;
+  height: auto;
+  border: none;
+  box-shadow: none;
+}
+
+#start-box1 {
+  position: absolute;
+  z-index: 21;
+  background: #0F4F32;
+  width: 25px;
+  height: calc(16.3 * var(--u));
+  pointer-events: auto;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+#start-box1:hover {
+  background: #73D961;
+}
+#start-box2 {
+  position: absolute;
+  z-index: 21;
+  background: #fff;
+  border: 1px solid #0F4F32;
+  width: 181px;
+  height: calc(16.3 * var(--u));
+  pointer-events: none;
+  overflow: hidden;
+  margin-left: 0px;
+}
+#start-box2-inner {
+  display: inline-block;
+  white-space: nowrap;
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  color: #000;
+  letter-spacing: 0.05em;
+  line-height: calc(16.3 * var(--u));
+  animation: startBox2Scroll 24s linear infinite;
+}
+@keyframes startBox2Scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.overlay-expand {
+  right: 35px;
+  font-size: 15px;
+}
+.overlay-trash {
+  right: 8px;
+  font-size: 14px;
+}

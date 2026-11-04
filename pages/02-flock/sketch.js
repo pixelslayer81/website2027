@@ -210,7 +210,7 @@ const CONFIG = {
 
 let accentRgb = "214, 58, 58";
 let pencilRgb = "52, 52, 58";
-let bgColor = "#f3efe7"; // the page background (--bg); halos use it so they vanish into the page
+let bgColor = "#fcf9f4"; // the page background (--bg); halos use it so they vanish into the page
 let nextBoidId = 1;
 
 // Weights used when lanes are ordered: only the lane-following force and
@@ -229,7 +229,7 @@ let ctxBack; // the main (input) canvas context; `ctx` is swapped per draw item
 const cursor = { x: -100, y: -100, inside: false };
 /** @type {{x:number,y:number,heading:number}[]} head first */
 let followers = [];
-let copyEl = null; // the DOM copy block whose letters the spheres can push around
+let copyEls = []; // the DOM copy blocks whose letters the spheres can push around
 /** @type {{el: HTMLElement, x: number, y: number, w: number, h: number, ox: number, oy: number}[]} */
 let letters = []; // one entry per character span: rest box in container coords + current offset
 let width = 0;
@@ -242,6 +242,10 @@ let listeners = [];
 /** @typedef {{points: Pt[], endedAt: number|null, pointerId: number, dashes?: Pt[][]}} Stroke */
 /** @type {Stroke|null} */
 let stroke = null;
+let input = null; // the element taking pointer input: the canvas, or mount opts.input
+let scrollMode = false; // mount opts.scroll: strokes and flocks are stuck to the scrolling page
+let scrollOff = 0; // page y of the layer's top at the current frame (scroll mode)
+let lastStrokeEnd = 0;
 /** @type {Stroke[]} */
 let fadingStrokes = [];
 /** @type {Flock[]} */
@@ -1655,17 +1659,19 @@ function splitLetters(root) {
 
 /** Measure each letter's rest box (transforms removed) in container coordinates. */
 function measureCopy() {
-  if (!copyEl) return;
-  splitLetters(copyEl);
-  const spans = Array.from(copyEl.querySelectorAll(".ch"));
+  if (!copyEls.length) return;
+  for (const el of copyEls) splitLetters(el);
+  const spans = copyEls.flatMap((el) => Array.from(el.querySelectorAll(".ch")));
   for (const s of spans) s.style.transform = "none";
   const c = container.getBoundingClientRect();
+  // the drawing works in page coordinates when it scrolls with the page (opts.scroll)
+  const top = scrollMode ? -window.scrollY : c.top;
   const [w0, w1] = CONFIG.typeWeight;
   letters = spans.map((el, i) => {
     const r = el.getBoundingClientRect();
     // Keep a letter's weight across re-measures so resizing does not reshuffle them.
     const weight = letters[i] ? letters[i].weight : w0 + Math.random() * (w1 - w0);
-    return { el, x: r.left - c.left, y: r.top - c.top, w: r.width, h: r.height, ox: 0, oy: 0, weight };
+    return { el, x: r.left - c.left, y: r.top - top, w: r.width, h: r.height, ox: 0, oy: 0, weight };
   });
   for (const s of spans) s.style.transform = "";
 }
@@ -1772,8 +1778,23 @@ function frame(now) {
 
   // Clear to transparent each frame (the page's white shows through), so
   // the grain erosion below only affects the marks, not a painted background.
-  ctx.clearRect(0, 0, width, height);
-  ctxFront.clearRect(0, 0, width, height);
+  // On a page that scrolls (mount opts.scroll) everything lives in page
+  // coordinates. The layer is absolutely positioned, so it scrolls natively
+  // with the page (no lag behind the scroll); each frame it is moved back to
+  // straddle the window (its extra height is overscan, above and below, so a
+  // fast scroll does not show its edge) and draws that slice of the page.
+  if (scrollMode) {
+    const over = Math.max(0, (height - window.innerHeight) / 2);
+    scrollOff = Math.round(window.scrollY - over);
+    container.style.transform = `translate3d(0, ${scrollOff}px, 0)`;
+  } else {
+    scrollOff = 0;
+  }
+  for (const c of [ctx, ctxFront]) {
+    c.setTransform(1, 0, 0, 1, 0, 0);
+    c.clearRect(0, 0, c.canvas.width, c.canvas.height);
+    c.setTransform(dpr, 0, 0, dpr, 0, -scrollOff * dpr);
+  }
 
   for (const f of flocks) f.step(now, dt);
   updateCopy(now, dt);
@@ -1798,14 +1819,24 @@ function frame(now) {
 
 function toLocal(e) {
   const r = canvas.getBoundingClientRect();
-  return { x: e.clientX - r.left, y: e.clientY - r.top };
+  // page coordinates when the drawing scrolls with the page (opts.scroll):
+  // the canvas's top sits at page y scrollOff
+  return { x: e.clientX - r.left, y: e.clientY - r.top + (scrollMode ? scrollOff : 0) };
 }
 
 function onPointerDown(e) {
   // Right button is the intended input; left/touch is the fallback.
   if (e.button !== 2 && e.button !== 0) return;
+  // As a background layer (mount opts.input), presses on the page's own
+  // controls are theirs, not a stroke.
+  if (input !== canvas) {
+    const t = e.composedPath()[0];
+    if (t && t.closest && t.closest("a, button, input, textarea, select, label, [contenteditable]")) return;
+  }
   e.preventDefault();
-  canvas.setPointerCapture(e.pointerId);
+  // Capture only when the canvas is the input: capturing from a page root
+  // retargets the following click and breaks the page's buttons.
+  if (input === canvas) canvas.setPointerCapture(e.pointerId);
   stroke = { points: [toLocal(e)], endedAt: null, pointerId: e.pointerId, seed: Math.random() * 100 };
 }
 
@@ -1823,6 +1854,7 @@ function onPointerMove(e) {
 function onPointerUp(e) {
   if (!stroke || e.pointerId !== stroke.pointerId) return;
   const now = performance.now();
+  lastStrokeEnd = now;
   stroke.endedAt = now;
   stroke.dashes = buildDashes(stroke.points);
   fadingStrokes.push(stroke);
@@ -1861,11 +1893,22 @@ function on(target, type, fn, opts) {
 
 // ---------------------------------------------------------------- api
 
-function mount(el) {
+/**
+ * mount(el[, opts]): el holds the two canvases (and optionally a .copy block
+ * whose letters the shapes push). opts.input: an element (e.g. document) to
+ * take drawing input from instead of the canvas, for hosting the sketch as a
+ * background layer behind a page's content (the About page does).
+ * opts.scroll: el is an absolutely positioned layer (in a clip box the size of
+ * the page), taller than the window for overscan; the sketch keeps it over the
+ * window and draws in page coordinates, so the drawing scrolls with the page.
+ * opts.copy: elements whose letters the shapes shove (default: el's .copy).
+ */
+function mount(el, opts = {}) {
   container = el;
   canvas = el.querySelector("canvas:not(.page__canvas--front)");
   canvasFront = el.querySelector(".page__canvas--front");
-  copyEl = el.querySelector(".copy");
+  // opts.copy: elements whose letters the shapes push (default: el's .copy block)
+  copyEls = opts.copy ? Array.from(opts.copy) : [el.querySelector(".copy")].filter(Boolean);
   ctxBack = canvas.getContext("2d");
   ctxFront = canvasFront.getContext("2d");
   ctx = ctxBack;
@@ -1879,16 +1922,34 @@ function mount(el) {
   if (bg) bgColor = bg;
   grainPattern = makeGrain();
 
+  input = opts.input || canvas;
+  scrollMode = !!opts.scroll; // before resize(): measureCopy needs it
   resize();
   on(window, "resize", resize);
+  // the copy moves as fonts and images arrive: measure its letters again then
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (container) measureCopy(); });
+  on(window, "load", measureCopy);
   // Window-level: on Windows the menu fires on mouse-up, which can land
   // outside the canvas when a right-drag ends past the edge.
-  on(window, "contextmenu", (e) => e.preventDefault());
-  on(canvas, "pointerdown", onPointerDown);
-  on(canvas, "pointermove", onPointerMove);
-  on(canvas, "pointerup", onPointerUp);
-  on(canvas, "pointercancel", onPointerUp);
-  on(canvas, "pointerleave", () => { cursor.inside = false; });
+  // Only over this section: in the stitched site the rest of the page keeps its menu.
+  if (input === canvas) {
+    on(window, "contextmenu", (e) => { if (e.composedPath().includes(container)) e.preventDefault(); });
+    on(canvas, "pointerdown", onPointerDown);
+    on(canvas, "pointermove", onPointerMove);
+    on(canvas, "pointerup", onPointerUp);
+    on(canvas, "pointercancel", onPointerUp);
+    on(canvas, "pointerleave", () => { cursor.inside = false; });
+  } else {
+    // background layer: strokes start anywhere on the input; moves and the
+    // release are heard on the window (no pointer capture, see onPointerDown);
+    // the menu is only blocked for a right-drag that just drew
+    on(window, "contextmenu", (e) => { if (stroke || performance.now() - lastStrokeEnd < 400) e.preventDefault(); });
+    on(input, "pointerdown", onPointerDown);
+    on(window, "pointermove", onPointerMove);
+    on(window, "pointerup", onPointerUp);
+    on(window, "pointercancel", onPointerUp);
+    on(document.documentElement, "pointerleave", () => { cursor.inside = false; });
+  }
   on(window, "keydown", onKeyDown);
 
   rafId = requestAnimationFrame(frame);

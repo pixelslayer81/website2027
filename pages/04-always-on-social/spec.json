@@ -1,0 +1,64 @@
+{
+  "_note": "Design spec the user supplied on 2026-10-21; style.css maps every value here through --u (= page width / 1440). Images in the gallery are not supplied yet (null), so the cards show their ghost text.",
+  "page": {
+    "id": "always-on-social",
+    "title": "Always On Social",
+    "width": 1440,
+    "height": 2350,
+    "background": "#2a2a2a",
+    "padding": { "top": 92, "right": 95, "bottom": 0, "left": 108 }
+  },
+  "tokens": {
+    "colors": {
+      "background": "#2a2a2a",
+      "text": "#f3f0ea",
+      "textStrong": "#ffffff",
+      "textBody": "#d9d6cf",
+      "textMuted": "#9a9893",
+      "textSubtle": "#8e8c88",
+      "rule": "#5c5b58",
+      "outlineStroke": "#e6e3dc",
+      "card": "#ffffff",
+      "cardGhostText": "#f0efef",
+      "cardDarkText": "#262626",
+      "appSurface": "#faf9f6",
+      "appBorder": "#e3e0da",
+      "appText": "#1f1f1f",
+      "appMuted": "#6b6964",
+      "appButton": "#262626",
+      "cardGlowPink": "rgba(240,196,212,0.55)",
+      "cardGlowBlue": "rgba(222,226,246,0.45)"
+    },
+    "gradients": {
+      "whatsNext": "linear-gradient(90deg, #c95fc0 0%, #e2833f 38%, #4fae6a 66%, #3d8ae0 100%)",
+      "cardSoft": "radial-gradient(circle at 88% 92%, rgba(240,196,212,0.55), transparent 45%), radial-gradient(circle at 10% 15%, rgba(222,226,246,0.45), transparent 42%), #ffffff"
+    },
+    "fonts": { "family": "Inter", "fallback": "system-ui, sans-serif" },
+    "type": {
+      "display": { "size": 131, "weight": 900, "lineHeight": 0.86, "letterSpacing": "-0.045em", "transform": "uppercase" },
+      "subtitle": { "size": 25, "weight": 200, "letterSpacing": "0.01em", "transform": "uppercase" },
+      "sectionNumber": { "size": 104, "weight": 300, "lineHeight": 0.8, "style": "outline", "strokeWidth": 1.4 },
+      "body": { "size": 12, "weight": 400, "lineHeight": 1.42 },
+      "statement": { "size": 54, "weight": 800, "lineHeight": 0.98, "letterSpacing": "-0.035em" },
+      "marquee": { "size": 31, "weight": 800, "lineHeight": 1, "letterSpacing": "-0.02em" },
+      "stepNumber": { "size": 25, "weight": 700 },
+      "stepTitle": { "size": 16, "weight": 700 },
+      "stepBody": { "size": 16, "weight": 300, "lineHeight": 1.4 },
+      "closing": { "size": 29, "weight": 300, "lineHeight": 1.05 }
+    },
+    "radius": { "card": 3, "appCard": 4, "input": 6, "textarea": 10, "toggleRow": 8, "button": 23 }
+  },
+  "sections": [
+    { "id": "header", "frame": { "x": 108, "y": 92 }, "title": "ALWAYS ON SOCIAL", "subtitle": "POWERED BY TOUCHSTONE" },
+    { "id": "intro", "frame": { "x": 108, "y": 258, "w": 1237 }, "number": "02" },
+    { "id": "gallery", "frame": { "x": 108, "y": 485, "w": 1170, "h": 564 }, "grid": { "columns": [279, 319, 274, 274], "rows": [276, 276], "gap": { "row": 12, "column": 8 } },
+      "items": "card-1 (c1 r1), card-2 (c1 r2), card-3 (c2 r1-2), card-feature (c3-4 r1: We feel / good about / what's next [gradient] / M365 Copilot, padding 62x46), card-5 (c3 r2), card-6 (c4 r2)" },
+    { "id": "rule-1", "frame": { "x": 53, "y": 1101, "w": 1292, "h": 1 } },
+    { "id": "statement", "frame": { "x": 108, "y": 1138, "w": 1250 } },
+    { "id": "rule-2", "frame": { "x": 53, "y": 1347, "w": 1292, "h": 1 } },
+    { "id": "try-me", "frame": { "x": 123, "y": 1390 }, "gap": 10, "pattern": "outline outline solid, repeated" },
+    { "id": "demo", "frame": { "x": 123, "y": 1459 }, "gap": 19,
+      "left": { "type": "appCard", "w": 462, "h": 847, "padding": { "top": 80, "right": 56, "bottom": 66, "left": 56 }, "progress": 0.16 },
+      "right": { "type": "steps", "rowHeight": 80, "columns": [56, 251, "1fr"], "steps": 8, "then": "closingText" } }
+  ]
+}

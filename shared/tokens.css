@@ -1,6 +1,6 @@
 /* Design tokens shared by every page. Change brand values here only. */
 :root {
-  --bg: #f3efe7; /* cream paper; page 01 set this and every page matches it */
+  --bg: #fcf9f4; /* warm white paper; page 01 set this and every page matches it (was #f3efe7 until 2026-10-22) */
   --accent: #d63a3a;
   --accent-rgb: 214, 58, 58; /* same red, for rgba() in canvas/CSS */
   --pencil-rgb: 52, 52, 58; /* graphite, for pencil-style canvas marks */

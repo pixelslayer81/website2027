@@ -1,0 +1,249 @@
+{
+  "page": {
+    "id": "azure-retexture",
+    "title": "Azure Re-Textureing",
+    "width": 1440,
+    "height": 3222,
+    "background": "#000000"
+  },
+  "tokens": {
+    "colors": {
+      "background": "#000000",
+      "text": "#ffffff",
+      "textSoft": "#e6e6e6",
+      "body": "#d6d6d6",
+      "rule": "#4a4a4a",
+      "heroBg": "#e2e2e2",
+      "panel": "#070707",
+      "panelBorder": "#1a1a1a",
+      "node": "#141414",
+      "nodeBorder": "#262626",
+      "nodeLabel": "#3a3a3a",
+      "wireTeal": "#2f8f9a",
+      "wireGreen": "#7fc27a"
+    },
+    "fonts": {
+      "display": { "family": "Archivo", "stretch": "125%", "axes": "wdth 62..125, wght 100..900" },
+      "sans": { "family": "Inter", "weights": [200, 300, 400, 500, 600, 700, 800] },
+      "mono": { "family": "Space Mono", "weights": [400] },
+      "source": "https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Inter:wght@200;300;400;500;600;700;800&family=Space+Mono&display=swap"
+    },
+    "type": {
+      "titleSolid":   { "font": "display", "size": 86, "weight": 900, "lineHeight": 1, "letterSpacing": "-0.035em" },
+      "titleOutline": { "font": "display", "size": 86, "weight": 700, "fill": "transparent", "stroke": { "width": 1.6, "color": "#ffffff" } },
+      "subtitle":     { "font": "sans", "size": 30, "weight": 200 },
+      "number":       { "font": "sans", "size": 32, "weight": 500 },
+      "label":        { "font": "sans", "size": 16, "weight": 800, "letterSpacing": "0.06em" },
+      "body":         { "font": "sans", "size": 12, "weight": 400, "lineHeight": 1.35 },
+      "bodySmall":    { "font": "sans", "size": 11.5, "weight": 400, "lineHeight": 1.35 },
+      "sectionXL":    { "font": "sans", "size": 124, "weight": 300, "lineHeight": 1, "letterSpacing": "-0.02em" },
+      "sectionL":     { "font": "sans", "size": 112, "weight": 300, "lineHeight": 1, "letterSpacing": "-0.02em" },
+      "sectionM":     { "font": "sans", "size": 76, "weight": 300, "lineHeight": 1, "letterSpacing": "-0.02em" },
+      "mono":         { "font": "mono", "size": 22, "letterSpacing": "0.32em" }
+    },
+    "shapeRender": {
+      "description": "Every 3D-style shape is a radial gradient (light → mid at 55% → dark), highlight at 32% 28%. Pills use a vertical linear gradient. Rings use a border of 24% of size in the mid color.",
+      "kinds": {
+        "circle":   { "radius": "50%" },
+        "square":   { "radius": "18%", "rotate": 14, "scale": 0.86 },
+        "triangle": { "clipPath": "polygon(50% 4%, 97% 92%, 3% 92%)" },
+        "hex":      { "clipPath": "polygon(25% 5%, 75% 5%, 100% 50%, 75% 95%, 25% 95%, 0% 50%)" },
+        "star":     { "clipPath": "polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)" },
+        "ring":     { "radius": "50%", "borderRatio": 0.24, "fill": "none" },
+        "pill":     { "heightRatio": 0.38, "radius": 999, "rotate": -35 }
+      }
+    }
+  },
+  "sections": [
+    {
+      "id": "header",
+      "type": "header",
+      "title": {
+        "frame": { "x": 82, "y": 128 },
+        "parts": [
+          { "text": "AZURE", "style": "titleSolid" },
+          { "text": "RE-TEXTUREING", "style": "titleOutline" }
+        ],
+        "gap": "1 space"
+      },
+      "subtitle": {
+        "frame": { "x": 84, "y": 232 },
+        "gap": 18,
+        "parts": [
+          { "text": "with Runway", "style": "subtitle", "color": "textSoft" },
+          { "text": "04", "style": "number", "color": "text" }
+        ]
+      }
+    },
+    {
+      "id": "hero",
+      "type": "media",
+      "frame": { "x": 72, "y": 289, "w": 1292, "h": 724 },
+      "fill": "heroBg",
+      "src": null,
+      "placeholder": {
+        "type": "svg",
+        "viewBox": "0 0 1292 724",
+        "polygons": [
+          { "points": "418,105 878,304 492,598 485,560", "fill": "linear-gradient(135deg, #d9d9d9, #f0f0f0)" },
+          { "points": "878,304 892,330 505,610 492,598", "fill": "#ececec" },
+          { "points": "418,105 878,304 485,560", "fill": "linear-gradient(135deg, #bfbfbf 0%, #d4d4d4 55%, #e8e8e8 100%)" }
+        ]
+      },
+      "overlayText": { "value": ".*........./..>>...../", "style": "mono", "color": "#ffffff", "position": { "left": 70, "top": 632 } }
+    },
+    {
+      "id": "about",
+      "type": "twoColumn",
+      "columns": [
+        {
+          "frame": { "x": 72, "y": 1036, "w": 630 },
+          "label": "WHAT IS IT:",
+          "bodyOffsetY": 48,
+          "body": "EXPORTER is a Figma-to-Adobe Express bridge. Select a frame in Figma, press Send to Adobe Express, and seconds later it appears on your Express canvas — the artwork as a pixel-perfect image, and every text layer live and editable, matching the original font, weight, size, spacing, and alignment exactly. No exporting files, no copy-and-paste: design in Figma, finish and localize in Express."
+        },
+        {
+          "frame": { "x": 741, "y": 1036, "w": 630 },
+          "label": "WHY ME BUILT IT:",
+          "bodyOffsetY": 48,
+          "body": "Designers build in Figma, but the people who actually customize and ship those designs — swapping headlines, localizing copy, resizing for a channel — live in Adobe Express. Getting work between the two meant re-exporting flat images or rebuilding layouts by hand, and every handoff drifted a little from the original. We made EXPORTER so the design arrives in Express exactly as it was approved, with the type still editable, so designers stay in control of the system and everyone else can safely make it their own."
+        }
+      ],
+      "labelStyle": "label",
+      "bodyStyle": "bodySmall"
+    },
+    { "id": "rule", "type": "rule", "frame": { "x": 72, "y": 1244, "w": 1309, "h": 1 }, "color": "rule" },
+    {
+      "id": "compositions",
+      "type": "gallerySection",
+      "title": { "value": "COMPOSITIONS", "style": "sectionL", "frame": { "x": 70, "y": 1316 } },
+      "body": {
+        "frame": { "x": 861, "y": 1328, "w": 498 },
+        "style": "body",
+        "value": "Designers build in Figma, but the people who actually customize and ship those designs — swapping headlines, localizing copy, resizing for a channel — live in Adobe Express. Getting work between the two meant re-exporting flat images or rebuilding layouts by hand, and every handoff drifted a little from the original. We made EXPORTER so the design arrives in Express exactly as it was approved, with the type still editable, so designers stay in control of the system and everyone else can safely make it their own."
+      },
+      "grid": {
+        "frame": { "x": 72, "y": 1450, "w": 1292 },
+        "columns": 5,
+        "rows": 4,
+        "gap": 13,
+        "cellHeight": 133,
+        "columnStyles": [
+          { "name": "royal", "bg": "#0a17c4", "ghost": "rgba(255,255,255,0.28)" },
+          { "name": "navy",  "bg": "#120f74", "ghost": "rgba(255,255,255,0.24)" },
+          { "name": "teal",  "bg": "#1c3a38", "ghost": "rgba(255,255,255,0.22)" },
+          { "name": "white", "bg": "#f3f3f3", "ghost": "rgba(0,0,0,0.16)" },
+          { "name": "gray",  "bg": "#d8dbdb", "ghost": "rgba(0,0,0,0.16)" }
+        ],
+        "cellLayers": {
+          "ghostPills": {
+            "size": { "w": 74, "h": 22 },
+            "rotate": -28,
+            "border": "1px solid {column.ghost}",
+            "positions": [[-10, 104], [62, 66], [134, 28], [206, -10]]
+          },
+          "accents": [
+            { "kind": "pill",   "uses": "a", "frame": { "x": 66,  "y": 22, "w": 46, "h": 15 }, "rotate": -28 },
+            { "kind": "pill",   "uses": "b", "frame": { "x": 38,  "y": 82, "w": 70, "h": 22 }, "rotate": -28 },
+            { "kind": "sphere", "uses": "b", "frame": { "x": 160, "y": 38, "w": 24, "h": 24 } }
+          ]
+        },
+        "rowAccents": [
+          null,
+          { "name": "cyan",   "a": ["#ffffff", "#e8f3ff", "#a9c4e0"], "b": ["#b9fbff", "#2fd5d5", "#0e8c9c"] },
+          { "name": "magenta","a": ["#ffffff", "#f2f2ff", "#b9b9d8"], "b": ["#ffb3ff", "#d23fd8", "#7a1590"] },
+          { "name": "lime",   "a": ["#efffd0", "#c8f07a", "#7fb03a"], "b": ["#bffff0", "#4fe0c0", "#1d8f7c"] }
+        ],
+        "images": null
+      }
+    },
+    {
+      "id": "shapes",
+      "type": "gallerySection",
+      "image": {
+        "frame": { "x": 72, "y": 2071, "w": 766, "h": 431 },
+        "fill": "#ffffff",
+        "src": null,
+        "padding": { "x": 26, "y": 12 },
+        "grid": {
+          "columns": 10,
+          "rows": 6,
+          "rowHeight": 67,
+          "shapeSize": 50,
+          "kindSequence": ["triangle", "star", "circle", "hex", "ring", "pill", "square", "ring", "triangle", "hex"],
+          "kindRule": "kind = kindSequence[(column + row * 3) % 10]",
+          "rowPalettes": [
+            { "name": "white",  "colors": ["#ffffff", "#e4e4e8", "#b9bac2"] },
+            { "name": "blue",   "colors": ["#8fbaff", "#1f6fe0", "#0b3aa0"] },
+            { "name": "cyan",   "colors": ["#c4f8ff", "#38d0e6", "#0f8fb0"] },
+            { "name": "mint",   "colors": ["#dcfff2", "#6fe0bd", "#2a9c80"] },
+            { "name": "royal",  "colors": ["#7f9bff", "#1a36d8", "#0a1490"] },
+            { "name": "purple", "colors": ["#d1b0ff", "#7a3fe0", "#3d1495"] }
+          ]
+        }
+      },
+      "title": { "value": "SHAPES", "style": "sectionXL", "frame": { "x": 878, "y": 2072 } },
+      "body": {
+        "frame": { "x": 876, "y": 2230, "w": 466 },
+        "style": "body",
+        "value": "Designers build in Figma, but the people who actually customize and ship those designs — swapping headlines, localizing copy, resizing for a channel — live in Adobe Express. Getting work between the two meant re-exporting flat images or rebuilding layouts by hand, and every handoff drifted a little from the original. We made EXPORTER so the design arrives in Express exactly as it was approved, with the type still editable, so designers stay in control of the system and everyone else can safely make it their own."
+      }
+    },
+    {
+      "id": "workflow",
+      "type": "workflowSection",
+      "title": { "value": "WORKFLOW", "style": "sectionM", "frame": { "x": 70, "y": 2540 } },
+      "body": {
+        "frame": { "x": 72, "y": 2648, "w": 556 },
+        "style": "body",
+        "value": "Designers build in Figma, but the people who actually customize and ship those designs — swapping headlines, localizing copy, resizing for a channel — live in Adobe Express. Getting work between the two meant re-exporting flat images or rebuilding layouts by hand, and every handoff drifted a little from the original. We made EXPORTER so the design arrives in Express exactly as it was approved, with the type still editable, so designers stay in control of the system and everyone else can safely make it their own. Designers build in Figma, but the people who actually customize and ship those designs — swapping headlines, localizing copy, resizing for a channel — live in Adobe Express. Getting work between the two meant re-exporting flat images or rebuilding layouts by hand, and every handoff drifted a little from the original. We made EXPORTER so the design arrives in Express exactly as it was approved, with the type still editable, so designers stay in control of the system and everyone else can safely make it their own."
+      },
+      "graph": {
+        "frame": { "x": 646, "y": 2527, "w": 794, "h": 655 },
+        "fill": "panel",
+        "borderTop": { "width": 1, "color": "panelBorder" },
+        "src": null,
+        "node": {
+          "size": { "w": 62, "h": 76 },
+          "fill": "node",
+          "border": { "width": 1, "color": "nodeBorder" },
+          "radius": 3,
+          "labelBar": { "w": "60%", "h": 6, "margin": [6, 0, 0, 6], "fill": "nodeLabel", "radius": 2 },
+          "thumb": { "margin": 6, "h": 44, "fill": "#ffffff", "shapeSize": 26 }
+        },
+        "rowKinds": ["pill", "triangle", "square", "hex", "circle", "star"],
+        "rowSpacing": 92,
+        "columns": [
+          { "id": "source", "x": 14,  "firstY": 34, "palette": ["#f2f2f2", "#bdbdbd", "#7a7a7a"] },
+          { "id": "violet", "x": 196, "firstY": 70, "palette": ["#f0c0ff", "#a24de0", "#4b1a8f"] },
+          { "id": "purple", "x": 360, "firstY": 70, "palette": ["#c9b5ff", "#6a3fe0", "#2a1690"] },
+          { "id": "green",  "x": 520, "firstY": 70, "palette": ["#efffd0", "#9fd07a", "#3c6a3a"] },
+          { "id": "blue",   "x": 680, "firstY": 70, "palette": ["#a9c0ff", "#2a46d8", "#0a1680"] }
+        ],
+        "swatches": [
+          { "x": 64,  "y": 8, "w": 30, "h": 34, "fill": "#141414" },
+          { "x": 126, "y": 8, "w": 36, "h": 34, "fill": "linear-gradient(90deg, #6a5cff, #c9a3ff)", "feeds": "violet" },
+          { "x": 176, "y": 8, "w": 30, "h": 34, "fill": "#141414" },
+          { "x": 450, "y": 8, "w": 36, "h": 34, "fill": "linear-gradient(135deg, #e9ffd8, #4f7a52)", "feeds": "green" },
+          { "x": 596, "y": 8, "w": 36, "h": 34, "fill": "linear-gradient(135deg, #2a3aff, #0a0f60)", "feeds": "blue" }
+        ],
+        "wires": [
+          {
+            "id": "source-to-variants",
+            "color": "wireTeal",
+            "width": 1,
+            "opacity": 0.55,
+            "rule": "For each row r and each column c ≥ 1: cubic bezier from source node right edge (76, 34 + r*92 + 38) to column c node left edge (c.x, 70 + r*92 + 38), control points at the horizontal midpoint."
+          },
+          {
+            "id": "swatch-to-column",
+            "color": "wireGreen",
+            "width": 1,
+            "opacity": 0.45,
+            "rule": "For each swatch with 'feeds' and each row r: cubic bezier from swatch bottom-center (swatchX + w/2, 42) to that column's node (c.x, 70 + r*92 + 20); control points (startX, y - 40) and (c.x - 40, y)."
+          }
+        ]
+      }
+    }
+  ]
+}

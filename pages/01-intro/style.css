@@ -1,5 +1,6 @@
 /* Page 01: full-bleed photo hero with the red headline, then the project index. */
-:root {
+:root,
+:host {
   --cream: var(--bg); /* the shared background token; page 01 is the reference for it */
   --rule: 1px;
   /* This page follows the mockup's heavy geometric sans rather than the
@@ -13,7 +14,11 @@
   --desc-width: 30.9vw; /* 460 / 1489 */
   --row-font: 2.85vw; /* ~42px at 1489 */
   --row-pad: 0.42vw;
-  --hero-ratio: 1492 / 670; /* the reference hero frame; the photo is width-fitted and top-aligned in it */
+  --hero-ratio: 1492 / 670; /* the reference hero frame; the video is width-fitted in it */
+  /* where the frame sits on the (taller) video, 0 = top, 1 = bottom. The
+     glitch (sketch.js) and the splash (pages/00-splash) read it too, so all
+     three stay registered. 0.3 frames the square loop forehead to chin. */
+  --hero-focus-y: 0.3;
 }
 
 body {
@@ -21,6 +26,13 @@ body {
   font-family: var(--font-display);
   color: var(--accent);
   overflow-x: hidden;
+}
+/* hosted in the stitched site (root index.html): the section stands in for body */
+:host {
+  display: block;
+  background: var(--cream);
+  font-family: var(--font-display);
+  color: var(--accent);
 }
 
 .page {
@@ -53,9 +65,21 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* Reference crop: the frame starts at the top of the hair and loses the
-     bottom of the photo (the hand), with the face centred horizontally. */
-  object-position: 50% 0%;
+  /* the crop: --hero-focus-y down the video, the face centred horizontally */
+  object-position: 50% calc(var(--hero-focus-y) * 100%);
+}
+
+/* Scroll parallax (sketch.js PARALLAX): the photo and its glitch canvas share
+   one offset so they stay registered; the title gets its own. */
+.hero__photo,
+.hero__glitch {
+  transform: translate3d(0, var(--px-img, 0px), 0);
+  will-change: transform;
+}
+
+.hero__title {
+  transform: translate3d(0, var(--px-type, 0px), 0);
+  will-change: transform;
 }
 
 .hero__glitch {
@@ -264,7 +288,8 @@ body {
 /* ---------------------------------------------------------- responsive */
 
 @media (max-width: 900px) {
-  :root {
+  :root,
+  :host {
     --row-font: 24px;
     --row-pad: 6px;
     --num-width: 72px;
@@ -279,7 +304,8 @@ body {
 }
 
 @media (max-width: 520px) {
-  :root {
+  :root,
+  :host {
     --row-font: 20px;
     --num-width: 56px;
     --index-indent: var(--gutter);

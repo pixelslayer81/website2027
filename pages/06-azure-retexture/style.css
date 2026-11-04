@@ -1,0 +1,500 @@
+/* Page 06: Azure Visual Expansion. Re-laid out 2026-11-03 from the user's
+   reference boards (was the absolutely-placed "Azure AI Expansion" spec
+   build, spec.json): now a flowing black page. Every size is in --u
+   (= page width / 1440), designed against 1440 wide. */
+:root,
+:host {
+  --bg: #000000;
+  --text: #ffffff;
+  --text-soft: #e6e6e6;
+  --title: #f3efe7; /* the warm off-white of the reference title */
+  --body: #d6d6d6;
+  --rule: #4a4a4a;
+  --hero-bg: #e2e2e2;
+  --display: "Archivo", "Arial Black", sans-serif;
+  --sans: "Inter", system-ui, sans-serif;
+  --mono: "Space Mono", ui-monospace, monospace;
+  --u: calc(min(100vw, 1560px) / 1440);
+  --gutter: calc(72 * var(--u));
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+}
+/* hosted in the stitched site (root index.html): the section stands in for body */
+:host {
+  display: block;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+}
+
+.page {
+  position: relative;
+  width: calc(1440 * var(--u));
+  margin: 0 auto;
+  padding: calc(118 * var(--u)) var(--gutter) 0;
+  overflow: hidden;
+}
+.page h1,
+.page h2,
+.page h3,
+.page p,
+.page figure {
+  margin: 0;
+}
+
+/* ── header ── */
+.head {
+  position: relative;
+  padding-left: calc(10 * var(--u));
+}
+.title {
+  font-family: var(--display);
+  font-stretch: 85%;
+  font-size: calc(96 * var(--u));
+  line-height: 1;
+  letter-spacing: -0.035em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.title-solid {
+  display: inline-block; /* so it can rise */
+  font-weight: 900;
+  color: var(--title);
+}
+.title-outline {
+  font-weight: 800;
+  color: transparent;
+  -webkit-text-stroke: calc(0.4 * var(--u)) var(--text);
+  letter-spacing: 0.015em;
+}
+.subtitle {
+  display: flex;
+  align-items: baseline;
+  gap: calc(18 * var(--u));
+  margin-top: calc(-4 * var(--u));
+  line-height: 1;
+}
+.subtitle-text {
+  font-size: calc(36 * var(--u));
+  font-weight: 200;
+  color: var(--text-soft);
+}
+.subtitle-num {
+  font-size: calc(34 * var(--u));
+  font-weight: 500;
+  color: var(--title);
+}
+
+/* ── header animation (sketch.js TITLE): AZURE rises from behind the hero,
+   which paints over it; then VISUAL EXPANSION and the subtitle type on ── */
+.title-solid {
+  transform: translateY(calc(175 * var(--u))); /* down behind the hero */
+  transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.title.is-in .title-solid {
+  transform: translateY(0);
+  transition-delay: 100ms;
+}
+.ch {
+  opacity: 0;
+}
+.is-typed .ch {
+  opacity: 1;
+  transition: opacity 0s var(--d, 0ms);
+}
+@media (prefers-reduced-motion: reduce) {
+  .title-solid { transform: none; transition: none; }
+  .ch { opacity: 1; }
+}
+
+/* ── hero ── */
+.hero {
+  position: relative;
+  z-index: 1; /* paints over the rising AZURE */
+  margin-top: calc(20 * var(--u));
+  aspect-ratio: 1292 / 724;
+  background: var(--hero-bg);
+  overflow: hidden;
+  outline: 1px solid var(--text);
+}
+.hero-video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ── type ── */
+.label {
+  font-size: calc(16 * var(--u));
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--text);
+}
+.body {
+  font-size: calc(14 * var(--u));
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--body);
+}
+.lead {
+  font-size: calc(24 * var(--u));
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+.section-title {
+  font-weight: 300;
+  line-height: 0.82;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+/* ── what / why ── */
+.about {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: calc(40 * var(--u));
+  margin-top: calc(28 * var(--u));
+}
+.about .body {
+  margin-top: calc(28 * var(--u));
+  max-width: calc(620 * var(--u));
+}
+
+.rule {
+  height: 1px;
+  margin: calc(56 * var(--u)) 0 0;
+  border: 0;
+  background: var(--rule);
+}
+
+/* ── big-title blocks: title on one side, copy on the other ── */
+.block {
+  margin-top: calc(56 * var(--u));
+}
+.block__head {
+  display: flex;
+  align-items: flex-start;
+  gap: calc(28 * var(--u));
+}
+.block__copy {
+  flex: 1;
+  min-width: 0;
+}
+.block--shapes .block__copy .body {
+  margin-top: calc(14 * var(--u));
+}
+.section-title--shapes {
+  font-size: calc(132 * var(--u));
+}
+/* compositions (reference 2026-11-03): copy left (about 40% wide), the title
+   right-aligned beside it, scaled down so the two share a row */
+.block--comp .block__head {
+  display: grid;
+  grid-template-columns: calc(540 * var(--u)) 1fr;
+  align-items: start;
+  column-gap: calc(40 * var(--u));
+}
+.section-title--comp {
+  justify-self: end;
+  margin-top: calc(6 * var(--u));
+  font-size: calc(94 * var(--u)); /* 98 ran ~17 past the right margin */
+}
+/* workflow (reference 2026-11-03): two even columns, the title left, the
+   copy right, centred against each other */
+.block--flow .block__head {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: start; /* title's top lines up with the copy's top */
+  column-gap: calc(40 * var(--u));
+}
+.section-title--flow {
+  font-size: calc(108 * var(--u));
+}
+.block--flow .block__copy {
+  line-height: 1.5;
+}
+
+/* shapes sheet: the full-width grid of the shape library */
+.shapes-grid {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-top: calc(28 * var(--u));
+}
+
+/* ── colorways: a proportional swatch bar ── */
+.colorways {
+  margin-top: calc(40 * var(--u));
+}
+.swatches {
+  display: flex;
+  height: calc(52 * var(--u));
+  margin-top: calc(14 * var(--u));
+}
+.swatches span {
+  flex: var(--w) 1 0;
+  background: var(--c);
+}
+
+/* ── compositions grid (5 x 4, colour-coded columns; built by sketch.js) ── */
+.comp-grid {
+  margin-top: calc(32 * var(--u));
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: calc(6 * var(--u)); /* the Assets in Action gap (.action__row), 2026-11-03; was 13 */
+}
+.comp-grid .comp-cell {
+  aspect-ratio: 16 / 9; /* frames fill the freed space at the renders' own ratio */
+}
+/* each cell is a render from its column's colour; the fill shows while it loads */
+.comp-cell {
+  position: relative;
+  overflow: hidden;
+  padding: 0;
+  border: 0;
+  background: var(--cell-bg);
+  cursor: zoom-in;
+}
+.comp-cell img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* rollover: a blue tint over the render */
+.comp-cell::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(31, 111, 224, 0.38);
+  opacity: 0;
+  transition: opacity 180ms ease;
+  pointer-events: none;
+}
+.comp-cell:hover::after,
+.comp-cell:focus-visible::after {
+  opacity: 1;
+}
+.comp-cell:focus-visible {
+  outline: 2px solid #1f6fe0;
+  outline-offset: 2px;
+}
+
+/* ── workflow: the Runway graph, full width ── */
+.graph-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-top: calc(40 * var(--u));
+}
+
+/* ── assets in action: justified rows. A tile's flex-grow and aspect ratio
+   are both its --ar, so every tile in a row lands at the same height ── */
+.action {
+  margin-top: calc(48 * var(--u));
+}
+.action__title {
+  font-size: calc(34 * var(--u));
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+.action__row {
+  display: flex;
+  gap: calc(6 * var(--u));
+  margin-top: calc(6 * var(--u));
+}
+.action__title + .action__row {
+  margin-top: calc(28 * var(--u));
+}
+.action__item {
+  flex: var(--ar) 1 0;
+  min-width: 0;
+  aspect-ratio: var(--ar);
+  overflow: hidden;
+  background: #111;
+}
+.action__item img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ── results: kept at the page's end; title, then four items under rules ── */
+.results {
+  --results-heading: #ffffff;
+  --results-body: #c9c9c9;
+  margin-top: calc(80 * var(--u));
+  padding: calc(76 * var(--u)) calc(8 * var(--u)) calc(120 * var(--u));
+  border-top: 1px solid var(--rule);
+}
+.results__title {
+  color: var(--results-heading);
+  font-size: calc(48 * var(--u));
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+}
+.results__items {
+  margin: calc(56 * var(--u)) 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  column-gap: calc(40 * var(--u));
+}
+.results__item {
+  display: flex;
+  flex-direction: column;
+  gap: calc(12 * var(--u));
+}
+.results__item-title {
+  color: var(--results-heading);
+  font-size: calc(26 * var(--u));
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+}
+.results__item-body {
+  color: var(--results-body);
+  font-size: calc(14 * var(--u));
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+/* ── compositions lightbox (the Style Shift looks lightbox): the figure flies
+   from its tile to a large centred 16:9 frame over a dimmed page ── */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+}
+.lightbox[hidden] {
+  display: none;
+}
+.lightbox__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0);
+  transition: background-color 360ms ease;
+}
+.lightbox.is-open .lightbox__backdrop {
+  background: rgba(0, 0, 0, 0.86);
+}
+.lightbox__figure {
+  /* positioned by the script: starts at the tile's rect, flies to centre */
+  position: absolute;
+  margin: 0;
+  overflow: hidden;
+  cursor: zoom-out;
+  transition: width 520ms cubic-bezier(0.22, 1, 0.36, 1), height 520ms cubic-bezier(0.22, 1, 0.36, 1), left 520ms cubic-bezier(0.22, 1, 0.36, 1), top 520ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.lightbox__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* caption in the column's colour, bottom-left of the frame */
+.lightbox__cap {
+  position: absolute;
+  left: 0;
+  bottom: 24px;
+  padding: 14px 22px;
+  background: var(--cap-bg, #111);
+  color: var(--cap-ink, #fff);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 240ms ease 300ms;
+}
+.lightbox__cap span {
+  margin-left: 0.8em;
+  font-weight: 300;
+  opacity: 0.75;
+}
+.lightbox.is-open .lightbox__cap {
+  opacity: 1;
+}
+/* previous / next: blue circles on the screen edges; count and close */
+.lightbox__nav,
+.lightbox__close {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 240ms ease 300ms, background-color 150ms ease;
+}
+.lightbox__nav {
+  top: 50%;
+  transform: translateY(-50%);
+  background: #1f6fe0;
+}
+.lightbox__nav:hover {
+  background: #1a36d8;
+}
+.lightbox__nav svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: #fff;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.lightbox__nav--prev { left: 14px; }
+.lightbox__nav--next { right: 14px; }
+.lightbox__close {
+  top: 16px;
+  right: 18px;
+  border: 1.5px solid #fff;
+  background: transparent;
+  color: #fff;
+  font-size: 26px;
+  line-height: 1;
+}
+.lightbox__close:hover {
+  background: #fff;
+  color: #000;
+}
+.lightbox__count {
+  position: absolute;
+  left: 50%;
+  bottom: 14px;
+  transform: translateX(-50%);
+  color: #fff;
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  opacity: 0;
+  transition: opacity 240ms ease 300ms;
+}
+.lightbox.is-open .lightbox__nav,
+.lightbox.is-open .lightbox__close,
+.lightbox.is-open .lightbox__count {
+  opacity: 1;
+}
+

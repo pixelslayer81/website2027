@@ -7,3 +7,9 @@
 Thumbs.db
 desktop.ini
 .DS_Store
+
+# Headless-browser profiles left by tools/headless-shot.js (GBs of cache)
+tools/cdp-profile-*/
+
+# Figma source files (over GitHub's 100 MB limit)
+*.fig

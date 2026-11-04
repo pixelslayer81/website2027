@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Joseph Andrade &mdash; About</title>
+  <meta name="description" content="Joseph Andrade, creative technologist: 3D, motion and AI workflows.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../shared/reset.css">
+  <link rel="stylesheet" href="../../shared/tokens.css">
+  <link rel="stylesheet" href="../../site.css"> <!-- the site header, as on the main page -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- the main site's header bar, as on the main page: the brand goes to the
+       site's splash landing; CT Index goes straight to the CT index, already
+       formed (#intro skips the splash, whose transition only runs from the
+       splash itself); MD Index is not wired yet; About is this page -->
+  <header class="site-header" id="site-header">
+    <a class="site-brand" href="../../index.html">Pixelslayer.tv</a>
+    <nav class="site-nav" aria-label="Indexes">
+      <a class="site-index" href="../../index.html#intro" id="site-index">Creative Tech</a>
+      <button type="button" class="site-index" id="site-index-md">Motion Design</button>
+      <a class="site-index" href="index.html" id="site-about" aria-current="page">About</a>
+    </nav>
+  </header>
+  <!-- Built from the "Résumé (Dark index A)" spec the user supplied 2026-10-26:
+       a dark index page, the same width as every other page (1440 units). The
+       01-05 / Contact links scroll to their sections (sketch.js). -->
+  <!-- the AI Task Force section's interactive drawing (pages/02-flock/sketch.js), stuck to the
+       page (a window-tall layer, plus overscan, that scrolls natively with the page),
+       behind everything: hold a click and drag anywhere outside a link to draw a
+       line, and a flock follows it -->
+  <div class="flock-clip" aria-hidden="true"><div class="flock-bg" id="flock-bg">
+    <canvas class="page__canvas"></canvas>
+    <canvas class="page__canvas page__canvas--front"></canvas>
+  </div></div>
+
+  <main class="page" id="page">
+
+    <!-- ============================================================ top bar -->
+    <!-- header laid out after the user's second reference (2026-10-30): link left and
+         section nav right, the name filling the width, three bracketed labels under
+         it (left / centre / right), then a full-width photo strip -->
+    <header class="bar">
+      <a class="label bar__brand" href="https://pixelslayer.tv">pixelslayer.tv &rarr;</a>
+      <nav class="bar__nav" aria-label="About sections">
+        <a class="label" href="#a01">01</a>
+        <a class="label" href="#a02">02</a>
+        <a class="label" href="#a03">03</a>
+        <a class="label" href="#a04">04</a>
+        <a class="label" href="#a05">05</a>
+        <a class="label" href="#contact">Contact</a>
+      </nav>
+    </header>
+
+    <!-- ============================================================ hero -->
+    <!-- after the user's reference (2026-10-30): a heavy black name in two staggered
+         lines (ANDRADE indented, a red asterisk), the tags in the gap left of ANDRADE,
+         then the full-width photo -->
+    <div class="hero">
+      <p class="hero__hint">Hold left click to draw</p>
+      <h1 class="name" id="name"><span class="name__first">Joseph</span> <span class="name__last">Andrade<span class="name__star">*</span></span></h1>
+      <div class="hero__tags label">
+        <span>[Creative Technologist]</span>
+        <span>[3D, Motion &amp; AI Workflows]</span>
+        <span>[20+ yrs]</span>
+        <span class="hero__est">Est. 2005 &mdash; Palm Springs, CA</span>
+      </div>
+      <!-- temp: the Style Shift stand-in portrait; replace with a photo of Joseph -->
+      <figure class="strip">
+        <img src="assets/portrait.jpg" alt="Portrait (placeholder)">
+      </figure>
+    </div>
+
+    <!-- ============================================================ ticker -->
+    <div class="ticker" aria-label="Clients and studios: Microsoft, Apple, AT&amp;T, Google, Ford, BMW, Amazon, Los York, Brand New School, Mirada, Prologue, Stardust">
+      <div class="ticker__track" id="ticker-track" aria-hidden="true"></div>
+    </div>
+
+    <!-- ============================================================ 01 profile -->
+    <section class="index" id="a01">
+      <div class="index__head"><span class="index__num">01</span></div>
+      <div class="index__body">
+        <h2 class="index__title">Profile</h2>
+        <p class="lead">Creative technologist with 20+ years in 3D, motion design and visual storytelling, now building the tools and workflows that bring AI into professional creative production. I bridge the gap between traditional craft (Cinema 4D, Maya, After Effects, Redshift) and AI-native methods (Claude, Runway, generative workflows), so the results meet the same bar as hand-built work.</p>
+        <p class="body">As a member of Microsoft&rsquo;s AI Task Force, I design and build working tools, not just concepts: web apps, plugins and interactive experiences that put AI under the hood so designers and non-designers produce brand-correct work faster and at scale. My eye for motion, lighting and composition decides what is worth generating, and where human judgment has to stay in charge.</p>
+      </div>
+    </section>
+
+    <!-- ============================================================ 02 experience (white band) -->
+    <section class="index index--paper" id="a02">
+      <div class="index__head"><span class="index__num">02</span></div>
+      <div class="index__body">
+        <h2 class="index__title">Experience</h2>
+        <article class="job">
+          <div class="job__top"><h3 class="job__title">Microsoft</h3><span class="label">12/2022 &ndash; Present</span></div>
+          <p class="label job__role">Creative Technologist, AI Task Force &middot; Senior 3D/2D Motion Design (Contractor)</p>
+          <p class="small job__desc">Member of the AI Task Force, a cross-functional team that finds, builds and scales AI tools to improve creative productivity, with brand standards and responsible use built in. Also develops brand-aligned 3D and motion assets that keep one visual language across Microsoft platforms, social, web and digital.</p>
+        </article>
+        <article class="job">
+          <div class="job__top"><h3 class="job__title">Apple</h3><span class="label">06/2020 &ndash; 09/2022</span></div>
+          <p class="label job__role">Senior 3D/2D Motion Design (Contractor)</p>
+          <p class="small job__desc">Created high-impact 3D visuals and product-reveal content for Apple marketing campaigns. Partnered with creative teams on concepts and animation for major launches, including iMac, MacBook Pro and keynote presentations.</p>
+        </article>
+        <article class="job">
+          <div class="job__top"><h3 class="job__title">AT&amp;T</h3><span class="label">12/2017 &ndash; 05/2020</span></div>
+          <p class="label job__role">Senior 3D/2D Motion Design (Contractor)</p>
+          <p class="small job__desc">Created and animated 3D and 2D visuals for broadcast and digital campaigns, raising audience engagement and brand visibility across platforms.</p>
+        </article>
+        <article class="job">
+          <div class="job__top"><h3 class="job__title">3D/2D Generalist</h3><span class="label">2005 &ndash; 2017</span></div>
+          <p class="label job__role">Senior 3D/2D Motion Design (Contractor)</p>
+          <p class="small job__desc">Produced commercials, music videos and campaign launches with leading studios, including Los York, Brand New School, Mirada, Logan, Wolf &amp; Crow, Prologue, Stardust and Woodshop. Clients included Google, Apple, Microsoft, Ford, BMW, Amazon and AT&amp;T.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============================================================ 03 core capabilities -->
+    <section class="index" id="a03">
+      <div class="index__head"><span class="index__num">03</span></div>
+      <div class="index__body">
+        <h2 class="index__title">Core capabilities</h2>
+        <div class="cap"><span class="label cap__code">03.A</span><h3 class="cap__title">AI + traditional hybrid workflows</h3><p class="small muted">Pairing hand-built 3D assets with AI exploration (Runway node workflows, Claude-driven generation) to expand visual systems without losing their design language.</p></div>
+        <div class="cap"><span class="label cap__code">03.B</span><h3 class="cap__title">Creative tools and prototypes</h3><p class="small muted">Designing and building working web apps, Figma plugins and browser-based interactive experiences in HTML, CSS and JavaScript.</p></div>
+        <div class="cap"><span class="label cap__code">03.C</span><h3 class="cap__title">Brand systems as data</h3><p class="small muted">Turning brand voice, visual identity and compliance rules into structured inputs, so on-brand output is the default.</p></div>
+        <div class="cap"><span class="label cap__code">03.D</span><h3 class="cap__title">Quality and governance</h3><p class="small muted">Automated fidelity audits that check AI output against the source and flag what changed.</p></div>
+        <div class="cap"><span class="label cap__code">03.E</span><h3 class="cap__title">3D and motion craft</h3><p class="small muted">Concept, modelling, lighting, look development, animation and compositing for product launches, broadcast and digital campaigns.</p></div>
+      </div>
+    </section>
+
+    <!-- ============================================================ 04 skills & education -->
+    <section class="index" id="a04">
+      <div class="index__head"><span class="index__num">04</span></div>
+      <div class="index__body">
+        <h2 class="index__title">Skills &amp; education</h2>
+        <div class="skill"><span class="skill__area">AI and generative</span><span class="small muted">Claude, Claude Code, Runway (node workflows), AI image and video generation, prompt and system design, AI-hybrid pipelines, automated output audits</span></div>
+        <div class="skill"><span class="skill__area">3D</span><span class="small muted">Cinema 4D, Maya, Redshift, Arnold</span></div>
+        <div class="skill"><span class="skill__area">Motion and post</span><span class="small muted">After Effects, Premiere Pro, Photoshop</span></div>
+        <div class="skill"><span class="skill__area">Design and prototyping</span><span class="small muted">Figma (plugins), Adobe Express, HTML, CSS, JavaScript, interactive and scroll-driven web experiences</span></div>
+        <div class="edu">
+          <div class="edu__top"><h3 class="cap__title">Otis College of Art and Design</h3><span class="label edu__dates">2000 &ndash; 2004</span></div>
+          <p class="small muted">Digital Media, with a focus on combining typography, graphics, filmmaking and animation for visual storytelling.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ 05 strengths -->
+    <section class="index" id="a05">
+      <div class="index__head"><span class="index__num">05</span></div>
+      <div class="index__body strengths">
+        <h2 class="index__title">Strengths</h2>
+        <div class="strength"><h3 class="strength__title">Bridge builder</h3><p class="small muted">Translates between artists, engineers and stakeholders, turning a creative goal into a working tool or workflow.</p></div>
+        <div class="strength"><h3 class="strength__title">Craft first</h3><p class="small muted">20 years of 3D and motion sets the quality bar that AI output has to meet before it ships.</p></div>
+        <div class="strength"><h3 class="strength__title">Hands-on</h3><p class="small muted">Prototypes and ships working tools rather than handing off concepts.</p></div>
+        <div class="strength"><h3 class="strength__title">Always evolving</h3><p class="small muted">An early adopter of new tools and methods who brings teams along, from render engines to generative AI.</p></div>
+      </div>
+    </section>
+
+    <!-- ============================================================ contact (coral band) -->
+    <footer class="contact" id="contact">
+      <h2 class="contact__title"><span>GET IN</span><span>TOUCH*</span></h2>
+      <div class="contact__links">
+        <a href="tel:3102421708">T: 310.242.1708</a>
+        <a href="mailto:joseph@pixelslayer.tv">E: joseph@pixelslayer.tv</a>
+        <a href="https://pixelslayer.tv">pixelslayer.tv</a>
+        <a href="https://instagram.com/pixelslayer.tv">Instagram: @pixelslayer.tv</a>
+      </div>
+      <div class="contact__bar label"><span>Joseph Andrade</span><span>Creative Technologist &middot; 3D, Motion &amp; AI Workflows</span></div>
+    </footer>
+
+  </main>
+
+  <script src="../02-flock/sketch.js"></script>
+  <script src="sketch.js"></script>
+  <script>
+    window.AboutSketch.mount(document.getElementById("page"));
+    // the small red labels get shoved by the flock's shapes, as page 02's copy does
+    window.FlockSketch.mount(document.getElementById("flock-bg"), {
+      input: document,
+      scroll: true,
+      copy: document.querySelectorAll(".hero__tags span:not(.hero__est), .job__role, .cap__code, .edu__dates"),
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Always On Social</title>
+  <meta name="description" content="Always On Social: the AI Task Force's brand-compliant social content platform. Product update in, publish-ready posts out.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../shared/reset.css">
+  <link rel="stylesheet" href="../../shared/tokens.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="page" id="page">
+
+    <!-- ============================================================ header (spec y 92) -->
+    <header class="head">
+      <h1 class="display draw">Always On Social</h1>
+      <p class="subtitle">Powered by Touchstone</p>
+    </header>
+
+    <!-- ============================================================ intro (spec y 258) -->
+    <section class="intro">
+      <div class="intro-num outline">02</div>
+      <div class="intro-copy">
+        <p><strong>What is it:</strong> Always On Social is the AI Task Force&rsquo;s brand-compliant social content platform for Microsoft Brands. It transforms simple product updates into publish-ready social content, ensuring brand voice, approved messaging, and compliance standards are applied automatically. The platform generates both copy and creative assets across key social channels and formats, helping teams produce high-quality content faster and with greater consistency. Built on a shared brand knowledge system, it enables scalable content creation, automated brand validation, and rapid onboarding of additional brands. The result is a streamlined workflow where on-brand content is the default, reducing manual review while increasing speed, accuracy, and consistency across campaigns.</p>
+      </div>
+      <!-- second block: full width under the 02 row, flush with the page's left edge -->
+      <div class="intro-why">
+        <p><strong>Why we made it:</strong> Always On Social removes the bottleneck between a fast-moving social content calendar and brand compliance. Microsoft 365 Copilot releases require frequent social updates, but creating them traditionally depended on multiple specialists and manual reviews, making the process slow, inconsistent, and difficult to scale. The platform solves this by embedding brand standards directly into the content creation process. Brand voice, naming conventions, messaging guardrails, visual identity, and template requirements are codified as structured data, ensuring every post is brand-correct by default. Teams can generate approved copy and creative assets in minutes across all required social formats, reducing review overhead while increasing speed, consistency, and output. By making compliance a built-in property of the workflow rather than a final checkpoint, Always On Social enables the team to keep pace with product innovation and maintain a continuous, high-quality social presence.</p>
+      </div>
+    </section>
+
+    <!-- ============================================================ gallery (spec y 485, 1170 x 564)
+         Six white post cards on the spec's 4-column grid; images are not
+         supplied yet, so each card shows its ghost text. -->
+    <section class="gallery" aria-label="Example posts">
+      <!-- the cards' type ("We have" ghosts, the "We feel good about what's next / M365 Copilot"
+           feature) was removed 2026-10-30; its styles (.card-ghost, .feature-line) are still in style.css -->
+      <article class="card card--1"></article>
+      <article class="card card--2"></article>
+      <article class="card card--3"></article>
+      <article class="card card--feature"></article>
+      <article class="card card--5"></article>
+      <article class="card card--6"></article>
+    </section>
+
+    <!-- ============================================================ statement between two rules (spec y 1101 / 1138 / 1347) -->
+    <hr class="rule rule--1">
+    <p class="statement draw" id="statement">Product update. Brand Brain. Skill. Copy options. Visual template. Optional motion. Social-ready output</p>
+    <hr class="rule rule--2">
+
+    <!-- ============================================================ PRESSPLAY marquee (spec y 1390; was TRY ME) -->
+    <div class="marquee" id="marquee" title="Press play: open the app large">
+      <div class="marquee-track" id="marquee-track">
+        <span class="marquee-item outline">Pressplay.</span>
+        <span class="marquee-item outline">Pressplay.</span>
+        <span class="marquee-item">Pressplay.</span>
+        <span class="marquee-item outline">Pressplay.</span>
+        <span class="marquee-item outline">Pressplay.</span>
+        <span class="marquee-item">Pressplay.</span>
+        <span class="marquee-item outline">Pressplay.</span>
+        <span class="marquee-item outline">Pressplay.</span>
+      </div>
+    </div>
+
+    <!-- ============================================================ demo: app card + steps (spec y 1459) -->
+    <section class="demo">
+      <!-- the app card is the supplied render (assets/app-card.png, 2612 x 4792,
+           the same 462 : 847 proportion as the spec's card) -->
+      <div class="app-wrap">
+        <img class="app" src="assets/app-card.png" alt="The Always On Social app: format and brand pickers, a message box, an I-already-have-copy switch and a Generate button.">
+        <!-- Press play, centred on the card: opens it large (same viewer as the marquee) -->
+        <button class="app-play" id="btn-play" title="Press play: open the app large">Press play <span class="app-play__tri" aria-hidden="true"></span></button>
+      </div>
+
+      <div class="steps">
+        <ol class="steps-list">
+          <li class="step"><span class="step-num">01</span><span class="step-title">Enter your content</span><span class="step-body">Choose a brand and social format, then enter a short feature update.</span></li>
+          <li class="step"><span class="step-num">02</span><span class="step-title">Generate captions</span><span class="step-body">The system creates three on-brand caption options that follow naming, messaging, and compliance guidelines.</span></li>
+          <li class="step"><span class="step-num">03</span><span class="step-title">Choose a caption</span><span class="step-body">Review the options, regenerate if needed, and select the one you want to use.</span></li>
+          <li class="step"><span class="step-num">04</span><span class="step-title">Select a design</span><span class="step-body">Brand-approved colors, typography, and styling are applied automatically.</span></li>
+          <li class="step"><span class="step-num">05</span><span class="step-title">Add animation</span><span class="step-body">Select an approved motion style or keep the post static.</span></li>
+          <li class="step"><span class="step-num">06</span><span class="step-title">Export your assets</span><span class="step-body">Choose your desired formats and file type, then export your finished posts.</span></li>
+          <li class="step"><span class="step-num">07</span><span class="step-title"></span><span class="step-body">Your brand-compliant social assets are ready to share across channels.</span></li>
+          <li class="step"><span class="step-num">08</span><span class="step-title"></span><span class="step-body">More Templets, Brands and formats to come.</span></li>
+        </ol>
+        <p class="closing">Always on social is powered by Touchstone Always on social is powered by Touchstone Always on social is powered by Touchstone Always on social is powerjdjrtsjsed by Touchstone Always on social is powrsjrsjsjjsrjjjjered b Touchstone</p>
+      </div>
+    </section>
+
+    <!-- ============================================================ Touchstone system
+         Heading in the display style, then the system still with a Press play
+         button; the click opens the viewer with the demo video. -->
+    <section class="system" aria-label="Touchstone system">
+      <h2 class="display system-title" id="system-title">Touchstone System</h2>
+      <div class="system-media">
+        <img class="system-still" src="assets/touchstone-system.png" alt="The Touchstone system: a fanned stack of type specimen sheets.">
+        <button class="app-play app-play--tl" id="btn-system-play" title="Play the Touchstone demo">Press play <span class="app-play__tri" aria-hidden="true"></span></button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Press play viewer: the app card expands over the dimmed page, like the
+       Style Shift expansion. The image is a stand-in for a video. Click the
+       picture, the backdrop, "Click to close" or press Esc to close. -->
+  <div class="viewer" id="viewer" role="dialog" aria-label="Always On Social walkthrough" hidden>
+    <div class="viewer-stage">
+      <img id="viewer-img" src="assets/app-card.png" alt="The Always On Social app, large.">
+      <!-- the demo video: loaded only when Press play is pressed -->
+      <video id="viewer-video" controls playsinline preload="none" hidden></video>
+      <button class="viewer-hint" id="viewer-close">Click to close</button>
+    </div>
+    <div class="viewer-label" id="viewer-label">Always On Social</div>
+  </div>
+
+  <script src="sketch.js"></script>
+  <script>
+    window.AlwaysOnSocialSketch.mount(document.getElementById("page"));
+  </script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+{
+  "_note": "Design spec the user supplied on 2026-10-21; style.css places every layer at its frame coordinate (spec x - 76, spec y - 64) through --u (= page width / 1440). The video block has no file yet (src null) and shows its label on red; CLICK TO PLAY scrolls to it. The spec's heading read 'WHY ME BUILT IT:' and was set as 'WHY WE BUILT IT:'.",
+  "page": { "id": "exporter", "title": "Exporter", "width": 1440, "height": 1346, "background": "#ffffff",
+    "frame": { "x": 76, "y": 64, "w": 1300, "h": 1206, "border": { "width": 1, "color": "red" } } },
+  "tokens": {
+    "colors": { "red": "#d45243", "redDark": "#a83a2d", "redText": "#bd4a3e", "redMuted": "#c4574b", "redSoft": "#b4675e", "panel": "#fdf3f0", "previewGrid": "#f3d6d1", "white": "#ffffff", "text": "#333333", "textDark": "#222222" },
+    "fonts": { "sans": "Inter", "condensed": "Anton", "mono": "Space Mono" },
+    "type": {
+      "display": { "size": 100, "weight": 900, "lineHeight": 1, "letterSpacing": "-0.025em" },
+      "tagNumber": { "size": 21, "weight": 500 }, "tagLabel": { "size": 26, "weight": 200, "letterSpacing": "0.12em" },
+      "heading": { "size": 18, "weight": 800, "letterSpacing": "0.06em" }, "body": { "size": 10.5, "weight": 400, "lineHeight": 1.3 },
+      "cta": { "size": 23, "weight": 300 }, "videoLabel": { "size": 21.5, "weight": 300 }, "tagline": { "size": 30, "weight": 400, "letterSpacing": "-0.01em" },
+      "panelTitle": { "font": "condensed", "size": 64, "lineHeight": 0.95, "letterSpacing": "-0.015em" },
+      "panelLabel": { "size": 12.5, "weight": 700, "letterSpacing": "0.04em" }, "panelBody": { "size": 10.5, "lineHeight": 1.45 },
+      "button": { "size": 12, "weight": 700, "letterSpacing": "0.05em" }, "mono": { "font": "mono", "size": 8.5, "letterSpacing": "0.2em" }
+    },
+    "grid": { "cellWidth": 32.5, "cellHeight": 32, "lineWidth": 1, "lineColor": "red" }
+  },
+  "layers": {
+    "grid-top": [76, 64, 1300, 192], "grid-bottom": [76, 977, 909, 257],
+    "lines": { "h": [[76, 256, 1300], [76, 323, 1300], [76, 433, 1300], [985, 466, 391], [985, 606, 391]], "v": [[985, 256, 1014], [1018, 256, 1014], [1342, 256, 1014]] },
+    "title": [107, 96, 585, 97], "tag-number": [1342, 64, 34, 32], "tag-plugin": [1212, 96, 130, 31],
+    "heading-what": [92, 296], "heading-why": [554, 295], "body-what": [92, 346, 418], "body-why": [554, 343, 420],
+    "cta-play": [640, 433, 378, 33], "video": [76, 466, 909, 511], "bar-bottom": [76, 1234, 909, 36], "tagline": [77, 1234, 254, 35],
+    "plugin-panel": [1019, 607, 323, 663]
+  }
+}

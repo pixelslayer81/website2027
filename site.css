@@ -1,0 +1,136 @@
+/* Hero site shell. Each page renders inside its own shadow root, so this
+   file only owns the host document: scrolling, the section placeholders and
+   the no-server fallback. Nothing here may put transform / contain /
+   will-change on #site or the sections: page 03's lightbox and viewer are
+   position: fixed and must stay viewport-relative. */
+html {
+  --header-h: 56px; /* the fixed site header; sections start below it */
+  scrollbar-gutter: stable;
+  scroll-behavior: auto; /* index links jump, they do not glide */
+  scroll-padding-top: var(--header-h); /* #hash jumps land below the header */
+}
+body {
+  background: var(--bg);
+  overflow-x: hidden; /* 100vw sections run under the scrollbar gutter */
+  height: auto; /* reset.css sets 100%; the stitched page is as tall as its sections */
+  padding-top: var(--header-h);
+}
+
+/* ── site header ── */
+/* light, after the user's mockup (2026-10-30): the page's warm white, dark
+   regular-weight caps, the current page (aria-current) underlined. Was a black
+   bar with white type (#161616). */
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 40; /* under the pages' overlays (lightbox 50, viewers 1000) */
+  height: var(--header-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  background: var(--bg);
+  color: #1b1a19;
+  font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+  font-size: 13px;
+  line-height: 1;
+}
+.site-header a {
+  color: #1b1a19;
+  text-decoration: none;
+}
+.site-brand {
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+/* Creative Tech / Motion Design / About */
+.site-index {
+  display: inline-flex;
+  align-items: center;
+  height: 29px;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  padding: 0;
+  background: transparent;
+  color: #1b1a19;
+  border: 0;
+}
+.site-header a.site-index {
+  color: #1b1a19;
+}
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+button.site-index {
+  font-family: inherit;
+  line-height: 1;
+  cursor: pointer;
+}
+/* the current page: a thin underline */
+.site-index[aria-current="page"] {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 6px;
+}
+/* rollover: the DESIGN red */
+.site-index,
+.site-brand {
+  transition: color 160ms ease;
+}
+.site-index:hover,
+.site-index:focus-visible,
+.site-header a.site-index:hover,
+.site-header a.site-index:focus-visible,
+.site-header a.site-brand:hover,
+.site-header a.site-brand:focus-visible {
+  color: var(--accent);
+  outline: none;
+}
+html {
+  height: auto;
+}
+#site {
+  display: block;
+}
+/* one viewport tall until the page lands, so #hash targets exist on load */
+.site-page {
+  display: block;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+.site-page--ready {
+  min-height: 0;
+}
+
+.site-fallback {
+  max-width: 560px;
+  margin: 10vh auto;
+  padding: 0 var(--gutter);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  line-height: var(--leading);
+  color: var(--ink);
+}
+.site-fallback[hidden] {
+  display: none;
+}
+.site-fallback__note {
+  margin-bottom: 1em;
+}
+.site-fallback code {
+  background: rgba(0, 0, 0, 0.06);
+  padding: 0 0.3em;
+}
+.site-fallback ol {
+  padding-left: 1.4em;
+}
+.site-fallback a {
+  color: var(--accent);
+}

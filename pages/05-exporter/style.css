@@ -1,0 +1,537 @@
+/* Page 05: Exporter. Built from the design spec JSON the user supplied
+   2026-10-21 (kept as spec.json): a 1440 x 1346 white page whose content is a
+   red-lined frame of 1300 x 1206 at (76, 64). Every layer below sits at its
+   spec coordinate minus the frame origin, times --u (= page width / 1440). */
+:root,
+:host {
+  --red: #d45243;
+  --red-dark: #a83a2d;
+  --red-text: #bd4a3e;
+  --red-muted: #c4574b;
+  --red-soft: #b4675e;
+  --panel: #fdf3f0;
+  --preview-grid: #f3d6d1;
+  --white: #ffffff;
+  --text: #333333;
+  --text-dark: #222222;
+  --sans: "Inter", system-ui, sans-serif;
+  --condensed: "Anton", "Impact", sans-serif;
+  --mono: "Space Mono", ui-monospace, monospace;
+  --u: calc(min(100vw, 1560px) / 1440);
+}
+
+body {
+  background: var(--white);
+  color: var(--text);
+  font-family: var(--sans);
+}
+/* hosted in the stitched site (root index.html): the section stands in for body */
+:host {
+  display: block;
+  background: var(--white);
+  color: var(--text);
+  font-family: var(--sans);
+}
+
+button {
+  font-family: var(--sans);
+  cursor: pointer;
+}
+
+.page {
+  max-width: 1560px;
+  margin: 0 auto;
+  /* spec: frame at (76, 64), page 1346 tall -> 76 below the frame */
+  padding: calc(64 * var(--u)) calc(64 * var(--u)) calc(76 * var(--u)) calc(76 * var(--u));
+  /* at least a window tall plus the frame's offset, so the frame can always be
+     scrolled to its resting place at the top (that is where the opening and
+     the typing finish) on any screen height */
+  min-height: calc(100vh + 80 * var(--u));
+}
+
+.frame {
+  --open: 1; /* 0 = collapsed (no copy band), 1 = the full spec layout; the script drives it */
+  --band: calc(290 * var(--u) * var(--open)); /* the copy band's current height (spec 210; +80 for the 14px copy) */
+  position: relative;
+  width: calc(1300 * var(--u));
+  height: calc(996 * var(--u) + var(--band));
+  border: 1px solid var(--red);
+  box-sizing: content-box;
+  overflow: hidden; /* the vertical rules run the full open height; the frame clips them while closed */
+}
+.frame > *,
+.band > *,
+.below > * {
+  position: absolute;
+}
+/* the copy band: frame y 192..482 when open (spec 402; +80 for the 14px copy); its layers are placed from its own top */
+.band {
+  left: 0;
+  top: calc(192 * var(--u));
+  width: calc(1300 * var(--u));
+  height: var(--band);
+  overflow: hidden;
+}
+/* everything under the band: frame y 482..1286 when open; slides with the band */
+.below {
+  left: 0;
+  top: calc(192 * var(--u) + var(--band));
+  width: calc(1300 * var(--u));
+  height: calc(804 * var(--u));
+}
+
+/* ── grids + rules (spec cells 32.5 x 32, 1px red) ── */
+.grid {
+  background-image: linear-gradient(var(--red) 1px, transparent 1px),
+    linear-gradient(90deg, var(--red) 1px, transparent 1px);
+  background-size: calc(32.5 * var(--u)) calc(32 * var(--u));
+  opacity: 0.55;
+}
+.grid--top { left: 0; top: 0; width: calc(1300 * var(--u)); height: calc(192 * var(--u)); }
+.grid--bottom { left: 0; top: calc(511 * var(--u)); width: calc(909 * var(--u)); height: calc(257 * var(--u)); }
+.rule { background: var(--red); }
+.rule--h256 { left: 0; top: calc(192 * var(--u)); width: calc(1300 * var(--u)); height: 1px; }
+.rule--h323 { left: 0; top: calc(67 * var(--u)); width: calc(1300 * var(--u)); height: 1px; }
+.rule--h433 { left: 0; top: calc(257 * var(--u)); /* spec 177; +80 */ width: calc(1300 * var(--u)); height: 1px; }
+.rule--h466 { left: calc(909 * var(--u)); top: 0; width: calc(391 * var(--u)); height: 1px; }
+.rule--h606 { left: calc(909 * var(--u)); top: calc(140 * var(--u)); width: calc(391 * var(--u)); height: 1px; }
+.rule--v985 { left: calc(909 * var(--u)); top: calc(192 * var(--u)); width: 1px; height: calc(1094 * var(--u)); /* 1014 + 80 */ }
+.rule--v1018 { left: calc(942 * var(--u)); top: calc(192 * var(--u)); width: 1px; height: calc(1094 * var(--u)); /* 1014 + 80 */ }
+.rule--v1342 { left: calc(1266 * var(--u)); top: calc(192 * var(--u)); width: 1px; height: calc(1094 * var(--u)); /* 1014 + 80 */ }
+
+/* ── title box: white, 2px red border, hard red shadow 10 / 9 ── */
+.title {
+  left: calc(31 * var(--u));
+  top: calc(32 * var(--u));
+  width: calc(585 * var(--u));
+  height: calc(97 * var(--u));
+  display: flex;
+  align-items: center;
+  padding-left: calc(30 * var(--u));
+  background: var(--white);
+  border: 2px solid var(--red);
+  box-shadow: calc(10 * var(--u)) calc(9 * var(--u)) 0 var(--red);
+  color: var(--red);
+  font-size: calc(100 * var(--u));
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.025em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden; /* the box masks the letters as they rise in */
+}
+/* the letters start below the box and rise into place one after another,
+   E first, once the frame has come into view (.frame.is-in, set by the script) */
+.title .l {
+  display: inline-block;
+  transform: translateY(115%);
+  transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--i, 0) * 120ms); /* slower, wider stagger (2026-10-21) */
+}
+.frame.is-in .title .l {
+  transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .title .l { transform: none; transition: none; }
+}
+.tag {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--red);
+  color: var(--white);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+/* the tags fill whole cells of the top grid (32.5 x 32): 03 is the last cell
+   of the first row, PLUGIN the four cells left of it on the second */
+.tag--number {
+  left: calc(1267.5 * var(--u));
+  top: 0;
+  width: calc(32.5 * var(--u));
+  height: calc(32 * var(--u));
+  font-size: calc(21 * var(--u));
+  font-weight: 500;
+}
+.tag--plugin {
+  left: calc(1137.5 * var(--u));
+  top: calc(32 * var(--u));
+  width: calc(130 * var(--u));
+  height: calc(32 * var(--u));
+  font-size: calc(26 * var(--u));
+  font-weight: 200;
+  letter-spacing: 0.12em;
+}
+
+/* ── copy ── */
+.heading {
+  font-size: calc(18 * var(--u));
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text);
+  white-space: nowrap;
+}
+.heading--what { left: calc(16 * var(--u)); top: calc(40 * var(--u)); }
+.heading--why { left: calc(478 * var(--u)); top: calc(39 * var(--u)); }
+.body {
+  font-size: calc(14 * var(--u)); /* 14px at 1440 (spec 10.5) */
+  font-weight: 400;
+  line-height: 1.3;
+  color: var(--text);
+}
+.body--what { left: calc(16 * var(--u)); top: calc(90 * var(--u)); width: calc(418 * var(--u)); }
+.body--why { left: calc(478 * var(--u)); top: calc(84 * var(--u)); width: calc(420 * var(--u)); line-height: 1.25; } /* kept above the rule at band 257 */
+
+/* ── click to play: text then a red square with a down-left arrow ── */
+.cta {
+  left: calc(564 * var(--u));
+  top: calc(257 * var(--u)); /* spec 177; +80 with the band */
+  width: calc(378 * var(--u));
+  height: calc(33 * var(--u));
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  text-decoration: none;
+  color: var(--text-dark);
+}
+.cta-text {
+  margin-right: calc(10 * var(--u));
+  font-size: calc(23 * var(--u));
+  font-weight: 300;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.cta-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(33 * var(--u));
+  height: calc(33 * var(--u));
+  background: var(--red);
+  transition: background-color 0.15s ease;
+}
+.cta-icon svg {
+  width: calc(22 * var(--u));
+  height: calc(22 * var(--u));
+}
+.cta:hover .cta-icon {
+  background: var(--red-dark);
+}
+
+/* ── video block (a red field with its label until the file arrives) ── */
+.video {
+  left: 0;
+  top: 0;
+  width: calc(909 * var(--u));
+  height: calc(511 * var(--u));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--red);
+  color: var(--white);
+}
+.video-label {
+  font-size: calc(21.5 * var(--u));
+  font-weight: 300;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* ── bottom bar + tagline ── */
+.bar {
+  left: 0;
+  top: calc(768 * var(--u));
+  width: calc(909 * var(--u));
+  height: calc(36 * var(--u));
+  background: var(--red);
+}
+/* the tagline box covers the bar's first eight grid cells exactly (so the bar
+   no longer shows a sliver at its left and bottom), with a 1px red top: with
+   the frame's own border every side is one 1px line. Its words run as a
+   marquee, masked by the box. */
+.tagline {
+  left: 0;
+  top: calc(768 * var(--u));
+  width: calc(260 * var(--u));
+  height: calc(36 * var(--u));
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  border-top: 1px solid var(--red);
+  box-sizing: border-box;
+  background: var(--white);
+  color: var(--red);
+  font-size: calc(30 * var(--u));
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+/* ── plugin panel ── */
+/* "Load. Click. Send." scrolls right to left forever: four copies, two
+   identical halves, sliding one half per cycle so the loop has no seam */
+.marquee {
+  display: flex;
+  flex: none;
+  animation: tagline-marquee 10s linear infinite;
+}
+.marquee__item {
+  padding-left: calc(13 * var(--u)); /* the spec's left inset, now the gap between repeats */
+}
+@keyframes tagline-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee { animation: none; }
+}
+
+.panel {
+  left: calc(943 * var(--u));
+  top: calc(141 * var(--u));
+  width: calc(323 * var(--u));
+  height: calc(663 * var(--u));
+  padding: calc(20 * var(--u)) calc(16 * var(--u)) 0;
+  background: var(--panel);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  overflow: hidden;
+}
+.mono,
+.panel-meta,
+.card-num,
+.preview-dims,
+.preview-caption,
+.status {
+  font-family: var(--mono);
+  font-size: calc(8.5 * var(--u));
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.panel-meta {
+  display: flex;
+  justify-content: space-between;
+  color: var(--red-muted);
+}
+.panel-title {
+  margin-top: calc(6 * var(--u));
+  font-family: var(--condensed);
+  font-size: calc(64 * var(--u));
+  line-height: 0.95;
+  letter-spacing: -0.015em;
+  text-transform: uppercase;
+  color: var(--red);
+}
+.panel-tag {
+  margin-top: calc(10 * var(--u));
+  align-self: flex-start;
+  padding: calc(3 * var(--u)) calc(8 * var(--u));
+  background: var(--red);
+  color: var(--white);
+  font-size: calc(12.5 * var(--u));
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.card {
+  margin-top: calc(14 * var(--u));
+  background: var(--white);
+  border: 1.5px solid var(--red);
+  border-radius: 5px;
+  overflow: hidden;
+}
+.card-head {
+  height: calc(33 * var(--u));
+  padding: 0 calc(12 * var(--u));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1.5px solid var(--red);
+}
+.card-label,
+.option-label {
+  font-size: calc(12.5 * var(--u));
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--red);
+}
+.card-num {
+  font-size: calc(9 * var(--u));
+  color: var(--red-soft);
+}
+.card-body {
+  padding: calc(12 * var(--u)) calc(12 * var(--u)) calc(14 * var(--u));
+}
+.option {
+  display: flex;
+  align-items: center;
+  gap: calc(9 * var(--u));
+}
+.option-dot {
+  width: calc(14 * var(--u));
+  height: calc(14 * var(--u));
+  border-radius: 50%;
+  background: var(--red);
+}
+.option-desc {
+  margin-top: calc(8 * var(--u));
+  font-size: max(10px, calc(10.5 * var(--u)));
+  line-height: 1.45;
+  color: var(--red-text);
+}
+.preview {
+  position: relative;
+  margin-top: calc(12 * var(--u));
+  height: calc(202 * var(--u));
+  background-color: var(--white);
+  background-image: linear-gradient(var(--preview-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--preview-grid) 1px, transparent 1px);
+  background-size: calc(24.5 * var(--u)) calc(24.5 * var(--u));
+  border: 1.5px solid var(--red);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.preview-frame {
+  width: calc(148 * var(--u));
+  height: calc(58 * var(--u));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: calc(4 * var(--u));
+  background: var(--white);
+  border: 1.5px solid var(--red);
+  border-radius: 4px;
+  box-shadow: calc(4 * var(--u)) calc(4 * var(--u)) 0 var(--red);
+}
+.preview-name {
+  font-size: calc(12 * var(--u));
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--red);
+}
+.preview-dims {
+  font-size: calc(10 * var(--u));
+  letter-spacing: 0.1em;
+  color: var(--red-soft);
+}
+.preview-caption {
+  position: absolute;
+  left: calc(10 * var(--u));
+  bottom: calc(8 * var(--u));
+  color: var(--red-muted);
+}
+.btn {
+  width: 100%;
+  border: 0;
+  border-radius: 6px;
+  font-size: calc(12 * var(--u));
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+.btn--primary {
+  margin-top: calc(14 * var(--u));
+  height: calc(46 * var(--u));
+  background: var(--red);
+  color: var(--white);
+}
+.btn--primary:hover {
+  background: var(--red-dark);
+}
+.btn--secondary {
+  margin-top: calc(8 * var(--u));
+  height: calc(38 * var(--u));
+  background: var(--white);
+  border: 1.5px solid var(--red);
+  color: var(--red);
+  font-size: calc(11.5 * var(--u));
+}
+.btn--secondary:hover {
+  background: var(--red);
+  color: var(--white);
+}
+.status {
+  margin-top: calc(18 * var(--u));
+  line-height: 1.75;
+  letter-spacing: 0.18em;
+  color: var(--red-muted);
+}
+
+/* ── viewer: the demo video over the dimmed page (same pattern as the other pages) ── */
+.video {
+  cursor: pointer;
+}
+.viewer {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(20, 8, 6, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-out;
+}
+.viewer[hidden] {
+  display: none;
+}
+.viewer-stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: default;
+}
+.viewer video {
+  width: 90vw;
+  max-height: 82vh;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  border-radius: 6px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+}
+.viewer-hint {
+  margin-top: 20px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--red);
+  color: var(--white);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  cursor: pointer;
+}
+.viewer-hint:hover {
+  background: var(--red-dark);
+}
+.viewer-label {
+  position: fixed;
+  left: 20px;
+  bottom: 16px;
+  color: var(--white);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+@media (max-width: 760px) {
+  .page { padding: 16px; }
+  .frame { width: auto; height: auto; }
+  .frame > *, .band > *, .below > * { position: static; width: auto; height: auto; }
+  .frame { height: auto; overflow: visible; }
+  .band, .below { height: auto; }
+  .grid, .rule, .bar { display: none; }
+  .title { font-size: clamp(36px, 12vw, 72px); padding: 12px; margin-bottom: 16px; }
+  .body { font-size: 12px; margin-top: 8px; }
+  .panel { margin-top: 24px; padding: 16px; }
+}

@@ -6,6 +6,12 @@
 (function () {
 "use strict";
 
+// Asset URLs resolve against this script's own folder, so they work both when
+// the page opens on its own and when the stitched site (root index.html) loads
+// the script from pages/01-intro/.
+const BASE = document.currentScript && document.currentScript.src ? new URL("./", document.currentScript.src).href : "";
+const asset = (p) => BASE + p;
+
 const GLITCH = {
   growRate: 40, // px/s mean growth of the glitch extent while held
   spurt: [0.15, 2.4], // growth rate multiplier wanders between these in random spurts
@@ -82,6 +88,22 @@ const GLITCH = {
     maxPockets: 3,
     spawnPerFrame: [1, 3],
     growMs: 260, // a pocket reaches full extent over this time
+    // While the cursor is off the photo, these override the values above:
+    // more, bigger, longer pockets so the image glitches harder on its own.
+    idle: {
+      every: [500, 1600],
+      radius: [16, 60],
+      life: [500, 1800],
+      maxPockets: 4,
+      spawnPerFrame: [1, 3],
+      // One pocket at a time is much larger, and denser so it reads as solid.
+      big: {
+        radius: [90, 150],
+        life: [1200, 2600],
+        spawnPerFrame: [3, 5],
+        gap: [1500, 4000], // ms after a big one ends before the next appears
+      },
+    },
   },
 };
 
@@ -89,7 +111,31 @@ let listeners = [];
 let rows = [];
 
 // Glitch state
-let hero, img, canvas, ctx;
+let hero, img, canvas, ctx; // img is the hero <video> (a looping clip); drawImage samples its current frame
+const mediaW = () => img.videoWidth || img.naturalWidth || 0;
+const mediaH = () => img.videoHeight || img.naturalHeight || 0;
+// Streaks sample this small per-frame copy of the video instead of the video
+// itself: hundreds of drawImage(video) calls a frame made the clip stutter.
+const STILL_SCALE = 0.5;
+let still, stillCtx;
+function grabStill() {
+  const w = Math.max(1, Math.round(mediaW() * STILL_SCALE));
+  const h = Math.max(1, Math.round(mediaH() * STILL_SCALE));
+  if (!still) {
+    still = document.createElement("canvas");
+    stillCtx = still.getContext("2d");
+  }
+  if (still.width !== w || still.height !== h) {
+    still.width = w;
+    still.height = h;
+  }
+  stillCtx.drawImage(img, 0, 0, w, h);
+}
+/** drawImage from the still, with source coords in full-size media pixels. */
+function sample(sx, sy, sw, sh, dx, dy, dw, dh) {
+  const k = STILL_SCALE;
+  ctx.drawImage(still, sx * k, sy * k, Math.max(1, sw * k), Math.max(1, sh * k), dx, dy, dw, dh);
+}
 let scribbleImg = null; // the pen drawing, same aspect as the photo
 let scribbleReady = false;
 let W = 0;
@@ -108,6 +154,7 @@ let spurtTarget = 1;
 let nextSpurt = 0;
 let releasedAt = 0;
 let pockets = []; // ambient glitch pockets {x, y, r, born, endAt}
+let nextBigPocket = 0; // earliest time the next big idle pocket may appear
 let nextPocket = 0;
 let hovering = false; // pointer is over the photo
 const hoverPocket = { x: 0, y: 0, r: 0, hover: true }; // moves with the cursor
@@ -157,7 +204,7 @@ function buildMarquee(row) {
   const num = row.querySelector(".index__num")?.textContent.trim() || "";
   const title = row.querySelector(".index__title")?.textContent.trim() || "";
   const part = () =>
-    `<div class="marquee__part"><span>${num} ${title}</span><div class="marquee__img" style="background-image:url('${FLOW.image}')"></div></div>`;
+    `<div class="marquee__part"><span>${num} ${title}</span><div class="marquee__img" style="background-image:url('${asset(FLOW.image)}')"></div></div>`;
   const half = Array.from({ length: FLOW.minParts }, part).join("");
   const m = document.createElement("div");
   m.className = "marquee";
@@ -269,8 +316,8 @@ function drawReveal() {
   layerCtx.clearRect(0, 0, W, H);
   // The chrome is drawn into the photo's cover rect, then registered to it.
   const al = GLITCH.reveal.align || { scale: 1, dx: 0, dy: 0 };
-  const cw = img.naturalWidth * cover.scale;
-  const ch = img.naturalHeight * cover.scale;
+  const cw = mediaW() * cover.scale;
+  const ch = mediaH() * cover.scale;
   const dw = cw * al.scale;
   const dh = ch * al.scale;
   // Edge fill first (a plain stretch-to-fit), so the thin strips the
@@ -314,7 +361,7 @@ function beginSmear(p) {
   if (!smearShown) {
     smearBaseCtx.globalCompositeOperation = "source-over";
     smearBaseCtx.clearRect(0, 0, W, H);
-    smearBaseCtx.drawImage(img, cover.ox, cover.oy, img.naturalWidth * cover.scale, img.naturalHeight * cover.scale);
+    smearBaseCtx.drawImage(img, cover.ox, cover.oy, mediaW() * cover.scale, mediaH() * cover.scale);
   }
   smearAnchor = { x: p.x, y: p.y };
   // Sub-band layout for this drag: random sizes summing to the brush, each
@@ -397,11 +444,12 @@ function resize() {
   canvas.style.width = `${W}px`;
   canvas.style.height = `${H}px`;
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  // Match the CSS: object-fit cover, object-position 50% 0%.
-  const iw = img.naturalWidth || 1;
-  const ih = img.naturalHeight || 1;
+  // Match the CSS: object-fit cover, object-position 50% (--hero-focus-y).
+  const iw = mediaW() || 1;
+  const ih = mediaH() || 1;
   const scale = Math.max(W / iw, H / ih);
-  cover = { scale, ox: (W - iw * scale) / 2, oy: 0 };
+  const focus = parseFloat(getComputedStyle(hero).getPropertyValue("--hero-focus-y")) || 0;
+  cover = { scale, ox: (W - iw * scale) / 2, oy: (H - ih * scale) * focus };
 }
 
 /** Canvas point -> image pixel. */
@@ -415,9 +463,9 @@ function drawBase() {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.drawImage(smearCanvas, 0, 0);
     ctx.restore();
-    return;
   }
-  ctx.drawImage(img, cover.ox, cover.oy, img.naturalWidth * cover.scale, img.naturalHeight * cover.scale);
+  // Otherwise draw nothing: the canvas is transparent and the <video> plays
+  // underneath at its own smooth rate.
 }
 
 /** Trace the irregular boundary as a closed path (for clipping the reveal). */
@@ -445,7 +493,7 @@ function drawScribbleReveal(t) {
   ctx.fillRect(0, 0, W, H);
   // The drawing shares the photo's aspect ratio, so the photo's cover
   // transform places it pixel-for-pixel over the same features.
-  const sx = (img.naturalWidth * cover.scale) / scribbleImg.naturalWidth;
+  const sx = (mediaW() * cover.scale) / scribbleImg.naturalWidth;
   ctx.drawImage(scribbleImg, cover.ox, cover.oy, scribbleImg.naturalWidth * sx, scribbleImg.naturalHeight * sx);
   ctx.restore();
 }
@@ -590,19 +638,19 @@ function drawStreak(s, t) {
   switch (s.kind) {
     case "stretch": {
       // A 1-3px column of the image, pulled sideways into a long smear.
-      ctx.drawImage(img, src.x, src.y, s.srcW / cover.scale, s.h / cover.scale, x0, s.y, len, s.h);
+      sample(src.x, src.y, s.srcW / cover.scale, s.h / cover.scale, x0, s.y, len, s.h);
       break;
     }
     case "vstretch": {
       // A 1-3px row of the image, pulled downward (or up) into a drip.
       const y0 = s.dir > 0 ? s.y : s.y - len;
-      ctx.drawImage(img, src.x, src.y, s.h / cover.scale, s.srcW / cover.scale, s.x, y0, s.h, len);
+      sample(src.x, src.y, s.h / cover.scale, s.srcW / cover.scale, s.x, y0, s.h, len);
       break;
     }
     case "block": {
       // A slab of the image, copied sideways by `shift`.
       const sw = len / cover.scale;
-      ctx.drawImage(img, src.x - (s.dir > 0 ? 0 : sw), src.y, sw, s.h / cover.scale, x0 + s.dir * s.shift, s.y, len, s.h);
+      sample(src.x - (s.dir > 0 ? 0 : sw), src.y, sw, s.h / cover.scale, x0 + s.dir * s.shift, s.y, len, s.h);
       break;
     }
     case "slice": {
@@ -611,7 +659,7 @@ function drawStreak(s, t) {
       const sw = len / cover.scale;
       const sh = s.h / cover.scale;
       const dx = s.x + s.shift * (s.seed < 0.5 ? 1 : -1);
-      ctx.drawImage(img, src.x, src.y, sw, sh, dx, s.y, len, s.h);
+      sample(src.x, src.y, sw, sh, dx, s.y, len, s.h);
       ctx.globalAlpha = 0.55;
       ctx.fillStyle = pal[1];
       ctx.fillRect(dx - 2, s.y, 2, s.h);
@@ -639,7 +687,7 @@ function drawStreak(s, t) {
           } else {
             // Flat colour sampled from the image nearby (1px source, stretched).
             const p = toImage(bx + (r() - 0.5) * 40, by + (r() - 0.5) * 40);
-            ctx.drawImage(img, p.x, p.y, 1, 1, bx, by, cell, cell);
+            sample(p.x, p.y, 1, 1, bx, by, cell, cell);
           }
         }
       }
@@ -686,7 +734,7 @@ function drawStreak(s, t) {
 
 /** Ambient pockets: spawn new ones on a random timer, feed the live ones, retire the old. */
 function updatePockets(t) {
-  const A = GLITCH.ambient;
+  const A = hovering ? GLITCH.ambient : { ...GLITCH.ambient, ...GLITCH.ambient.idle };
   if (!A.on) return;
   if (t >= nextPocket) {
     if (pockets.length < A.maxPockets) {
@@ -702,11 +750,27 @@ function updatePockets(t) {
     }
     nextPocket = t + rnd(A.every[0], A.every[1]);
   }
+  // Off the photo: keep one big pocket going (one at a time, with a gap between).
+  if (!hovering && A.big && t >= nextBigPocket && !pockets.some((p) => p.big)) {
+    const B = A.big;
+    const r = rnd(B.radius[0], B.radius[1]);
+    pockets.push({
+      x: rnd(Math.min(r, W / 2), Math.max(W / 2, W - r)),
+      y: rnd(Math.min(r, H / 2), Math.max(H / 2, H - r)),
+      rTarget: r,
+      r: 4,
+      born: t,
+      endAt: t + rnd(B.life[0], B.life[1]),
+      big: true,
+      spawnPerFrame: B.spawnPerFrame,
+    });
+  }
   for (const p of pockets) {
     const g = Math.min(1, (t - p.born) / A.growMs);
     p.r = 4 + (p.rTarget - 4) * (1 - (1 - g) * (1 - g));
     if (t < p.endAt) {
-      const n = Math.floor(rnd(A.spawnPerFrame[0], A.spawnPerFrame[1] + 1));
+      const spf = p.spawnPerFrame || A.spawnPerFrame;
+      const n = Math.floor(rnd(spf[0], spf[1] + 1));
       for (let i = 0; i < n; i++) spawnStreak(t, p);
     }
   }
@@ -718,6 +782,7 @@ function updatePockets(t) {
         s.dieAt = t + rnd(GLITCH.dieMs[0], GLITCH.dieMs[1]);
       }
     }
+    if (done.some((p) => p.big)) nextBigPocket = t + rnd(GLITCH.ambient.idle.big.gap[0], GLITCH.ambient.idle.big.gap[1]);
     pockets = pockets.filter((p) => t < p.endAt);
   }
 }
@@ -759,7 +824,7 @@ function frame(t) {
     for (let i = 0; i < count; i++) spawnStreak(t);
   }
 
-  // Nothing to show: hide the canvas so the plain <img> is what's seen.
+  // Nothing to show: hide the canvas so the plain <video> is what's seen.
   if (!streaks.length && !held && !maskHasInk && !smearShown) {
     if (canvas.classList.contains("is-active")) {
       ctx.clearRect(0, 0, W, H);
@@ -769,6 +834,7 @@ function frame(t) {
   }
   canvas.classList.add("is-active");
   ctx.clearRect(0, 0, W, H);
+  if (streaks.length) grabStill();
   drawBase();
   if (GLITCH.reveal.on) drawReveal();
   if (GLITCH.scribble && held) drawScribbleReveal(t);
@@ -865,14 +931,21 @@ function mountGlitch(el) {
   if (GLITCH.reveal.on) {
     revealImg = new Image();
     revealImg.onload = () => { revealReady = true; };
-    revealImg.src = GLITCH.reveal.src;
+    revealImg.src = asset(GLITCH.reveal.src);
   }
-  if (img.complete && img.naturalWidth) ready();
-  else on(img, "load", ready);
+  if (img.readyState >= 2 && mediaW()) ready();
+  else on(img, "loadeddata", ready, { once: true });
+  // Injected markup does not always honour autoplay; nudge it (muted, so allowed).
+  // The stitched site parses the page before rebasing src, so a failed first
+  // fetch needs a fresh load against the corrected URL.
+  img.muted = true;
+  if (img.error || img.readyState === 0) img.load();
+  const p = img.play && img.play();
+  if (p && p.catch) p.catch(() => {});
   if (GLITCH.scribble) {
     scribbleImg = new Image();
     scribbleImg.onload = () => { scribbleReady = true; };
-    scribbleImg.src = GLITCH.scribbleSrc;
+    scribbleImg.src = asset(GLITCH.scribbleSrc);
   }
   on(window, "resize", () => { resize(); resizeReveal(); });
   on(canvas, "pointerdown", onDown);
@@ -884,20 +957,70 @@ function mountGlitch(el) {
   on(canvas, "contextmenu", (e) => e.preventDefault());
 }
 
+// ---------------------------------------------------------------- parallax
+
+// As the page scrolls, the photo (with its glitch canvas, so the two stay
+// registered) lags behind the page while the title runs ahead of it.
+const PARALLAX = {
+  on: true,
+  image: 0.4, // photo moves down this fraction of the scroll (reads slower)
+  type: 0.3, // title moves up this fraction of the scroll (reads faster)
+};
+
+let parallaxRaf = 0;
+
+function updateParallax() {
+  parallaxRaf = 0;
+  if (!hero) return;
+  const y = Math.max(0, -hero.getBoundingClientRect().top);
+  hero.style.setProperty("--px-img", `${(y * PARALLAX.image).toFixed(1)}px`);
+  hero.style.setProperty("--px-type", `${(-y * PARALLAX.type).toFixed(1)}px`);
+}
+
+function mountParallax(el) {
+  if (!PARALLAX.on || !el.querySelector(".hero")) return;
+  hero = el.querySelector(".hero");
+  const queue = () => { if (!parallaxRaf) parallaxRaf = requestAnimationFrame(updateParallax); };
+  on(window, "scroll", queue, { passive: true });
+  on(window, "resize", queue);
+  updateParallax();
+}
+
 // ---------------------------------------------------------------- api
 
 function mount(el) {
   mountIndex(el);
   mountGlitch(el);
+  mountParallax(el);
 }
 
 function unmount() {
   if (ctx) stopLoop();
+  cancelAnimationFrame(parallaxRaf);
+  parallaxRaf = 0;
   for (const off of listeners) off();
   listeners = [];
   rows = [];
   held = false;
 }
 
-window.IntroSketch = { mount, unmount };
+/**
+ * A glitch on demand: a few dense pockets at once, the big one near the
+ * middle, the rest scattered. The splash (pages/00-splash) calls this the
+ * moment Creative Tech starts its transition. ms: how long they keep spawning.
+ */
+function burst(ms = 1400) {
+  if (!ctx || !W || !H) return;
+  const t = performance.now();
+  const B = GLITCH.ambient.idle.big;
+  const add = (x, y, r, life, spf) => pockets.push({ x, y, rTarget: r, r: 4, born: t, endAt: t + life, spawnPerFrame: spf });
+  add(W * rnd(0.35, 0.65), H * rnd(0.3, 0.6), rnd(B.radius[0], B.radius[1]), ms, B.spawnPerFrame);
+  for (let i = 0; i < 3; i++) {
+    const r = rnd(30, 70);
+    add(rnd(r, W - r), rnd(r, H - r), r, ms * rnd(0.5, 0.9), [1, 3]);
+  }
+  startLoop();
+}
+
+window.IntroSketch = { mount, unmount, burst };
 })();
