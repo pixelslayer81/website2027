@@ -5,7 +5,9 @@ A scroll-through, blog-style site about projects, built one page at a time and s
 ## Layout
 
 ```
-index.html          The stitched site: one <section data-page="NN-slug"> per page, in scroll order
+index.html          The home: splash + CT index (01) + AI Task Force (02), one <section data-page> each
+<project>.html      One root page per project (styleshift, always-on-social, exporter, azure-retexture,
+                    excel = 07 + 08), same header + loader; revert to the single scroll: tag stitched-scroll
 site.js, site.css   The loader: fetches each page into its section's shadow root and mounts its sketch
 shared/             reset.css, tokens.css (brand values), fonts/
 pages/NN-slug/      One folder per page: index.html, style.css, sketch.js
@@ -29,9 +31,11 @@ to follow these conventions to work both ways:
   `document.currentScript.src`; never `document.getElementById` (use the mount container, or
   `root.getRootNode().getElementById` for elements outside `<main>`).
 - A link to another page written as `../NN-slug/index.html` becomes a jump to that page's
-  section (`#intro`, `#about`, `#styleshift`).
-- To add a page: create `pages/NN-slug/`, then add one `<section class="site-page" id="..."
-  data-page="NN-slug">` to the root `index.html` in scroll order.
+  section when it is in the same document, else a link to the file it lives in (`PAGE_HOME` in
+  `site.js`; e.g. the CT index rows open `styleshift.html`).
+- To add a project: create `pages/NN-slug/`, copy one of the root project pages (e.g.`exporter.html`)
+  and point its `<section class="site-page" id="..." data-page="NN-slug">` at it, then add a
+  `PAGE_HOME` row in `site.js`.
 - `pages/00-splash/` is not a section: it is the site's landing, laid over page 01. The site
   opens on its start frame and waits; the header's CT Index plays the transition, which lands on
   the CT index layout; Pixelslayer.tv reloads back to the start frame. The transition only runs

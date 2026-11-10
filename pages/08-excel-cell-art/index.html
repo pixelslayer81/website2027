@@ -26,9 +26,8 @@
             <table class="sheet" id="sheetTable"></table>
           </div>
         </div>
-        <div id="thumb-overlays"></div>
       </div>
-      <div id="beyond-banner"><span><span class="beyond-grid"></span></span><span id="create-text">create</span></div>
+      <div id="beyond-banner"><span><span class="beyond-grid"></span></span></div><!-- 2026-11-05: the "create" word that showed here with the tools open is removed -->
       <img id="photo1" src="assets/photo.png" alt="">
       <div id="white-rect"><span class="text-line" id="tline1">My secret talent is that I can make an amazing, beautiful,</span><span class="text-line" id="tline2">detailed chart in Excel and then IMMEDIATELY forget</span><span class="text-line" id="tline3">how I did it and never be able to recreate it 😒</span></div>
       <div id="exit-text1" class="exit-text">Make</div>
@@ -36,9 +35,10 @@
       <div id="exit-text3" class="exit-text">amazing, beautiful <span class="green-word"><span id="ch-text">ch</span><video id="scribble" src="assets/scribble.mp4" muted playsinline preload="auto"></video><span id="art-text">art.</span></span></div>
       <div id="x-square">&#x2715;</div>
       <div id="click-banner"><span id="click-banner-inner"></span></div>
-      <div id="click-label7" class="click-label">erase</div>
-      <div id="click-label1" class="click-label">erase all</div>
-      <div id="click-label4" class="click-label">color</div>
+      <div id="tools-fill"></div>
+      <div id="click-label7" class="click-label label-box"><span class="cl-text">erase</span></div>
+      <div id="click-label1" class="click-label label-box"><span class="cl-text">erase all</span></div>
+      <div id="click-label4" class="click-label label-box"><span class="cl-text">color</span></div>
       <div id="color-swatches">
         <div class="color-swatch" data-color="#005E31"></div>
         <div class="color-swatch" data-color="#BEE1B0"></div>
@@ -47,17 +47,21 @@
       </div>
       <div id="grid-hover1" class="grid-hover"></div>
       <div id="grid-hover2" class="grid-hover"></div>
-      <div id="prompt-fill"></div>
-      <div id="click-label5" class="click-label">prompt</div>
-      <div id="click-label6" class="click-label">generate</div>
-      <div id="click-label2" class="click-label">save</div>
+      <div id="prompt-fill"><textarea class="prompt-input" placeholder="prompt your art" spellcheck="false" aria-label="Prompt your art"></textarea></div>
+      <div id="click-label5" class="click-label label-box"><span class="cl-text">prompt</span></div>
+      <div id="click-label6" class="click-label"><span class="cl-text">generate</span></div>
+      <div id="click-label8" class="click-label label-box"><span class="cl-text">half cells</span></div>
+      <div id="click-label2" class="click-label"><span class="cl-text">save</span></div>
       <div id="saved-thumbs"></div>
       <div id="username" aria-label="Mermanda2694"><div class="u-track" aria-hidden="true"><div class="u-copy"><span>M</span><span>e</span><span>r</span><span>m</span><span>a</span><span>n</span><span>d</span><span>a</span><span>2</span><span>6</span><span>9</span><span>4</span></div><div class="u-copy"><span>M</span><span>e</span><span>r</span><span>m</span><span>a</span><span>n</span><span>d</span><span>a</span><span>2</span><span>6</span><span>9</span><span>4</span></div><div class="u-copy"><span>M</span><span>e</span><span>r</span><span>m</span><span>a</span><span>n</span><span>d</span><span>a</span><span>2</span><span>6</span><span>9</span><span>4</span></div><div class="u-copy"><span>M</span><span>e</span><span>r</span><span>m</span><span>a</span><span>n</span><span>d</span><span>a</span><span>2</span><span>6</span><span>9</span><span>4</span></div></div></div>
-      <img id="chart-img1" class="chart-img" src="assets/chart.png" alt="">
-      <img id="chart-img2" class="chart-img" src="assets/chart.png" alt="">
-      <img id="chart-img3" class="chart-img" src="assets/chart.png" alt="">
+      <!-- 2026-11-05: the Excel sheets are a clip (was a still heart, chart.png) that plays once and holds its last frame; sketch.js starts them staggered, the lowest first -->
+      <video id="chart-img1" class="chart-img" src="assets/hf_20261106_000201_e4392294-7bd6-435b-ba87-095e4cbe4285.mp4" muted playsinline preload="auto" aria-hidden="true"></video>
+      <video id="chart-img2" class="chart-img" src="assets/hf_20261106_000201_e4392294-7bd6-435b-ba87-095e4cbe4285.mp4" muted playsinline preload="auto" aria-hidden="true"></video>
+      <video id="chart-img3" class="chart-img" src="assets/hf_20261106_000201_e4392294-7bd6-435b-ba87-095e4cbe4285.mp4" muted playsinline preload="auto" aria-hidden="true"></video>
       <div id="start-box1"></div>
       <div id="start-box2"><span id="start-box2-inner"></span></div>
+      <!-- 2026-11-05: the saved artworks open here, over the whole page, centred on the screen (they were inside the sheet, clipped by it) -->
+      <div id="thumb-overlays"></div>
     </div>
   </main>
   </div>

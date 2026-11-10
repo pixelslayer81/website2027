@@ -13,6 +13,22 @@ const sections = Array.from(document.querySelectorAll(".site-page[data-page]"));
 const sectionIdFor = {}; // "03-styleshift" -> "styleshift"
 for (const s of sections) sectionIdFor[s.dataset.page] = s.id;
 
+// Where every page lives. Since 2026-11-04 each project has its own root HTML
+// file (the home, index.html, is the splash + CT index + AI Task Force). A
+// ../NN-slug/index.html link to a page in this document jumps to its section;
+// any other goes to the file here. Add a row when a page gets its own file.
+const PAGE_HOME = {
+  "01-intro": "index.html#intro",
+  "02-flock": "intro.html", // 2026-11-05: its own page, (00) Intro in the CT index
+  "03-styleshift": "styleshift.html",
+  "04-always-on-social": "always-on-social.html",
+  "05-exporter": "exporter.html",
+  "06-azure-retexture": "azure-retexture.html",
+  "07-excel": "excel.html",
+  "08-excel-cell-art": "excel.html#excel-cell-art",
+  "09-about": "pages/09-about/index.html",
+};
+
 const loadedScripts = new Set();
 
 // The splash (pages/00-splash) is the site's landing, laid over the first page:
@@ -35,9 +51,11 @@ function isRelative(url) {
 /** Rewrite one URL written relative to pages/<slug>/ so it resolves from the root. */
 function rebase(url, slug) {
   if (!isRelative(url)) return url;
-  // ../NN-slug/index.html -> #<section id>: a link to another page becomes a jump
+  // ../NN-slug/index.html -> #<section id> when that page is in this document,
+  // else to the file it lives in (PAGE_HOME)
   const m = url.match(/^\.\.\/(\d\d-[\w-]+)\/(?:index\.html)?(#.*)?$/);
   if (m && sectionIdFor[m[1]]) return "#" + sectionIdFor[m[1]];
+  if (m && PAGE_HOME[m[1]]) return PAGE_HOME[m[1]];
   if (url.startsWith("../../shared/")) return "shared/" + url.slice("../../shared/".length);
   // normalise "../" so a file two pages share (a sketch used as another page's
   // background) resolves to one URL and loads once
@@ -150,9 +168,48 @@ function mountHeader() {
   });
 }
 
+// 2026-11-05: a section with data-height-of="NN-slug" is made as tall as that
+// page would be on its own (intro.html: the AI Task Force as tall as the home's
+// CT index). The other page is laid out invisibly off screen (its markup and
+// CSS only: no scripts, no media), measured, and its height handed to the
+// section's page as --page-h (custom properties reach into the shadow root);
+// measured again whenever its layout changes (fonts loading, resizes).
+async function matchHeight(section) {
+  const slug = section.dataset.heightOf;
+  if (!slug) return;
+  const res = await fetch(fresh(`pages/${slug}/index.html`), { cache: "no-cache" });
+  if (!res.ok) return;
+  const doc = new DOMParser().parseFromString(await res.text(), "text/html");
+  for (const s of doc.querySelectorAll("script")) s.remove();
+  for (const el of doc.querySelectorAll("[src], [srcset], [poster]")) {
+    el.removeAttribute("src"); el.removeAttribute("srcset"); el.removeAttribute("poster");
+  }
+  const host = document.createElement("div");
+  host.setAttribute("aria-hidden", "true");
+  host.style.cssText = "position:absolute;left:-200vw;top:0;width:100%;visibility:hidden;pointer-events:none;";
+  document.body.appendChild(host);
+  const shadow = host.attachShadow({ mode: "open" });
+  await Promise.all([loadStyle(shadow, "shared/reset.css"), loadStyle(shadow, `pages/${slug}/style.css`)]);
+  for (const node of Array.from(doc.body.childNodes)) shadow.appendChild(document.adoptNode(node));
+  const measure = () => {
+    const page = shadow.getElementById("page") || shadow.firstElementChild;
+    // (data-height-adjust: px added to that height, e.g. -100 on intro.html)
+    const adjust = parseFloat(section.dataset.heightAdjust) || 0;
+    if (page) section.style.setProperty("--page-h", (page.getBoundingClientRect().height + adjust) + "px");
+  };
+  measure();
+  // again whenever its layout changes: the web fonts arriving (they set the
+  // rows' height), a resize
+  const page = shadow.getElementById("page") || shadow.firstElementChild;
+  if (page && window.ResizeObserver) new ResizeObserver(measure).observe(page);
+  else window.addEventListener("resize", measure);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
+}
+
 async function main() {
   mountHeader();
   try {
+    for (const section of sections) await matchHeight(section);
     for (const section of sections) await mountPage(section);
   } catch (err) {
     console.error("site: could not load the pages", err);

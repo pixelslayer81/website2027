@@ -32,13 +32,13 @@ body {
   justify-content: space-between;
   padding: 0 24px;
   background: var(--bg);
-  color: #1b1a19;
+  color: var(--ui-ink);
   font-family: "Inter", "Segoe UI", system-ui, sans-serif;
   font-size: 13px;
   line-height: 1;
 }
 .site-header a {
-  color: #1b1a19;
+  color: var(--ui-ink);
   text-decoration: none;
 }
 .site-brand {
@@ -57,11 +57,11 @@ body {
   text-transform: uppercase;
   padding: 0;
   background: transparent;
-  color: #1b1a19;
+  color: var(--ui-ink);
   border: 0;
 }
 .site-header a.site-index {
-  color: #1b1a19;
+  color: var(--ui-ink);
 }
 .site-nav {
   display: flex;
@@ -93,6 +93,62 @@ button.site-index {
   color: var(--accent);
   outline: none;
 }
+/* ── project-page footer: Next project (the root <project>.html pages) ── */
+.site-footer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 20px 24px 16px; /* 2026-11-04: halved (72 / 48 -> 32 / 24), then 20% shorter */
+  border-top: 1px solid var(--ui-ink);
+  background: var(--bg);
+  color: var(--ui-ink);
+  font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+}
+.site-footer__next {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+}
+.site-footer__label {
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+.site-footer__title {
+  font-size: clamp(20px, 2.2vw, 32px); /* halved (was 32-64px) */
+  font-weight: 400;
+  line-height: 1;
+  text-transform: uppercase;
+}
+.site-footer__button {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex: none;
+  height: 34px;
+  padding: 0 18px;
+  border: 1px solid var(--ui-ink);
+  border-radius: 999px;
+  color: var(--ui-ink);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease;
+}
+/* rollover: the DESIGN red, as in the header */
+.site-footer__button:hover,
+.site-footer__button:focus-visible {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  outline: none;
+}
+
 html {
   height: auto;
 }
@@ -133,4 +189,57 @@ html {
 }
 .site-fallback a {
   color: var(--accent);
+}
+
+/* 2026-11-05: Previous project beside Next project */
+.site-footer__buttons {
+  display: flex;
+  gap: 10px;
+  flex: none;
+}
+
+/* 2026-11-05: Back / Next 15% smaller (34px tall, 13px type -> 28.9 / 11.05),
+   and the arrow centred in the pill: the glyph sits low in its line (its
+   middle ~0.12em under the capitals'), so it is lifted by that much */
+.site-footer__button {
+  gap: 8.5px;
+  height: 28.9px;
+  padding: 0 15.3px;
+  font-size: 11.05px;
+}
+.site-footer__button > span[aria-hidden] {
+  display: inline-block;
+  transform: translateY(-0.12em);
+}
+
+/* 2026-11-05: Back / Next sit on the project title's line: the buttons'
+   middle on the title's (the footer aligns to the bottom; the title is one
+   line at line-height 1, so its box is its font size tall) */
+.site-footer__buttons {
+  margin-bottom: calc((clamp(20px, 2.2vw, 32px) - 28.9px) / 2);
+}
+
+/* 2026-11-10: the light / dark switch, last in the header nav (shared/theme.js;
+   the home and the About page only). It reads as a nav item naming the current
+   mode, with a small dot: empty in light mode, filled in dark. */
+.site-theme {
+  gap: 8px;
+}
+.site-theme__dot {
+  box-sizing: border-box;
+  width: 10px;
+  height: 10px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  background: transparent;
+  transition: background-color 160ms ease;
+}
+.site-theme[aria-pressed="true"] .site-theme__dot {
+  background: currentColor;
+}
+
+/* 2026-11-10: Index, left of Back / Next: the home's CT index (index.html#intro,
+   already formed, no splash). Same pill; a touch more room before Back. */
+.site-footer__button--index {
+  margin-right: 6px;
 }

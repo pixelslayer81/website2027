@@ -16,6 +16,7 @@ body {
   width: 100%; /* 100vw would run under the stitched site's scrollbar */
   height: 100vh;
   height: 100dvh;
+  height: var(--page-h, 100dvh); /* 2026-11-05: intro.html sets --page-h to the home CT index's height (site.js data-height-of) */
   display: grid;
   place-items: center;
   padding: 0 var(--gutter);
@@ -51,6 +52,8 @@ body {
   max-width: var(--measure);
   /* Lets drags start over the text and reach the canvas beneath. */
   pointer-events: none;
+  /* 2026-11-05: 100px above the page's centre (the shapes still find the letters: they read their on-screen boxes) */
+  transform: translateY(-100px);
 }
 
 .copy__body {

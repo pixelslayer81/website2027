@@ -12,7 +12,7 @@
   --index-indent: 8.05vw; /* 120 / 1489 */
   --num-width: 6.4vw; /* 95 / 1489 */
   --desc-width: 30.9vw; /* 460 / 1489 */
-  --row-font: 2.85vw; /* ~42px at 1489 */
+  --row-font: 2.42vw; /* 2026-11-10: 15% smaller (was 2.85vw, ~42px at 1489; now ~36px) */
   --row-pad: 0.42vw;
   --hero-ratio: 1492 / 670; /* the reference hero frame; the video is width-fitted in it */
   /* where the frame sits on the (taller) video, 0 = top, 1 = bottom. The
@@ -290,7 +290,7 @@ body {
 @media (max-width: 900px) {
   :root,
   :host {
-    --row-font: 24px;
+    --row-font: 20.4px; /* 15% smaller (was 24px) */
     --row-pad: 6px;
     --num-width: 72px;
     --hero-ratio: 4 / 3; /* taller frame on narrow screens so the face is not tiny */
@@ -306,7 +306,7 @@ body {
 @media (max-width: 520px) {
   :root,
   :host {
-    --row-font: 20px;
+    --row-font: 17px; /* 15% smaller (was 20px) */
     --num-width: 56px;
     --index-indent: var(--gutter);
   }

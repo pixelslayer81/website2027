@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="shared/reset.css">
   <link rel="stylesheet" href="shared/tokens.css">
   <link rel="stylesheet" href="site.css">
+  <script src="shared/theme.js"></script> <!-- light / dark, before the first paint -->
 </head>
 <body>
   <!-- Site header: fixed over every section; Creative Tech (id site-index, the CT index) returns to the top (page 01).
@@ -22,22 +23,16 @@
       <a class="site-index" href="#intro" id="site-index">Creative Tech</a>
       <button type="button" class="site-index" id="site-index-md">Motion Design</button>
       <a class="site-index" href="pages/09-about/index.html" id="site-about">About</a>
+      <button type="button" class="site-index site-theme" id="site-theme" aria-pressed="true" title="Switch to light mode"><span class="site-theme__dot" aria-hidden="true"></span><span class="site-theme__label">Dark mode</span></button>
     </nav>
   </header>
 
-  <!-- The hero site: every page in pages/ is one section, in folder order.
+  <!-- The home: the CT index (page 01). The AI Task Force (02) is its own page since 2026-11-05: intro.html, (00) in the CT index. Each project has its own root page (intro.html, styleshift.html, always-on-social.html, exporter.html, azure-retexture.html, excel.html), same header and loader; the CT index links go there (PAGE_HOME in site.js).
        site.js fetches each page's index.html into the section's shadow root,
        so pages stay independent (own CSS, own ids) and edits show up here
        with no build step. To add a page: one more <section data-page>. -->
   <main id="site">
     <section class="site-page" id="intro" data-page="01-intro"></section>
-    <section class="site-page" id="ai-task-force" data-page="02-flock"></section>
-    <section class="site-page" id="styleshift" data-page="03-styleshift"></section>
-    <section class="site-page" id="always-on-social" data-page="04-always-on-social"></section>
-    <section class="site-page" id="exporter" data-page="05-exporter"></section>
-    <section class="site-page" id="azure-retexture" data-page="06-azure-retexture"></section>
-    <section class="site-page" id="excel" data-page="07-excel"></section>
-    <section class="site-page" id="excel-cell-art" data-page="08-excel-cell-art"></section>
   </main>
 
   <!-- Shown when the pages cannot be fetched (opened from file://, or no server) -->

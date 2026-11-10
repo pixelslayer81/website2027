@@ -13,3 +13,6 @@ tools/cdp-profile-*/
 
 # Figma source files (over GitHub's 100 MB limit)
 *.fig
+
+# After Effects auto-saves
+aep/Auto-Save/

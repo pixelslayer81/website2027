@@ -35,6 +35,22 @@ body {
   font-family: var(--sans);
 }
 
+/* dark mode (2026-11-10, shared/theme.js): the page's dark black with the warm
+   white as type; the drawing layer's front canvas no longer multiplies (light
+   pencil would vanish on a dark page) */
+:root[data-theme="dark"] {
+  --bg: #222221;
+  --text: #fcf9f4;
+  --text-muted: #b8b4ad;
+  --rule: #3f3e3c;
+  --ink: #fcf9f4;
+  --ink-body: #d8d5ce;
+  --paper: #222221;
+}
+:root[data-theme="dark"] .flock-bg .page__canvas--front {
+  mix-blend-mode: normal;
+}
+
 /* the site header's buttons take this page's coral here (they use --accent) */
 .site-header {
   --accent: var(--coral);

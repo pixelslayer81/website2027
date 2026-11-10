@@ -1913,13 +1913,19 @@ function mount(el, opts = {}) {
   ctxFront = canvasFront.getContext("2d");
   ctx = ctxBack;
 
-  const css = getComputedStyle(document.documentElement);
-  const rgb = css.getPropertyValue("--accent-rgb").trim();
-  if (rgb) accentRgb = rgb;
-  const prgb = css.getPropertyValue("--pencil-rgb").trim();
-  if (prgb) pencilRgb = prgb;
-  const bg = css.getPropertyValue("--bg").trim();
-  if (bg) bgColor = bg;
+  // the colour tokens; read again when the About page switches light / dark
+  // (shared/theme.js fires "themechange"; boids already drawn keep their pencil)
+  const readTheme = () => {
+    const css = getComputedStyle(document.documentElement);
+    const rgb = css.getPropertyValue("--accent-rgb").trim();
+    if (rgb) accentRgb = rgb;
+    const prgb = css.getPropertyValue("--pencil-rgb").trim();
+    if (prgb) pencilRgb = prgb;
+    const bg = css.getPropertyValue("--bg").trim();
+    if (bg) bgColor = bg;
+  };
+  readTheme();
+  on(window, "themechange", readTheme);
   grainPattern = makeGrain();
 
   input = opts.input || canvas;

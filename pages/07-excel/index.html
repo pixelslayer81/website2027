@@ -14,7 +14,7 @@
 </head>
 <body>
   <!-- Built from the spec JSON (spec.json), re-gridded to the user's reference
-       (72-unit columns, 31.22-unit rows): a 1440 x 1976 dark-green page; every
+       (72-unit columns, 31.22-unit rows): a 1440 x 2163.32 dark-green page (6 rows added at the top 2026-11-04); every
        layer sits at its coordinate times --u, painted in the spec's layer order.
        The lower grid's few lines are placed by sketch.js. -->
   <main class="page" id="page">
@@ -25,20 +25,25 @@
     <!-- cells light up under the cursor (sketch.js); under the boxes and photos -->
     <canvas class="grid-glow" id="grid-glow" aria-hidden="true"></canvas>
 
-    <!-- ============================================================ mint cells (each one whole grid cell: column x 72, row y 31.22) -->
-    <div class="rect rect--mint" style="--x: 72; --y: 62.44; --w: 72; --h: 31.22" aria-hidden="true"></div>
-    <div class="rect rect--mint" style="--x: 720; --y: 124.88; --w: 72; --h: 31.22" aria-hidden="true"></div>
-    <div class="rect rect--mint" style="--x: 360; --y: 561.96; --w: 72; --h: 31.22" aria-hidden="true"></div>
-    <div class="rect rect--mint" style="--x: 1224; --y: 718.06; --w: 72; --h: 31.22" aria-hidden="true"></div>
-    <div class="rect rect--mint" style="--x: 0; --y: 749.28; --w: 72; --h: 31.22" aria-hidden="true"></div>
-    <div class="rect rect--cell" style="--x: 184.8; --y: 281; --w: 31.2; --h: 31.2" aria-hidden="true"></div>
+    <!-- ============================================================ mint cells: all removed at the user's request (four 2026-11-05, the last 2026-11-06); .rect--mint is still in style.css -->
+    <div class="rect rect--cell" style="--x: 40.8; --y: 374.64; --w: 31.2; --h: 31.2" aria-hidden="true"></div>
+    <!-- 2026-11-05: press and hold on the grid: its cells there clear away (sketch.js) to show a slowly turning ASCII globe; let go and they close back  (above the mint cells, so none of them blanks part of it) -->
+    <canvas class="grid-glow" id="globe-reveal" aria-hidden="true"></canvas>
+    <!-- 2026-11-05: the stat that comes with the globe (sketch.js places it on the reveal and types it on / wipes it off) -->
+    <p class="box box--globe-stat" id="globe-stat" aria-hidden="true"></p>
 
     <!-- ============================================================ header cells -->
     <div class="box box--number" aria-hidden="true">05</div>
     <!-- the tagline runs as a marquee, masked by its box: two identical halves slide left by one half, so it loops seamlessly -->
     <p class="box box--tagline" aria-label="Beyond the Grid"><span class="marquee" aria-hidden="true"><span class="marquee__item">Beyond the <em>Grid</em></span><span class="marquee__item">Beyond the <em>Grid</em></span><span class="marquee__item">Beyond the <em>Grid</em></span><span class="marquee__item">Beyond the <em>Grid</em></span></span></p>
-    <!-- each letter rises into the box in turn (the box clips them), like the Style Shift title -->
-    <h1 class="box box--title" id="title" aria-label="Excel"><span class="l" style="--i: 0">E</span><span class="l" style="--i: 1">X</span><span class="l" style="--i: 2">C</span><span class="l" style="--i: 3">E</span><span class="l" style="--i: 4">L</span></h1>
+    <!-- the title is a clip scrubbed by the scroll (sketch.js): flat EXCEL on load
+         (its first frame), inflating into balloon letters as the page moves.
+         Replaced the letter-by-letter rise 2026-11-04. -->
+    <h1 class="box box--title" id="title" aria-label="Excel">
+      <video class="photo__video box__video" id="title-video" src="assets/excel_expand_half_v001.mp4" muted playsinline preload="auto" aria-hidden="true"></video>
+    </h1>
+    <!-- tracks out from tight to wide as the title inflates (sketch.js SCRUB.clips), like the TRIM boxes -->
+    <div class="box box--formula3" id="formula-3" aria-hidden="true">= EXP(10)</div>
 
     <p class="box box--what"><span class="box__copy"><strong>What is it:</strong> An interactive web experience that turns Excel into a creative canvas. Users can explore different approaches to spreadsheet art and create their own compositions using the familiar structure of Excel cells, colors, and patterns. The project takes something normally associated with data and productivity and reimagines it as a playful space for creativity, experimentation, and visual expression.</span></p>
 

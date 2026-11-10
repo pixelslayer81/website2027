@@ -78,7 +78,7 @@ textarea {
 /* ── header ── */
 .display {
   font-size: calc(131 * var(--u));
-  font-weight: 900;
+  font-weight: 700; /* bold (2026-11-06; was 900 black) */
   line-height: 0.86;
   letter-spacing: -0.045em;
   text-transform: uppercase;
@@ -106,11 +106,6 @@ textarea {
   min-height: calc(199 * var(--u)); /* keeps the gallery on spec y 485 whatever the copy wraps to */
   align-content: start;
 }
-/* the 02 is filled with the site cream (2026-10-30), its outline ring kept */
-.intro-num.outline {
-  color: var(--bg);
-  -webkit-text-fill-color: var(--bg);
-}
 .intro-num {
   grid-column: 1;
   grid-row: 1;
@@ -118,6 +113,7 @@ textarea {
   font-weight: 700; /* bold (2026-10-30; was 900 black) */
   letter-spacing: -0.02em;
   line-height: 0.8;
+  color: var(--green); /* 2026-11-06: solid accent green, no outline (was cream with an outline ring) */
 }
 .intro-copy {
   grid-column: 2; /* WHAT IS IT: the copy column, right of the 02 */
@@ -344,50 +340,380 @@ textarea {
   transform: none;
 }
 
-/* ── Touchstone system: display heading + the system still (16 : 9.2) ── */
-.system {
-  margin-top: calc(70 * var(--u));
-}
-/* the heading rises as one block from behind the still below it (which
-   paints over it) once it is in view: .system-title.is-in, set by the script */
-.system-title {
-  position: relative;
-  z-index: 0;
-  transform: translateY(150%); /* far enough down that the still hides it across the gap */
-  transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
-  white-space: nowrap;
-  font-size: calc(113 * var(--u)); /* smaller than the page title so the longer words span exactly the content width */
-}
-.system-title.is-in {
-  transform: translateY(0);
-  transition-delay: 300ms; /* a beat after it comes into view before it rises */
-}
-@media (prefers-reduced-motion: reduce) {
-  .system-title { transform: none; transition: none; }
-}
-.system-media {
-  position: relative;
-  z-index: 1; /* above the heading: it comes out from behind the still */
-  margin-top: calc(45 * var(--u));
+/* ── Touchstone system (2026-11-06, from the user's mock): TOUCHSTONE SYSTEM
+   heading, What / Why copy, then the architecture in four layers (number +
+   characteristics left, cream cards right, joined by a connector line), then
+   Structure Summary and Key Benefits. All type is Inter (the page's font): heavy word + light word in the headings. ── */
+.ts {
+  --ts-cream: #f2f0eb;
+  --ts-ink: #1c1c1c;
+  --ts-ink2: #55534f;
+  margin-top: calc(110 * var(--u));
   width: calc(1237 * var(--u));
   max-width: 100%;
-  aspect-ratio: 1387 / 797;
-  border-radius: 4px;
-  overflow: hidden;
 }
-.system-still {
-  display: block;
+/* no default margins inside (zero specificity, so every rule below wins) */
+:where(.ts) :where(h2, h3, h4, h5, p, dl, ul) { margin: 0; }
+.ts-title,
+.ts-sub {
+  font-family: var(--font);
+  font-weight: 200; /* Inter's lightest loaded weight */
+  text-transform: uppercase;
+  line-height: 0.95;
+  letter-spacing: 0.01em;
+  color: var(--text);
+  white-space: nowrap;
+}
+.ts-title b,
+.ts-sub b {
+  font-weight: 800;
+  letter-spacing: 0;
+}
+.ts-title { font-size: calc(100 * var(--u)); }
+.ts-sub { font-size: calc(52 * var(--u)); margin-top: calc(120 * var(--u)); }
+
+.ts-about {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: calc(56 * var(--u));
+  margin-top: calc(44 * var(--u));
+  padding-bottom: calc(44 * var(--u));
+  border-bottom: 1px solid var(--rule);
+}
+.ts-about p {
+  font-size: calc(13.5 * var(--u));
+  font-weight: 300;
+  line-height: 1.3;
+  color: var(--text-body);
+}
+.ts-about strong {
+  font-family: var(--font);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0;
+  color: var(--text);
+}
+
+/* layers: left column (number, name, characteristics) + the cards */
+.ts-layers { margin-top: calc(40 * var(--u)); }
+.ts-layer {
+  display: grid;
+  grid-template-columns: calc(270 * var(--u)) 1fr;
+  column-gap: calc(36 * var(--u));
+}
+.ts-side { padding-top: calc(4 * var(--u)); padding-bottom: calc(30 * var(--u)); }
+.ts-side__head {
+  display: flex;
+  align-items: baseline;
+  gap: calc(10 * var(--u));
+}
+.ts-side__head--stack { flex-direction: column; gap: calc(6 * var(--u)); }
+.ts-num {
+  font-family: var(--font);
+  font-weight: 200;
+  font-size: calc(64 * var(--u));
+  line-height: 0.85;
+  letter-spacing: 0;
+  color: var(--text);
+}
+.ts-side h4 {
+  font-family: var(--font);
+  font-weight: 800;
+  font-size: calc(28 * var(--u));
+  line-height: 1;
+  letter-spacing: 0;
+  color: var(--text);
+}
+.ts-side__sub {
+  margin-top: calc(12 * var(--u));
+  padding-bottom: calc(14 * var(--u));
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--font);
+  font-weight: 600;
+  font-size: calc(12.5 * var(--u));
+  line-height: 1.35;
+  color: var(--text-muted);
+}
+.ts-label {
+  margin-top: calc(16 * var(--u));
+  margin-bottom: calc(10 * var(--u));
+  font-family: var(--font);
+  font-weight: 800;
+  font-size: calc(10 * var(--u));
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text);
+}
+
+/* dash lists (cards and characteristics) */
+.ts-dash { list-style: none; margin: 0; padding: 0; }
+.ts-dash li {
+  position: relative;
+  padding-left: calc(14 * var(--u));
+  font-family: var(--font);
+  font-size: calc(12.5 * var(--u));
+  line-height: 1.7;
+  color: var(--ts-ink2);
+}
+.ts-dash li::before {
+  content: "–";
+  position: absolute;
+  left: 0;
+  opacity: 0.6;
+}
+.ts-dash--side li {
+  font-size: calc(11.5 * var(--u));
+  line-height: 1.75;
+  color: var(--text-muted);
+}
+
+.ts-lead {
+  font-family: var(--font);
+  font-weight: 700;
+  font-size: calc(15.5 * var(--u));
+  line-height: 1.3;
+  color: var(--text);
+  margin-bottom: calc(14 * var(--u));
+}
+.ts-bar {
+  background: var(--ts-cream);
+  color: var(--ts-ink);
+  font-family: var(--font);
+  font-weight: 800;
+  font-size: calc(12 * var(--u));
+  letter-spacing: 0.01em;
+  padding: calc(9 * var(--u)) calc(14 * var(--u));
+  margin-bottom: calc(10 * var(--u));
+}
+.ts-cards { display: grid; gap: calc(10 * var(--u)); }
+.ts-cards--2 { grid-template-columns: 1fr 1fr; }
+.ts-cards--3 { grid-template-columns: 1fr 1fr 1fr; }
+/* the one brain card: its eight sections in two columns */
+.ts-dash--cols { columns: 2; column-gap: calc(18 * var(--u)); }
+.ts-card {
+  background: var(--ts-cream);
+  color: var(--ts-ink);
+  padding: calc(18 * var(--u)) calc(18 * var(--u)) calc(20 * var(--u));
+}
+.ts-card h5 {
+  font-family: var(--font);
+  font-weight: 700;
+  font-size: calc(14.5 * var(--u));
+  padding-bottom: calc(12 * var(--u));
+  margin-bottom: calc(12 * var(--u));
+  border-bottom: 1px solid #cfcbc3;
+}
+
+/* the connector between layers: a line down from the cards, labelled */
+.ts-link {
+  position: relative;
+  margin: 0;
+  padding: calc(26 * var(--u)) 0 calc(30 * var(--u)) calc(56 * var(--u));
+  font-family: var(--font);
+  font-weight: 600;
+  font-size: calc(11.5 * var(--u));
+  color: var(--text-muted);
+}
+.ts-link::before {
+  content: "";
+  position: absolute;
+  left: calc(36 * var(--u));
+  top: 0;
+  bottom: 0;
+  border-left: 1px solid var(--text-muted);
+}
+.ts-link--dashed::before { border-left-style: dashed; }
+.ts-link--heavy::before { border-left-width: 2.5px; border-left-color: var(--text); }
+
+/* loop: vertical gate bands on the JSON's 1200 x 840 canvas. --x/--y/--w/--h
+   are canvas px; --c is one canvas px at the rendered size (container units),
+   so type and boxes scale together. */
+/* a thin frame around the whole diagram (2026-11-06) */
+.ts-loop-frame {
+  border: 1px solid var(--rule);
+  padding: calc(22 * var(--u)) calc(28 * var(--u));
+}
+.ts-loop {
+  position: relative;
+  container-type: inline-size;
+  aspect-ratio: 1200 / 740; /* canvas y 60-800: the caption sits above the frame */
+}
+.ts-loop > * {
+  --c: calc(100cqw / 1200);
+  position: absolute;
+  left: calc(var(--x, 0) * 100% / 1200);
+  top: calc((var(--y, 0) - 60) * 100% / 740);
+  width: calc(var(--w, 0) * 100% / 1200);
+  height: calc(var(--h, 0) * 100% / 740);
+  margin: 0;
+}
+.ts-loop > .ts-wlabel { width: auto; height: auto; }
+.ts-loop__wires {
+  left: 0;
+  top: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  /* scroll parallax (sketch.js SYSTEM_PARALLAX): drifts against the scroll,
-     zoomed so no edge shows */
-  transform: translate3d(0, var(--px-img, 0px), 0) scale(var(--px-zoom, 1));
-  will-change: transform;
+  overflow: visible;
+  fill: none;
+  stroke: var(--text-body);
+  stroke-width: 1.5px;
 }
-.system-media .app-play--tl {
-  transform: translate3d(0, var(--px-type, 0px), 0);
-  will-change: transform;
+.ts-loop__wires path { vector-effect: non-scaling-stroke; }
+.ts-loop__wires .dash { stroke-dasharray: 6 5; }
+.ts-loopcap {
+  display: inline-block;
+  margin-bottom: calc(14 * var(--u));
+  border: 1.5px solid var(--text);
+  padding: calc(8 * var(--u)) calc(14 * var(--u));
+  font-family: var(--font);
+  font-weight: 700;
+  font-size: calc(12.5 * var(--u));
+  white-space: nowrap;
+  color: var(--text);
+}
+.ts-wlabel {
+  font-family: var(--font);
+  font-weight: 700;
+  font-size: calc(13 * var(--c));
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+/* step boxes */
+.ts-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: calc(5 * var(--c));
+  border: 1.5px solid var(--text);
+  background: var(--bg4);
+  font-family: var(--font);
+  text-align: center;
+  white-space: nowrap;
+}
+.ts-box b { font-weight: 700; font-size: calc(16 * var(--c)); color: var(--text); }
+.ts-box span { font-size: calc(12 * var(--c)); color: var(--text-muted); }
+.ts-box--done { background: var(--ts-cream); border-color: var(--ts-cream); }
+.ts-box--done b { color: var(--ts-ink); }
+.ts-box--done span { color: var(--ts-ink2); }
+.ts-box--fix { border-style: dashed; }
+
+/* gates: head panel left (gate no., step, agent, Pass / Fail chip), checks right */
+.ts-gate {
+  display: grid;
+  grid-template-columns: calc(220 * var(--c)) 1fr;
+  border: 1.5px solid var(--text);
+  background: var(--bg4);
+  font-family: var(--font);
+}
+.ts-gate__head {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: calc(20 * var(--c)) calc(19 * var(--c));
+  border-right: 1.5px solid var(--text);
+}
+.ts-gate__head small {
+  font-size: calc(10.5 * var(--c));
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.ts-gate__head b {
+  margin-top: calc(6 * var(--c));
+  font-size: calc(23 * var(--c));
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--text);
+  white-space: nowrap;
+}
+.ts-gate__head span {
+  margin-top: calc(6 * var(--c));
+  font-size: calc(12.5 * var(--c));
+  color: var(--text-body);
+}
+.ts-gate__head em {
+  margin-top: auto;
+  padding: calc(5 * var(--c)) calc(10 * var(--c));
+  background: var(--ts-cream);
+  color: var(--ts-ink);
+  font-style: normal;
+  font-weight: 700;
+  font-size: calc(12 * var(--c));
+}
+.ts-gate__checks {
+  list-style: none;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: calc(18 * var(--c));
+  align-content: start;
+  padding: calc(12 * var(--c)) calc(19 * var(--c));
+  background: var(--ts-cream); /* 2026-11-06: off-white panel, black type */
+}
+.ts-gate__checks li {
+  padding: calc(9 * var(--c)) 0 calc(10 * var(--c));
+  border-bottom: 1px solid #cfcbc3;
+  font-size: calc(13 * var(--c));
+  color: var(--ts-ink);
+  white-space: nowrap;
+}
+
+/* Structure Summary + Key Benefits */
+.ts-summary {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  column-gap: calc(44 * var(--u));
+  margin-top: calc(70 * var(--u));
+}
+.ts-heavy {
+  font-family: var(--font);
+  font-weight: 900;
+  font-size: calc(40 * var(--u));
+  line-height: 1;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  color: var(--text);
+  padding-bottom: calc(22 * var(--u));
+  border-bottom: 1px solid var(--rule);
+  white-space: nowrap;
+}
+.ts-rows > div {
+  display: grid;
+  grid-template-columns: 37% 1fr;
+  column-gap: calc(16 * var(--u));
+  padding: calc(18 * var(--u)) 0;
+  border-bottom: 1px solid var(--rule);
+}
+.ts-rows dt {
+  font-family: var(--font);
+  font-weight: 800;
+  font-size: calc(13 * var(--u));
+  color: var(--text);
+}
+.ts-rows dd {
+  margin: 0;
+  font-family: var(--font);
+  font-size: calc(13 * var(--u));
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+.ts-checks { list-style: none; margin: 0; padding: 0; }
+.ts-checks li {
+  position: relative;
+  padding: calc(17 * var(--u)) 0 calc(17 * var(--u)) calc(26 * var(--u));
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--font);
+  font-weight: 800;
+  font-size: calc(14 * var(--u));
+  color: var(--text);
+}
+.ts-checks li::before {
+  content: "\2713";
+  position: absolute;
+  left: 0;
 }
 
 /* steps: rows of 80, columns 56 / 251 / rest */
@@ -452,14 +778,6 @@ textarea {
   line-height: 1.4;
   color: var(--text-body);
 }
-.closing {
-  margin-top: calc(26 * var(--u));
-  font-size: calc(29 * var(--u));
-  font-weight: 300;
-  line-height: 1.05;
-  color: var(--text-body);
-}
-
 @media (max-width: 760px) {
   .page { padding: 48px 16px 32px; }
   .display { font-size: clamp(40px, 12vw, 80px); white-space: normal; }

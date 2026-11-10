@@ -33,6 +33,17 @@ colours; `asset()` for JS asset paths; no `document.getElementById`, use
 Known limits: page 02's `touch-action: none` blocks touch-scrolling past it; pages 01/02 keep
 their rAF loops running off screen.
 
+**Split into per-project pages 2026-11-04** (user asked "separate each project and put them
+on their own page", wanting to be able to revert). The single scroll was committed and tagged
+`stitched-scroll` (local, commit 00cca60) as the revert point. Now `index.html` = splash + CT
+index (01) + AI Task Force (02); each project is a root `<project>.html` (styleshift,
+always-on-social, exporter, azure-retexture, excel = 07 + 08 together, since Cell Art is the
+second half of the Excel scroll journey) reusing the same header + `site.js`. `PAGE_HOME` in
+`site.js` maps slug -> file, so `../NN-slug/index.html` links jump within the document or
+navigate to that file. Project-page header: brand -> `index.html` (splash), Creative Tech ->
+`index.html#intro` (hash skips the splash). The section-scroll text above describes the
+pre-split design.
+
 **Page 04 (Always On Social, started 2026-10-21):** built from a design-spec JSON the user
 pasted (kept as `pages/04-always-on-social/spec.json`; a 1440 x 2350 dark page, every value
 mapped through `--u = width / 1440`). Built standalone first, then added to the stitched root site

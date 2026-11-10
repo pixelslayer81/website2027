@@ -54,6 +54,19 @@ are classic `<script src>` files rather than ES modules: Chrome/Edge refuse `imp
   screenshot; Read the PNG to see it. Works for `file://` URLs too. Do NOT trust Edge's plain
   `--headless --screenshot --virtual-time-budget` flag for this site: the pages' rAF loops burn
   the virtual time before fetch-loaded sections mount, so later sections screenshot blank.
+  Gotchas (2026-11-04): from the PowerShell tool (5.1), double quotes inside the `jsExpression`
+  argument are stripped and the eval reports `"Uncaught"`; write the JS with single quotes only.
+  Each run leaves a `tools/cdp-profile-<port>/` folder (~20 MB each, 3.8 GB had piled up); they
+  are git-ignored and safe to delete.
+  More (2026-11-10): the Bash tool passes the JS arg cleanly, so run headless-shot from Bash with
+  single quotes round the whole expression and double quotes inside. The eval is not async:
+  top-level `await` throws; return a `new Promise(...)` instead (the tool awaits it). An
+  expression that calls `location.reload()` kills the target ("Inspected target navigated").
+  `SHOT_DRAG` runs BEFORE the eval, so state the eval sets (a theme toggle) does not affect the
+  drag; use a URL that sets the state instead (`?theme=dark`, `?nosplash`). On the About page
+  the drawing layer sits UNDER the page content, so a drag over the photo or the name shows
+  nothing; drag across empty page. Even there the headless drag only left the cursor-follower
+  mark, not a full path, in both themes (unexplained; check paths in a real browser).
 - The Bash tool's git (Git for Windows under MSYS) refuses the repo with "dubious ownership"
   (seen 2026-10-21): `E:\Claude_Code\Projects\website` is owned by a different SID than the
   REDMOND user. Run `git config --global --add safe.directory E:/Claude_Code/Projects/website`

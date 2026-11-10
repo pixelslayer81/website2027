@@ -41,7 +41,7 @@ body {
 .page {
   position: relative;
   width: calc(1440 * var(--u));
-  height: calc(1976 * var(--u));
+  height: calc(2163.32 * var(--u)); /* 1976 + 6 rows added at the top (2026-11-04) */
   margin: 0 auto;
   overflow: hidden;
 }
@@ -62,7 +62,7 @@ body {
 }
 .grid--top {
   top: 0;
-  height: calc(28 * var(--row) * var(--u)); /* 28 rows: 874.16 */
+  height: calc(34 * var(--row) * var(--u)); /* 34 rows: 1061.48 (28 + 6 added at the top 2026-11-04) */
   background-color: var(--grid-top);
   background-image:
     linear-gradient(to right, var(--grid-line-top) 1px, transparent 1px),
@@ -70,8 +70,8 @@ body {
   background-size: calc(var(--col) * var(--u)) calc(var(--row) * var(--u));
 }
 .grid--lower {
-  top: calc(28 * var(--row) * var(--u));
-  height: calc((1976 - 28 * var(--row)) * var(--u));
+  top: calc(34 * var(--row) * var(--u));
+  height: calc((2163.32 - 34 * var(--row)) * var(--u));
   background-color: var(--bg);
 }
 /* the lower grid's few lines (sketch.js places them: LOWER_ROWS, LOWER_COLS) */
@@ -93,7 +93,7 @@ body {
   left: 0;
   top: 0;
   width: calc(1440 * var(--u));
-  height: calc(1976 * var(--u));
+  height: calc(2163.32 * var(--u));
   pointer-events: none;
 }
 
@@ -123,7 +123,7 @@ body {
 }
 .box--number {
   left: calc(1296 * var(--u));
-  top: calc(93.66 * var(--u));
+  top: calc(156.1 * var(--u)); /* 2026-11-04: +6 rows, then up 4 (was 93.66) */
   width: calc(72 * var(--u));
   height: calc(62.44 * var(--u));
   justify-content: center;
@@ -134,7 +134,7 @@ body {
 }
 .box--tagline {
   left: calc(936 * var(--u));
-  top: calc(156.1 * var(--u));
+  top: calc(218.54 * var(--u)); /* +6 rows, then up 4 (was 156.1) */
   width: calc(360 * var(--u));
   height: calc(62.44 * var(--u));
   justify-content: center;
@@ -173,10 +173,10 @@ body {
   .marquee { animation: none; }
 }
 .box--title {
-  left: calc(216 * var(--u));
-  top: calc(312.2 * var(--u));
-  width: calc(576 * var(--u));
-  height: calc(187.3 * var(--u));
+  left: calc(72 * var(--u)); /* two columns left 2026-11-04 (was 216) */
+  top: calc(405.86 * var(--u)); /* 2026-11-04: +6 rows, up 4, down 1 (was 312.2) */
+  width: calc(648 * var(--u)); /* 9 columns x 7 rows, one cell larger each way (was 576 x 187.3) */
+  height: calc(218.54 * var(--u));
   padding-left: calc(40 * var(--u));
   padding-bottom: calc(13 * var(--u)); /* letters sit a touch above centre, as in the reference */
   border: 1px solid var(--cell-border);
@@ -190,18 +190,22 @@ body {
   white-space: nowrap;
   overflow: hidden; /* masks the letters as they rise */
 }
-/* the Style Shift title's rise: letters come up from below the box one after
-   another, E first, once the title is in view (.is-in, set by the script) */
-.box--title .l {
-  display: inline-block;
-  transform: translateY(120%);
-  transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--i, 0) * 120ms);
+/* the title clip (excel_expand_half_v001.mp4, 874 x 294) fills the box, under
+   its border; scrubbed by the scroll (sketch.js SCRUB.clips). Was a
+   letter-by-letter rise until 2026-11-04. */
+.box--title {
+  padding: 0;
+  border: 0; /* no light green outline around the clip */
 }
-.box--title.is-in .l {
-  transform: translateY(0);
+/* the clip has an ~8px light green border baked in: scaled up past it while
+   it shows (the stills the script draws over it crop it off instead) */
+.box__video {
+  position: absolute;
+  inset: 0;
+  transform: scale(1.08);
 }
-@media (prefers-reduced-motion: reduce) {
-  .box--title .l { transform: none; transition: none; }
+.box--title .photo__frames {
+  z-index: 0;
 }
 
 /* body copy boxes */
@@ -222,7 +226,7 @@ body {
 }
 .box--what {
   left: calc(648 * var(--u));
-  top: calc(530.7 * var(--u));
+  top: calc(718.02 * var(--u)); /* +6 rows (was 530.7) */
   width: calc(576 * var(--u));
   height: calc(156.1 * var(--u)); /* 5 grid rows (was 4) so the 14px copy fits */
   padding: calc(28 * var(--u)) calc(30 * var(--u));
@@ -230,7 +234,7 @@ body {
 }
 .box--why {
   left: calc(936 * var(--u)); /* starts where the portrait ends, never over it */
-  top: calc(982.4 * var(--u));
+  top: calc(1169.72 * var(--u)); /* +6 rows (was 982.4) */
   width: calc(432 * var(--u));
   height: calc(208.6 * var(--u));
   padding: calc(24 * var(--u)) calc(22 * var(--u));
@@ -241,7 +245,7 @@ body {
 /* formula cells */
 .box--formula1 {
   left: calc(722.5 * var(--u));
-  top: calc(873.4 * var(--u));
+  top: calc(1060.72 * var(--u)); /* +6 rows (was 873.4) */
   width: calc(430.5 * var(--u));
   height: calc(55 * var(--u));
   padding-left: calc(20 * var(--u));
@@ -257,7 +261,7 @@ body {
 }
 .box--formula2 {
   left: calc(431.3 * var(--u));
-  top: calc(1682 * var(--u));
+  top: calc(1869.32 * var(--u)); /* +6 rows (was 1682) */
   width: calc(240 * var(--u)); /* past the column line at x 648, over the car's front bumper */
   height: calc(56 * var(--u));
   border: 1px solid var(--mint);
@@ -267,6 +271,24 @@ body {
   font-size: calc(23 * var(--u));
   /* tracking follows the car scrub (sketch.js SCRUB.clips): wide -> tight */
   letter-spacing: var(--track, 0.7em);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* = EXP(10) under the EXCEL title (2026-11-04): one row below it, 4 columns
+   by 1 row on the grid; the type of the TRIM boxes. Its tracking follows the
+   title clip (sketch.js SCRUB.clips): tight while flat -> wide once inflated */
+.box--formula3 {
+  left: calc(576 * var(--u));
+  top: calc(655.62 * var(--u)); /* title bottom (624.4) + 1 row */
+  width: calc(288 * var(--u));
+  height: calc(31.22 * var(--u));
+  border: 1px solid var(--mint);
+  padding-left: calc(14 * var(--u));
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: calc(17 * var(--u));
+  letter-spacing: var(--track, -0.04em);
   white-space: nowrap;
   overflow: hidden;
 }
@@ -307,6 +329,13 @@ body {
   object-fit: cover;
   object-position: 50% 50%;
 }
+/* hair.mp4 is a 1080 square picture (x 420-1499) inside a 1920 x 1080 clip with
+   black bars; a cover crop into the slightly-wider-than-square portrait frame
+   would show ~6px of bar each side while the plain clip is on screen (before
+   the script's stills take over), so it is scaled up past them */
+#portrait-video {
+  transform: scale(1.05);
+}
 .photo__video--car {
   object-position: 50% 50%;
 }
@@ -326,13 +355,29 @@ body {
 }
 .photo--portrait {
   left: calc(216 * var(--u)); /* two columns right (was 72) */
-  top: calc(842.94 * var(--u)); /* two rows down (was 780.5) */
+  top: calc(1030.26 * var(--u)); /* +6 rows 2026-11-04 (was 842.94) */
   width: calc(720 * var(--u)); /* 10 columns (was 12) */
-  height: calc(708.1 * var(--u)); /* down to the row line the car starts on, 1488.6 (was 861.7) */
+  height: calc(708.1 * var(--u)); /* down to the row line the car starts on, 1675.92 */
 }
 .photo--car {
   left: calc(577 * var(--u));
-  top: calc(1489 * var(--u));
+  top: calc(1676.32 * var(--u)); /* +6 rows (was 1489) */
   width: calc(792 * var(--u));
   height: calc(426 * var(--u));
+}
+
+/* 2026-11-05: the stat that comes with the ASCII globe (press and hold on the
+   grid): a dark cell box like "= EXP(10)" (no outline), placed by sketch.js
+   on the reveal's lower left, typed on as it opens, wiped off as it closes */
+.box--globe-stat {
+  display: none;
+  height: calc(31.22 * var(--u));
+  width: calc(216 * var(--u));
+  padding-left: calc(10 * var(--u));
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: calc(15 * var(--u));
+  white-space: nowrap;
+  overflow: hidden;
+  pointer-events: none;
 }

@@ -52,108 +52,38 @@ function mountPanel() {
   });
 }
 
-// ------------------------------------------------------------ scroll open
+// ------------------------------------------------------------ title rise
 
-// The frame opens while it rises into place: --open is 0 while the frame's
-// top is at or below OPEN_FROM of the window height (it has just come into
-// view) and 1 when the frame reaches its resting place at the top of the
-// window (64 units down, as on the standalone page). The copy band grows
-// with an ease, everything below slides down, and the black copy types on in
-// reading order with the raw progress. Scrolling back up closes it again.
-// Standalone, where the frame already sits at the top, the first stretch of
-// scrolling drives it instead.
-const OPEN_FROM = 1.0;   // frame top at this fraction of the window height -> 0 (the moment it enters the window)
-const BAND = 290;        // the copy band's open height (units; style.css --band: spec 210 + 80 for the 14px copy)
-const OPEN_TRAVEL = 320; // standalone only: px of scrolling to open
-const TYPE_START = 0.3;  // the typing waits for this much of the opening, then runs to the end with it
-const TYPE_RATE = 90;    // characters per second at the slowest: scroll sets the target, time types it
-const TYPE_CATCH = 100;  // ms: the typing closes most of any gap to the target within this, so it ends with the scroll
-let openRaf = 0;
-let lastOpen = 1; // the eased value last applied
+// 2026-11-05: the scroll-driven expand is gone (it opened the copy band as the
+// frame rose into place, slid everything below it down and typed the copy on).
+// The page now sits fully open (style.css --open defaults to 1) with all its
+// copy from the start. Only the title's letters still rise in, once the frame
+// is well into view (a quarter of the way up the window; at once standalone,
+// where it is in view from the start).
+const RISE_AT = 0.3; // how far the frame must have risen (0 = entering the window, 1 = at its resting place)
+let riseRaf = 0;
 const unit = () => Math.min(document.documentElement.clientWidth, 1560) / 1440; // the page's --u in px
-// the copy types on in two columns at once, both at the same speed: the left
-// column (What is it) and the right (Why we built it, then Click to play)
-let typeCols = []; // [{ els: [{ el, full }], total }]
-let typeLongest = 0; // characters in the longest column: the shared speed
-let typeTarget = 0;  // characters the scroll position asks for
-let typeShown = -1;  // characters on screen (chases the target); -1 until the first tick trims the markup's full text
-let typeRaf = 0;
-let typeLast = 0;
 
 function mountOpen() {
   const frame = $("#frame");
   if (!frame) return;
   if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) { frame.classList.add("is-in"); return; }
-  const cols = {};
-  for (const el of root.querySelectorAll(".type")) {
-    const key = el.dataset.col || "left";
-    cols[key] = cols[key] || { els: [], total: 0 };
-    cols[key].els.push({ el, full: el.textContent });
-    cols[key].total += el.textContent.length;
-  }
-  typeCols = Object.values(cols);
-  typeLongest = Math.max(...typeCols.map((c) => c.total), 1);
-  const onScroll = () => { if (!openRaf) openRaf = requestAnimationFrame(applyOpen); };
+  const onScroll = () => { if (!riseRaf) riseRaf = requestAnimationFrame(applyRise); };
   on(window, "scroll", onScroll, { passive: true });
   on(window, "resize", onScroll);
-  applyOpen();
+  applyRise();
 }
 
-function applyOpen() {
-  openRaf = 0;
+function applyRise() {
+  riseRaf = 0;
   const frame = $("#frame");
   const vh = window.innerHeight;
   const rest = 64 * unit(); // the frame's offset from the top of its page
-  const docTop = frame.getBoundingClientRect().top + window.scrollY; // stable while it opens
-  const arrive = docTop - rest;          // scrollY at which the frame rests at the top
-  const start = docTop - vh * OPEN_FROM; // scrollY at which its top is OPEN_FROM down the window
-  let p;
-  if (start > 0) {
-    p = (window.scrollY - start) / (arrive - start);
-  } else {
-    // standalone: the frame is in view from the first pixel, so the page's own
-    // scroll room opens it (kept inside what the page can scroll once open)
-    const openDocH = document.documentElement.scrollHeight + (1 - lastOpen) * BAND * unit();
-    const travel = Math.min(OPEN_TRAVEL, Math.max(120, (openDocH - vh) * 0.9));
-    p = window.scrollY / travel;
-  }
-  p = Math.min(1, Math.max(0, p));
-  // the title letters rise in once the frame is well into view, a quarter of
-  // the way up the window (always, standalone)
-  frame.classList.toggle("is-in", start <= 0 || p > 0.3);
-  const ease = p * p * (3 - 2 * p);
-  lastOpen = ease;
-  frame.style.setProperty("--open", ease.toFixed(4));
-  // the scroll position sets how much copy should be on screen; the typing
-  // itself runs on the clock towards that, so a big wheel step still types
-  // letter by letter instead of popping a line in at once
-  const tp = Math.min(1, Math.max(0, (p - TYPE_START) / (1 - TYPE_START))); // typing progress: starts later
-  typeTarget = Math.round(tp * typeLongest);
-  if (typeTarget !== typeShown && !typeRaf) { typeLast = 0; typeRaf = requestAnimationFrame(typeTick); }
-}
-
-function typeTick(now) {
-  typeRaf = 0;
-  const dt = typeLast ? Math.min(100, now - typeLast) : 16;
-  typeLast = now;
-  // at least TYPE_RATE, and faster the further behind the scroll it is, so a
-  // quick scroll still lands fully typed as the frame settles
-  const gap = Math.abs(typeTarget - typeShown);
-  const step = Math.max(1, Math.round(Math.max((TYPE_RATE * dt) / 1000, (gap * dt) / TYPE_CATCH)));
-  if (typeShown < typeTarget) typeShown = Math.min(typeTarget, typeShown + step);
-  else typeShown = Math.max(typeTarget, typeShown - step);
-  // every column shows the same number of characters: both sides type at one
-  // speed and the shorter side simply finishes first
-  for (const col of typeCols) {
-    let left = typeShown;
-    for (const t of col.els) {
-      const n = Math.max(0, Math.min(t.full.length, left));
-      const next = t.full.slice(0, n);
-      if (t.el.textContent !== next) t.el.textContent = next;
-      left -= t.full.length;
-    }
-  }
-  if (typeShown !== typeTarget) typeRaf = requestAnimationFrame(typeTick);
+  const docTop = frame.getBoundingClientRect().top + window.scrollY;
+  const arrive = docTop - rest; // scrollY at which the frame rests at the top
+  const start = docTop - vh;    // scrollY at which its top enters the window
+  const p = start > 0 ? (window.scrollY - start) / (arrive - start) : 1;
+  frame.classList.toggle("is-in", start <= 0 || p > RISE_AT);
 }
 
 // ------------------------------------------------------------- viewer
@@ -205,14 +135,8 @@ function mount(el) {
 
 function unmount() {
   clearTimeout(sendTimer);
-  cancelAnimationFrame(openRaf);
-  openRaf = 0;
-  cancelAnimationFrame(typeRaf);
-  typeRaf = 0;
-  typeCols = [];
-  typeLongest = 0;
-  typeTarget = 0;
-  typeShown = -1;
+  cancelAnimationFrame(riseRaf);
+  riseRaf = 0;
   for (const off of listeners) off();
   listeners = [];
 }

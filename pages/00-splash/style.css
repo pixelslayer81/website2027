@@ -27,7 +27,7 @@
   top: 0;
   z-index: 0;
   padding: 20px var(--splash-margin) 0;
-  color: #1b1a19;
+  color: var(--ui-ink);
 }
 .splash__mark {
   margin: 0;
@@ -45,7 +45,7 @@
   column-gap: var(--splash-margin);
   margin-top: 30px;
   padding-top: 20px;
-  border-top: 1px solid rgba(27, 26, 25, 0.8);
+  border-top: 1px solid var(--ui-rule);
 }
 .splash__meta,
 .splash__tags {
@@ -90,9 +90,9 @@
   font-weight: 500;
   letter-spacing: 0.03em;
   text-transform: uppercase;
-  color: #1b1a19;
+  color: var(--ui-ink);
   background: transparent;
-  border: 1.5px solid #1b1a19;
+  border: 1.5px solid var(--ui-ink);
   cursor: pointer;
   transition: background-color 160ms ease, color 160ms ease;
 }
@@ -102,9 +102,9 @@
 }
 .splash__cta--tech:hover,
 .splash__cta--tech:focus-visible {
-  background: #1b1a19;
-  border-color: #1b1a19;
-  color: #fff;
+  background: var(--ui-ink);
+  border-color: var(--ui-ink);
+  color: var(--ui-ink-contrast);
   outline: none;
 }
 .splash__cta--motion {

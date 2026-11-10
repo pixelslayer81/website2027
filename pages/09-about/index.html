@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="../../shared/tokens.css">
   <link rel="stylesheet" href="../../site.css"> <!-- the site header, as on the main page -->
   <link rel="stylesheet" href="style.css">
+  <script src="../../shared/theme.js"></script> <!-- light / dark, before the first paint -->
 </head>
 <body>
   <!-- the main site's header bar, as on the main page: the brand goes to the
@@ -24,6 +25,7 @@
       <a class="site-index" href="../../index.html#intro" id="site-index">Creative Tech</a>
       <button type="button" class="site-index" id="site-index-md">Motion Design</button>
       <a class="site-index" href="index.html" id="site-about" aria-current="page">About</a>
+      <button type="button" class="site-index site-theme" id="site-theme" aria-pressed="true" title="Switch to light mode"><span class="site-theme__dot" aria-hidden="true"></span><span class="site-theme__label">Dark mode</span></button>
     </nav>
   </header>
   <!-- Built from the "Résumé (Dark index A)" spec the user supplied 2026-10-26:

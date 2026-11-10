@@ -6,6 +6,12 @@
   --pencil-rgb: 52, 52, 58; /* graphite, for pencil-style canvas marks */
   --ink: #111111;
 
+  /* the site chrome (header, project footer, splash masthead): type on --bg,
+     type on a --ui-ink fill, and a thin rule */
+  --ui-ink: #1b1a19;
+  --ui-ink-contrast: #ffffff;
+  --ui-rule: rgba(27, 26, 25, 0.8);
+
   --font-sans: Consolas, "Cascadia Mono", "SF Mono", Menlo, "DejaVu Sans Mono", monospace;
 
   --text-sm: 14px;
@@ -13,4 +19,17 @@
 
   --gutter: 16px;
   --measure: 370px; /* width of the centered copy block */
+}
+
+/* Dark mode (2026-11-10): shared/theme.js sets data-theme="dark" on <html> on
+   the home and the About page only (the project pages never load it and stay
+   light). The warm white becomes a dark black; custom properties inherit into
+   the pages' shadow roots, so page 01 and the splash follow. */
+:root[data-theme="dark"] {
+  --bg: #222221;
+  --ink: #fcf9f4;
+  --pencil-rgb: 214, 212, 205; /* a light graphite, so the flock reads on the dark page */
+  --ui-ink: #fcf9f4;
+  --ui-ink-contrast: #222221;
+  --ui-rule: rgba(252, 249, 244, 0.8);
 }

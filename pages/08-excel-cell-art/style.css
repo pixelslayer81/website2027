@@ -90,10 +90,12 @@ body {
 
 #sheet-scroll {
   flex: 1;
-  overflow: auto;
+  overflow: hidden; /* 2026-11-05: locked to its frame: no scrollbars, no scrolling */
+  scrollbar-width: none;
   position: relative;
 }
 
+/* 2026-11-05: the sheet's cells (and headers, type) 25% smaller: 40 x 20 -> 30 x 15 */
 table.sheet {
   border-collapse: collapse;
   table-layout: fixed;
@@ -102,17 +104,17 @@ table.sheet {
 table.sheet th.sh-corner {
   background: #0a3d26;
   border: 1px solid #1a6b45;
-  width: 34px; min-width: 34px;
-  height: 20px;
+  width: 25.5px; min-width: 25.5px;
+  height: 15px;
   position: sticky; top: 0; left: 0;
   z-index: 3;
 }
 table.sheet th.sh-col {
   background: #0a3d26;
   border: 1px solid #1a6b45;
-  min-width: 40px; width: 40px; max-width: 40px; height: 20px;
+  min-width: 30px; width: 30px; max-width: 30px; height: 15px;
   font-family: 'Segoe UI', sans-serif;
-  font-size: 10px; font-weight: 600;
+  font-size: 7.5px; font-weight: 600;
   color: #73D961;
   text-align: center;
   position: sticky; top: 0; z-index: 2;
@@ -124,9 +126,9 @@ table.sheet th.sh-col.sh-active {
 table.sheet th.sh-row {
   background: #0a3d26;
   border: 1px solid #1a6b45;
-  width: 34px; min-width: 34px; height: 20px;
+  width: 25.5px; min-width: 25.5px; height: 15px;
   font-family: 'Segoe UI', sans-serif;
-  font-size: 10px; font-weight: 600;
+  font-size: 7.5px; font-weight: 600;
   color: #73D961;
   text-align: center;
   position: sticky; left: 0; z-index: 1;
@@ -137,10 +139,10 @@ table.sheet th.sh-row.sh-active {
 }
 table.sheet td.sh-cell {
   border: 1px solid #1a6b45;
-  width: 40px; min-width: 40px; max-width: 40px; height: 20px;
-  padding: 0 3px;
+  width: 30px; min-width: 30px; max-width: 30px; height: 15px;
+  padding: 0 2px;
   font-family: 'Segoe UI', sans-serif;
-  font-size: 11px;
+  font-size: 8.25px;
   color: #d0f0d0;
   background: #0F4F32;
   cursor: cell;
@@ -168,9 +170,9 @@ table.sheet td.sh-cell.sh-editing {
   display: none;
   position: absolute; inset: 0;
   border: none; outline: none;
-  padding: 0 3px;
+  padding: 0 2px;
   font-family: 'Segoe UI', sans-serif;
-  font-size: 11px;
+  font-size: 8.25px;
   color: #fff;
   background: rgba(0,0,0,0.25);
 }
@@ -213,9 +215,9 @@ table.sheet td.sh-cell.sh-editing .sh-editor { display: block; }
 }
 #scribble {
   position: absolute;
-  left: -3px;
-  top: 20px;
-  width: 71.4px;
+  left: -0.0375em; /* -3px at 80px: scales with the headline */
+  top: 0.25em;
+  width: 0.8925em;
   height: auto;
   z-index: 2;
   pointer-events: none;
@@ -319,6 +321,7 @@ table.sheet td.sh-cell.sh-editing .sh-editor { display: block; }
   font-weight: 400;
   color: #000;
   line-height: 1.4;
+  white-space: nowrap; /* 2026-11-05: each sentence line stays one line (the per-letter spans could break mid-word) */
 }
 .text-line span {
   display: inline-block;
@@ -336,12 +339,12 @@ table.sheet td.sh-cell.sh-editing .sh-editor { display: block; }
   pointer-events: auto;
   cursor: default;
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 39px;
+  font-size: 31.2px; /* 2026-11-05: 20% smaller (was 39px), padding with it */
   font-weight: 400;
   color: #000;
   white-space: nowrap;
   background: #fff;
-  padding: 10px 17px;
+  padding: 8px 13.6px;
   border: 2px dashed #0F4F32;
   overflow: hidden; /* one name wide (sketch.js sets the width): masks the marquee */
 }
@@ -441,6 +444,7 @@ table.sheet td.sh-cell.sh-editing .sh-editor { display: block; }
 .grid-hover:hover {
   background: #0F4F32;
 }
+.click-label.half-active,
 .click-label.erase-active {
   color: #73D961;
   font-style: italic;
@@ -507,7 +511,7 @@ table.sheet td.sh-cell.sh-editing .sh-editor { display: block; }
 #thumb-overlays {
   position: absolute;
   inset: 0;
-  z-index: 24;
+  z-index: 60; /* over everything on the page (moved out of the sheet 2026-11-05) */
   pointer-events: none;
 }
 .overlay-frame {
@@ -587,8 +591,11 @@ table.sheet td.sh-cell.sh-editing .sh-editor { display: block; }
   position: absolute;
   z-index: 23;
   pointer-events: none;
-  width: 250px;
+  width: 201.25px; /* 2026-11-05: 30% smaller (was 250), then 15% up (175 x 1.15) */
   height: auto;
+  aspect-ratio: 1 / 1; /* the clip is 640 x 640: right size before it loads */
+  display: block;
+  object-fit: cover;
   border: none;
   box-shadow: none;
 }
@@ -598,7 +605,7 @@ table.sheet td.sh-cell.sh-editing .sh-editor { display: block; }
   z-index: 21;
   background: #0F4F32;
   width: 25px;
-  height: calc(16.3 * var(--u));
+  height: calc(22.82 * var(--u));
   pointer-events: auto;
   cursor: pointer;
   transition: background 0.2s ease;
@@ -612,7 +619,7 @@ table.sheet td.sh-cell.sh-editing .sh-editor { display: block; }
   background: #fff;
   border: 1px solid #0F4F32;
   width: 181px;
-  height: calc(16.3 * var(--u));
+  height: calc(22.82 * var(--u));
   pointer-events: none;
   overflow: hidden;
   margin-left: 0px;
@@ -625,7 +632,7 @@ table.sheet td.sh-cell.sh-editing .sh-editor { display: block; }
   font-weight: 700;
   color: #000;
   letter-spacing: 0.05em;
-  line-height: calc(16.3 * var(--u));
+  line-height: calc(22.82 * var(--u));
   animation: startBox2Scroll 24s linear infinite;
 }
 @keyframes startBox2Scroll {
@@ -641,3 +648,69 @@ table.sheet td.sh-cell.sh-editing .sh-editor { display: block; }
   right: 8px;
   font-size: 14px;
 }
+
+/* 2026-11-05: the prompt box is a text field: type a prompt; its placeholder
+   ("prompt your art") sits top left */
+#prompt-fill {
+  display: none;
+  overflow: hidden;
+  pointer-events: auto;
+}
+#prompt-fill .prompt-input {
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 10px 20px;
+  border: none;
+  outline: none;
+  resize: none;
+  background: transparent;
+  font-family: 'Times New Roman', Georgia, serif;
+  font-size: 23px;
+  font-style: italic;
+  line-height: 1.2;
+  color: #0F4F32;
+  cursor: text;
+}
+#prompt-fill .prompt-input::placeholder {
+  color: #0F4F32;
+  opacity: 0.75;
+}
+#prompt-fill:focus-within {
+  box-shadow: inset 0 0 0 2px #48A346;
+}
+
+/* 2026-11-05: save is a filled button, like generate: green with white type */
+#click-label2 {
+  background: #0F4F32;
+  color: #fff;
+}
+#click-label2:hover {
+  color: #73D961;
+}
+
+/* 2026-11-05: the tool type 15% smaller (23 -> 19.55px, generate 24 -> 20.4px)
+   and centred exactly between its guides: each label's text box is trimmed to
+   its x-height and baseline (text-box), so the flex centring centres the
+   letters themselves, not the font's line box */
+.click-label { font-size: 19.55px; }
+#click-label6 { font-size: 20.4px; }
+.click-label > .cl-text {
+  display: inline-block; /* centred on its x-height by sketch.js (font metrics) */
+}
+#prompt-fill .prompt-input { font-size: 19.55px; }
+/* the labels are clear: one unbroken light green fill (#tools-fill) runs under
+   the whole tool column, under the dashed grid, which draws on top of it; hover /
+   active still turn a label dark green */
+.click-label.label-box { background: transparent; }
+#tools-fill {
+  position: absolute;
+  z-index: 19; /* under the guides (#gridlines, 20) and the tools (21) */
+  display: none;
+  background: #DDEFD6; /* lighter than the #BEE1B0 swatch */
+  pointer-events: none;
+}
+.click-label.label-box:hover,
+.click-label.label-box.erase-active,
+.click-label.label-box.half-active { background: #0F4F32; }

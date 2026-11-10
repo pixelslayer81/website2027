@@ -35,11 +35,13 @@ function mountMarquee() {
 // ------------------------------------------------------------- draw-on
 
 // Every .draw element (the title, the statement) fills in letter by letter
-// as the user scrolls: progress 0 when its top enters the lower part of the
-// viewport, 1 when its bottom has risen to mid-screen. Progress maps onto
-// the letters in reading order.
-const DRAW_START = 0.92; // element top at this fraction of the viewport height -> 0
-const DRAW_END = 0.5;    // element bottom at this fraction -> 1
+// as the user scrolls: progress 0 until the whole element is on screen (its
+// bottom at DRAW_START), so it arrives completely gray; 1 when its bottom has
+// risen to DRAW_END. Progress maps onto the letters in reading order.
+// (2026-11-04: was top at 0.92 -> bottom at 0.5, which lit "Product update.
+// Brand Brain" before the statement was fully in view.)
+const DRAW_START = 0.85; // element bottom at this fraction of the viewport height -> 0
+const DRAW_END = 0.35;   // element bottom at this fraction -> 1
 let drawTargets = []; // { el, letters, lit }
 let drawRaf = 0;
 
@@ -81,7 +83,7 @@ function drawOn() {
   const vh = window.innerHeight;
   for (const t of drawTargets) {
     const r = t.el.getBoundingClientRect();
-    const from = vh * DRAW_START;          // where the top starts the fill
+    const from = vh * DRAW_START - r.height; // where the top is when the fill starts (all of it in view)
     const to = vh * DRAW_END - r.height;   // where the top is when the fill ends
     const p = Math.min(1, Math.max(0, (from - r.top) / (from - to)));
     const lit = Math.round(p * t.letters.length);

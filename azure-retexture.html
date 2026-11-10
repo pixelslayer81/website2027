@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Azure Visual Expansion &mdash; Design &amp; Technology</title>
+  <meta name="description" content="Azure Visual Expansion.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wdth,wght@62..125,100..900&family=Inter:wght@200;300;400;500;600;700;800;900&family=Open+Sans:wght@300;400&family=Space+Mono&family=Tinos:ital@0;1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="shared/reset.css">
+  <link rel="stylesheet" href="shared/tokens.css">
+  <link rel="stylesheet" href="site.css">
+</head>
+<body>
+  <!-- A project page: same header and loader (site.js) as the home, index.html.
+       Pixelslayer.tv goes to the home's splash; Creative Tech to the CT index,
+       already formed (#intro skips the splash). Generated from one template
+       with the other project pages; keep them in step. -->
+  <header class="site-header" id="site-header">
+    <a class="site-brand" href="index.html">Pixelslayer.tv</a>
+    <nav class="site-nav" aria-label="Indexes">
+      <a class="site-index" href="index.html#intro" id="site-index" aria-current="page">Creative Tech</a>
+      <button type="button" class="site-index" id="site-index-md">Motion Design</button>
+      <a class="site-index" href="pages/09-about/index.html" id="site-about">About</a>
+    </nav>
+  </header>
+
+  <main id="site">
+    <section class="site-page" id="azure-retexture" data-page="06-azure-retexture"></section>
+  </main>
+
+  <!-- Index / Back / Next (Index, 2026-11-10: the home's CT index, already formed; the projects in CT index order, wrapping round (Intro <-> Excel)) -->
+  <footer class="site-footer">
+    <p class="site-footer__next">
+      <span class="site-footer__label">Up next</span>
+      <span class="site-footer__title">Excel</span>
+    </p>
+    <div class="site-footer__buttons">
+      <a class="site-footer__button site-footer__button--index" href="index.html#intro">Index</a>
+      <a class="site-footer__button" href="exporter.html"><span aria-hidden="true">&larr;</span> Back</a>
+      <a class="site-footer__button" href="excel.html">Next <span aria-hidden="true">&rarr;</span></a>
+    </div>
+  </footer>
+
+  <!-- Shown when the page cannot be fetched (opened from file://, or no server) -->
+  <nav class="site-fallback" id="site-fallback" hidden aria-label="Pages">
+    <p class="site-fallback__note">This page needs a web server (from the repo root: <code>python -I tools/serve.py</code>, then open <code>http://127.0.0.1:8080/</code>). It still opens on its own:</p>
+    <ol>
+      <li><a href="pages/06-azure-retexture/index.html">06-azure-retexture</a></li>
+    </ol>
+  </nav>
+
+  <script src="site.js"></script>
+</body>
+</html>

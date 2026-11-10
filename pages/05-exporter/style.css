@@ -50,7 +50,7 @@ button {
 }
 
 .frame {
-  --open: 1; /* 0 = collapsed (no copy band), 1 = the full spec layout; the script drives it */
+  --open: 1; /* 0 = collapsed (no copy band), 1 = the full spec layout; always 1 since 2026-11-05 (the scroll expand was removed) */
   --band: calc(290 * var(--u) * var(--open)); /* the copy band's current height (spec 210; +80 for the 14px copy) */
   position: relative;
   width: calc(1300 * var(--u));
