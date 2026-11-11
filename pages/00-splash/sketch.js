@@ -5,7 +5,14 @@
 //   1. start frame: a masthead (PIXELSLAYER wordmark, rule, info row with the
 //      Creative Tech / Motion Design buttons) over the girl video, inset by a
 //      border; header as usual. It waits here until Creative Tech is clicked
-//      (the header link or the masthead button).
+//      (the header link or the masthead button). Motion Design (2026-11-11)
+//      turns this start frame into the Motion Design index's (site.js
+//      switchIndex swaps the index rows, headline and colours in place, no
+//      reload, so the picture never drops out) and plays the same transition
+//      into that index. On the Motion Design index (motion.html, a twin of the
+//      home) the roles swap. Without the site's switch (no handler set) the
+//      button falls back to opening the other page with a one-shot "play"
+//      flag, which plays the transition from its start frame after a reload.
 //   2. the photo rises to its CT index place, covering (masking off) the
 //      masthead, while its borders open out and the picture parallaxes inside
 //   3. DESIGN / & TECHNOLOGY rise into place through a mask inside the photo
@@ -31,8 +38,9 @@ const SPLASH = {
   mark: "Pixelslayer",
   tags: ["[Creative Technologist]", "[3D &middot; Motion &middot; AI]", "[20+ yrs]"],
   meta: ["[AI Task Force] &middot; [Microsoft]", "[Est. 2005] &middot; Palm Springs"],
-  ctaTech: "[Creative Tech &rarr;]", // plays the transition, like the header's Creative Tech
-  ctaMotion: "[Motion Design &rarr;]", // not wired yet, like the header's Motion Design
+  ctaTech: "[Creative Tech &rarr;]", // the home's own: plays the transition, like the header's Creative Tech
+  ctaMotion: "[Motion Design &rarr;]", // the Motion Design index's own; on the home it hands over to motion.html (2026-11-11)
+  handoff: 150, // ms on the start frame after arriving from the other index's splash, before the photo moves
   margin: 24, // px: the page margin; also the photo's left / right / bottom border on the start frame
   photoGap: 18, // px between the masthead and the photo's top edge at the start
   videoWait: 1500, // ms at most to wait for the video's first picture before starting
@@ -61,10 +69,20 @@ let fill = 0; // px from the box's top to the window's bottom on the start frame
 
 const later = (ms, fn) => timers.push(setTimeout(fn, ms));
 
+// which index this page is (2026-11-11): the home (Creative Tech) or the
+// Motion Design index (motion.html, body.site-motion). Its own button plays the
+// transition here; the other one hands over to the other page.
+let own = document.body && document.body.classList.contains("site-motion") ? "motion" : "tech";
+let otherHome = own === "motion" ? "index.html" : "motion.html";
+let handOverHandler = null; // set by site.js: the in-place switch (switchIndex)
+
 // The transition only ever runs from the splash. A CT Index click from further
 // down the site reloads with a one-shot sessionStorage "skip" flag, and the
 // About page links to index.html#intro, so both open on the CT index already
-// formed. ?splash plays straight through, for previewing. Read once, at load.
+// formed. ?splash plays straight through, for previewing. A one-shot "play"
+// flag (set by the other index's splash, 2026-11-11) does the same after a
+// short handoff hold; it is the only way the Motion Design index shows the
+// splash at all. Read once, at load.
 const flag = (() => {
   let v = null;
   try {
@@ -73,10 +91,11 @@ const flag = (() => {
   } catch (err) {}
   return v;
 })();
-const autoplay = /[?&]splash\b/.test(location.search);
+const autoplay = flag === "play" || /[?&]splash\b/.test(location.search);
 
 function wanted() {
   if (flag === "skip") return false;
+  if (own === "motion" && !autoplay) return false; // the Motion Design index opens formed unless a splash sent us here
   if (location.hash || /[?&]nosplash\b/.test(location.search)) return false;
   if (window.scrollY > 0) return false;
   if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return false;
@@ -101,8 +120,10 @@ function mount(shadowRoot) {
   head.className = "splash__head";
   head.innerHTML = headHTML();
   page.prepend(head);
-  const cta = head.querySelector(".splash__cta--tech");
-  if (cta) cta.addEventListener("click", start);
+  const mine = head.querySelector(".splash__cta--own");
+  if (mine) mine.addEventListener("click", start);
+  const other = head.querySelector(".splash__cta:not(.splash__cta--own)");
+  if (other) other.addEventListener("click", handOver);
   layout(head);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (running && !started) layout(head); });
   // the crop and parallax depend on the video's shape, known once it loads
@@ -122,8 +143,8 @@ function headHTML() {
       <p class="splash__meta">${meta}</p>
       <ul class="splash__tags">${tags}</ul>
       <div class="splash__ctas">
-        <button type="button" class="splash__cta splash__cta--tech">${s.ctaTech}</button>
-        <button type="button" class="splash__cta splash__cta--motion" title="Coming soon">${s.ctaMotion}</button>
+        <button type="button" class="splash__cta splash__cta--tech${own === "tech" ? " splash__cta--own" : ""}">${s.ctaTech}</button>
+        <button type="button" class="splash__cta splash__cta--motion${own === "motion" ? " splash__cta--own" : ""}">${s.ctaMotion}</button>
       </div>
     </div>`;
 }
@@ -162,12 +183,37 @@ function layout(head) {
 function ready() {
   if (!running || !page) return;
   isWaiting = true;
-  if (autoplay) play(SPLASH.hold);
+  if (autoplay) play(flag === "play" ? SPLASH.handoff : SPLASH.hold);
 }
 
-/** CT Index on the start frame. */
+/** The page's own index button on the start frame. */
 function start() {
   play(0);
+}
+
+/** The other index's button on the start frame (2026-11-11): the site swaps
+    this start frame into the other index's and plays the transition in place
+    (onHandOver); without that, over to that page, which opens on the same
+    start frame and plays. */
+function handOver() {
+  if (!waiting()) return;
+  if (handOverHandler) { handOverHandler(own === "motion" ? "tech" : "motion"); return; }
+  try { sessionStorage.setItem("splash", "play"); } catch (err) {}
+  location.href = otherHome;
+}
+function onHandOver(fn) { handOverHandler = fn; }
+
+/** The page has become the other index (site.js switchIndex, 2026-11-11):
+    swap which masthead button is the page's own, and hide the new rows until
+    their wipe, like the originals. */
+function setOwn(which) {
+  own = which;
+  otherHome = own === "motion" ? "index.html" : "motion.html";
+  if (!root) return;
+  const tech = root.querySelector(".splash__cta--tech"), motion = root.querySelector(".splash__cta--motion");
+  if (tech) tech.classList.toggle("splash__cta--own", own === "tech");
+  if (motion) motion.classList.toggle("splash__cta--own", own === "motion");
+  for (const row of root.querySelectorAll(".index__row")) row.classList.add("is-pre");
 }
 
 function waiting() {
@@ -262,5 +308,5 @@ function unmount() {
   page = null;
 }
 
-window.SplashSketch = { wanted, mount, ready, waiting, start, unmount };
+window.SplashSketch = { wanted, mount, ready, waiting, start, handOver, onHandOver, setOwn, unmount };
 })();

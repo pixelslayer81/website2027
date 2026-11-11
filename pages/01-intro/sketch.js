@@ -232,6 +232,8 @@ function slide(m, fromEdge, toVisible) {
   }
 }
 
+let glyphText = GLITCH.glyphText; // the glitch bands' letters (set at mount)
+
 function mountIndex(el) {
   rows = Array.from(el.querySelectorAll(".index__row"));
   const list = el.querySelector(".index__list");
@@ -702,7 +704,7 @@ function drawStreak(s, t) {
       ctx.textBaseline = "top";
       ctx.fillStyle = s.dark ? "rgba(20, 20, 24, 0.85)" : "rgba(235, 235, 240, 0.9)";
       const step = size * 0.95;
-      const text = GLITCH.glyphText;
+      const text = glyphText;
       const rows = s.rows || 1;
       for (let j = 0; j < rows; j++) {
         const n = Math.floor(len / step);
@@ -989,6 +991,10 @@ function mountParallax(el) {
 // ---------------------------------------------------------------- api
 
 function mount(el) {
+  // 2026-11-11: the glitch's glyph bands spell the page's headline: the
+  // Motion Design index (pages/11-motion) sets data-glyph-text on its page,
+  // the CT index keeps the default
+  glyphText = (el.dataset && el.dataset.glyphText) || GLITCH.glyphText;
   mountIndex(el);
   mountGlitch(el);
   mountParallax(el);
@@ -1022,5 +1028,13 @@ function burst(ms = 1400) {
   startLoop();
 }
 
-window.IntroSketch = { mount, unmount, burst };
+// 2026-11-11: the home and the Motion Design index swap in place (site.js
+// switchIndex, on the splash's start frame): once the rows' markup has been
+// replaced, remountIndex builds the new rows' banners and hover (the old rows
+// are gone from the DOM; their listeners are harmless); setGlyphText re-letters
+// the glitch bands.
+function remountIndex(el) { mountIndex(el); }
+function setGlyphText(text) { glyphText = text || GLITCH.glyphText; }
+
+window.IntroSketch = { mount, unmount, burst, remountIndex, setGlyphText };
 })();

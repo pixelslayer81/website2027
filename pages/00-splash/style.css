@@ -32,6 +32,7 @@
 .splash__mark {
   margin: 0;
   color: var(--accent);
+  transition: color 320ms ease; /* 2026-11-11: red <-> blue when the start frame switches index in place */
   font-size: 14.8vw; /* ~213px at 1440: ends ~90% across, as in the mockup */
   font-weight: 400;
   line-height: 0.86;
@@ -72,6 +73,7 @@
   list-style: none;
   color: var(--accent);
   line-height: 19px;
+  transition: color 320ms ease; /* (as the wordmark) */
 }
 .splash__ctas {
   grid-column: 3;
@@ -94,21 +96,36 @@
   background: transparent;
   border: 1.5px solid var(--ui-ink);
   cursor: pointer;
-  transition: background-color 160ms ease, color 160ms ease;
+  transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease;
 }
-.splash__cta--tech {
+/* the page's own index button (Creative Tech on the home, Motion Design on the
+   Motion Design index) is filled with the page's accent; the other is outlined
+   and rolls over in ITS index's colour: blue for Motion Design, red for
+   Creative Tech (2026-11-11) */
+.splash__cta--own {
   background: var(--accent);
   border-color: var(--accent);
 }
-.splash__cta--tech:hover,
-.splash__cta--tech:focus-visible {
+.splash__cta--own:hover,
+.splash__cta--own:focus-visible {
   background: var(--ui-ink);
   border-color: var(--ui-ink);
   color: var(--ui-ink-contrast);
   outline: none;
 }
-.splash__cta--motion {
-  cursor: default; /* not wired yet */
+.splash__cta--motion:not(.splash__cta--own):hover,
+.splash__cta--motion:not(.splash__cta--own):focus-visible {
+  background: var(--accent-motion);
+  border-color: var(--accent-motion);
+  color: #fff;
+  outline: none;
+}
+.splash__cta--tech:not(.splash__cta--own):hover,
+.splash__cta--tech:not(.splash__cta--own):focus-visible {
+  background: var(--accent-tech);
+  border-color: var(--accent-tech);
+  color: #fff;
+  outline: none;
 }
 
 /* ── the photo: never scaled. The box keeps its CT index size and the picture

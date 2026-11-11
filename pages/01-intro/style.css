@@ -157,7 +157,7 @@ body {
   align-items: center;
   column-gap: 1vw;
   padding: var(--row-pad) 1.6vw var(--row-pad) var(--index-indent);
-  color: var(--accent);
+  color: var(--index-ink, var(--accent)); /* 2026-11-10: white in dark mode (tokens.css) */
   text-decoration: none;
   transition: background-color 120ms ease, color 120ms ease;
 }
@@ -213,7 +213,7 @@ body {
   position: absolute;
   inset: 0;
   background: var(--accent);
-  color: var(--bg);
+  color: var(--marquee-ink, var(--bg)); /* 2026-11-10: pink in dark mode (tokens.css) */
   pointer-events: none;
   transform: translate3d(0, 101%, 0);
   will-change: transform;

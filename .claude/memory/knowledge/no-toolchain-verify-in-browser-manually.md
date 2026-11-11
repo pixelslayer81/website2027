@@ -67,6 +67,18 @@ are classic `<script src>` files rather than ES modules: Chrome/Edge refuse `imp
   the drawing layer sits UNDER the page content, so a drag over the photo or the name shows
   nothing; drag across empty page. Even there the headless drag only left the cursor-follower
   mark, not a full path, in both themes (unexplained; check paths in a real browser).
+  Video frames (2026-11-10): to SEE a reference video, do not seek a <video> in headless Edge:
+  every seek returned the same first frame (an H.264 from After Effects; HEVC was not the
+  cause, and the WinRT transcoder copy behaved the same). Instead play() it and capture with
+  requestVideoFrameCallback into a contact-sheet canvas (a temporary tools/_play.html served by
+  serve.py, screenshot with headless-shot, then deleted). The Shell "Video compression"
+  property is empty for these files; the codec fourcc is readable from the mp4 stsd box.
+  Reusable recipe (2026-11-10): the contact-sheet page also works from `file://` in the
+  scratchpad next to a copy of the video (no server needed); give it `?step=0.033&cols=2&t0=1.4&t1=2.2`
+  style params to zoom on a time window, pass `window.done` (a Promise) as the eval, and raise
+  `SHOT_H` so the whole sheet is captured. A 4 s clip at 80 ms steps reads fine at 6 columns.
+  headless-shot runs Edge with `--disable-gpu` (software raster), so GPU compositing artefacts
+  never reproduce in it: see [[compositor-layer-pop-on-transitioned-text]].
 - The Bash tool's git (Git for Windows under MSYS) refuses the repo with "dubious ownership"
   (seen 2026-10-21): `E:\Claude_Code\Projects\website` is owned by a different SID than the
   REDMOND user. Run `git config --global --add safe.directory E:/Claude_Code/Projects/website`

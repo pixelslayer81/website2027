@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Design &amp; Motion</title>
+  <meta name="description" content="Joseph Andrade: motion design projects for Apple and Microsoft.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wdth,wght@62..125,100..900&family=Inter:wght@200;300;400;500;600;700;800;900&family=Open+Sans:wght@300;400&family=Space+Mono&family=Tinos:ital@0;1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="shared/reset.css">
+  <link rel="stylesheet" href="shared/tokens.css">
+  <link rel="stylesheet" href="site.css">
+  <script src="shared/theme.js"></script> <!-- light / dark, before the first paint -->
+</head>
+<body class="site-home site-motion">
+  <!-- 2026-11-11: the Motion Design index, a twin of the home (index.html): same header, loader,
+       theme switch and splash. It opens formed; sent here from the home's splash (Motion Design
+       there) it opens on the splash's start frame, in blue, and plays the same transition into
+       this index (site.js mountHeader, pages/00-splash). Pixelslayer.tv goes to the home's splash.
+       The page is pages/11-motion, which shares page 01's sketch and styles with the DESIGN blue. -->
+  <header class="site-header" id="site-header">
+    <a class="site-brand" href="index.html">Pixelslayer.tv</a>
+    <nav class="site-nav" aria-label="Indexes">
+      <a class="site-index" href="index.html#intro" id="site-index">Creative Tech</a>
+      <a class="site-index" href="motion.html" id="site-index-md" aria-current="page">Motion Design</a>
+      <a class="site-index" href="pages/09-about/index.html" id="site-about">About</a>
+      <button type="button" class="site-index site-theme" id="site-theme" aria-pressed="true" title="Switch to light mode"><span class="site-theme__dot" aria-hidden="true"></span><span class="site-theme__label">Dark mode</span></button>
+    </nav>
+  </header>
+
+  <main id="site">
+    <section class="site-page" id="motion" data-page="11-motion"></section>
+  </main>
+
+  <!-- Shown when the pages cannot be fetched (opened from file://, or no server) -->
+  <nav class="site-fallback" id="site-fallback" hidden aria-label="Pages">
+    <p class="site-fallback__note">This page needs a web server (from the repo root: <code>python -I tools/serve.py</code>, then open <code>http://127.0.0.1:8080/motion.html</code>). It still opens on its own:</p>
+    <ol>
+      <li><a href="pages/11-motion/index.html">Design &amp; Motion</a></li>
+      <li><a href="pages/09-about/index.html">About</a></li>
+    </ol>
+  </nav>
+  <noscript>
+    <nav class="site-fallback" aria-label="Pages">
+      <ol>
+        <li><a href="pages/11-motion/index.html">Design &amp; Motion</a></li>
+        <li><a href="pages/09-about/index.html">About</a></li>
+      </ol>
+    </nav>
+  </noscript>
+
+  <!-- the splash over the index, only when the home's splash sent us here (pages/00-splash); before site.js, which runs it -->
+  <script src="pages/00-splash/sketch.js"></script>
+  <script src="site.js"></script>
+</body>
+</html>

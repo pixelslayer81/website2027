@@ -1,0 +1,480 @@
+/* Page 10: Dotdasher. Laid out from the user's mockup (1509 x 1662, 2026-11-10):
+   --u = page width / 1509 (capped at 1560px wide), so every size below is the
+   mockup's own pixel value. A dark page; the project pages have no theme. */
+:root,
+:host {
+  --dd-bg: #2a2a28; /* the page */
+  --dd-ink: #1d1d1b; /* the app canvas, the sidebar panels, the title on the card */
+  --dd-yellow: #28a2e5; /* the accent: the title card, CLICK TO PLAY DEMO, TRY IT. 2026-11-10: the user's light blue swatch (was yellow #e1c45d) */
+  --dd-pink: #fbc1f2; /* the copy headings */
+  --dd-cream: #eae4dc; /* the demo frame, the sidebar type and the on tab */
+  --dd-text: #cfcac2; /* the copy */
+  --dd-line: rgba(234, 228, 220, 0.55); /* the placeholder cards' outline */
+  --sans: "Inter", system-ui, sans-serif;
+  --display: "Archivo", "Inter", system-ui, sans-serif;
+  --serif: "Noto Serif Display", "Tinos", "Times New Roman", serif; /* 2026-11-10: the light serif of the user's type swatch, for CLICK TO PLAY DEMO and TRY IT */
+  --u: calc(min(100vw, 1560px) / 1509);
+  --radius: 14px; /* 2026-11-10: every capsule matches the app's tile radius (14px); was 28u / 22u */
+}
+
+body {
+  background: var(--dd-bg);
+  color: var(--dd-text);
+  font-family: var(--sans);
+}
+/* hosted in the stitched site (a root <project>.html): the section stands in for body */
+:host {
+  display: block;
+  background: var(--dd-bg);
+  color: var(--dd-text);
+  font-family: var(--sans);
+}
+
+button {
+  font-family: var(--sans);
+  cursor: pointer;
+}
+
+.page {
+  max-width: 1560px;
+  margin: 0 auto;
+  padding: calc(40 * var(--u)) calc(26.4 * var(--u)) calc(60 * var(--u)); /* 2026-11-10: the sides are the card-to-capsule gap (22) + 20% (were 50) */
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* ── top: the yellow title card and the copy ── */
+.top {
+  display: grid;
+  grid-template-columns: calc(454 * var(--u)) 1fr; /* 2026-11-10: the card 25% smaller (was 605) */
+  column-gap: calc(22 * var(--u));
+  align-items: stretch; /* 2026-11-10: the card follows the copy capsule's height */
+}
+.card {
+  position: relative;
+  min-height: calc(379 * var(--u)); /* at least the design's; taller with the copy */
+  padding: calc(21 * var(--u)) calc(30 * var(--u)); /* 25% smaller: was 505 / 28 / 40 */
+  background: var(--dd-yellow);
+  border-radius: var(--radius);
+  color: var(--dd-ink);
+}
+.card__title {
+  margin: 0;
+  font-family: var(--display);
+  font-variation-settings: "wdth" 88;
+  font-size: calc(60 * var(--u)); /* was 80 */
+  font-weight: 700; /* 2026-11-10: bold, not black */
+  line-height: 1;
+  letter-spacing: -0.03em; /* Archivo runs wider than the mockup face: narrowed and sized to end inside the card */
+  text-transform: uppercase;
+}
+.card__num {
+  position: absolute;
+  left: calc(30 * var(--u));
+  bottom: calc(20 * var(--u));
+  color: #ffffff; /* 2026-11-10: white on the blue card */
+  font-family: var(--serif); /* 2026-11-10: the light serif, like the labels */
+  font-size: calc(47 * var(--u));
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+/* the copy capsule (2026-11-10): an outline the card's height and rounding */
+.copy {
+  position: relative;
+  box-sizing: border-box;
+  min-height: calc(379 * var(--u));
+  height: var(--copy-h, auto); /* its natural height; held by sketch.js while the intro plays (the text is out of flow then) */
+  padding: calc(21 * var(--u)) calc(30 * var(--u));
+  background: var(--dd-ink); /* 2026-11-10: filled with the canvas's black */
+  border: 0; /* 2026-11-10: no outline */
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+/* in the intro the text keeps its final width, pinned to the capsule's right,
+   so the growing capsule reveals it (sketch.js sets --copy-in-w) */
+/* while it grows, no padding of its own (the text block carries the offsets),
+   so a zero-width capsule is really zero wide */
+.page.is-intro .copy,
+.page.is-opening .copy {
+  padding: 0;
+}
+.page.is-intro .copy__in,
+.page.is-opening .copy__in {
+  position: absolute;
+  top: calc(21 * var(--u));
+  right: calc(30 * var(--u));
+  width: var(--copy-in-w, auto);
+}
+.copy__head {
+  margin: 0 0 calc(14 * var(--u));
+  color: #ffffff; /* 2026-11-10: white (was the pink) */
+  font-family: var(--serif); /* 2026-11-10: the light serif, like Try it (was Archivo caps) */
+  font-size: calc(26 * var(--u));
+  font-weight: 300;
+  letter-spacing: 0;
+}
+.copy__body {
+  margin: 0 0 calc(40 * var(--u)); /* 2026-11-10: the block gap (was 62) so the longer What copy fits the capsule */
+  font-size: calc(13.5 * var(--u));
+  font-weight: 400;
+  line-height: 1.3;
+}
+.copy__body:last-child {
+  margin-bottom: 0;
+}
+/* a paragraph followed by another of the same block: a line's space, not the block gap */
+.copy__body--run {
+  margin-bottom: calc(12 * var(--u));
+}
+
+/* ── CLICK TO PLAY DEMO, right-aligned over the frame ── */
+.demo-cta {
+  margin: calc(96 * var(--u)) 0 calc(14 * var(--u)); /* 2026-11-10: above it doubled (96, was 48); a small gap under it (14) */
+  text-align: right;
+  font-size: calc(28 * var(--u));
+  font-weight: 300;
+  font-family: var(--serif);
+  line-height: 1;
+  letter-spacing: 0;
+}
+.demo-cta a {
+  color: #ffffff; /* 2026-11-10: white, blue on rollover */
+  text-decoration: none;
+  transition: color 160ms ease;
+}
+.demo-cta a:hover,
+.demo-cta a:focus-visible {
+  color: var(--dd-yellow);
+  outline: none;
+}
+
+/* ── the demo: the whole rounded block is the canvas (2026-11-10; the cream
+   frame and the sidebar of the first mockup were removed). Its height is the
+   old frame's: 630 + 2 x 27. ── */
+.demo {
+  border-radius: var(--radius);
+}
+.app__stage {
+  position: relative;
+  height: calc(684 * var(--u));
+  overflow: hidden;
+  background: var(--dd-ink);
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+.app__canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+/* the stage's hint, bottom right, gone once the demo has played */
+.app__hint {
+  position: absolute;
+  right: calc(16 * var(--u));
+  bottom: calc(12 * var(--u));
+  color: rgba(234, 228, 220, 0.45);
+  font-size: calc(11 * var(--u));
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  pointer-events: none;
+  transition: opacity 300ms ease;
+}
+.app__stage.is-playing .app__hint {
+  opacity: 0;
+}
+
+/* ── the app, framed under the canvas (2026-11-10): a capsule like the others,
+   the frame filling it ── */
+.tool {
+  margin-top: calc(96 * var(--u)); /* 2026-11-10: canvas -> Design process, the same as capsule -> Click to play (96) */
+}
+/* ── the design process (2026-11-10, after the Always On Social page's steps):
+   a serif heading, then numbered rows left (thin rules; on rollover the number
+   and title spring-slide right and the divider draws in, as on that page) and
+   the step's picture right, in an outlined frame the rows' height. The row
+   rolled over shows its picture (sketch.js). ── */
+.process {
+  margin: 0 0 calc(100 * var(--u));
+}
+.process__title {
+  margin: 0 0 calc(24 * var(--u));
+  color: #ffffff;
+  font-family: var(--serif);
+  font-size: calc(43.7 * var(--u));
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: 0;
+}
+.process__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: calc(28 * var(--u));
+  align-items: stretch;
+}
+.process__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--dd-line);
+}
+.process__step {
+  position: relative;
+  display: flex;
+  align-items: start;
+  min-height: calc(66 * var(--u));
+  padding-top: calc(12 * var(--u));
+  border-bottom: 1px solid var(--dd-line);
+}
+/* the number + title together (2026-11-10, after the Style Shift audit rows):
+   on rollover of the type itself the pair springs 26px right and holds in the
+   accent blue, and the row's divider draws in left -> right in the blue. The row whose picture is showing is otherwise
+   plain: left, white, no box. */
+.process__node {
+  display: inline-flex;
+  align-items: baseline;
+  padding: calc(4 * var(--u)) calc(10 * var(--u)) calc(4 * var(--u)) 0;
+  margin: calc(-4 * var(--u)) 0;
+  border-radius: 3px;
+  color: #ffffff;
+  cursor: default;
+  transition: transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.15s, color 0.15s;
+}
+.process__node:hover {
+  transform: translateX(26px);
+  color: var(--dd-yellow); /* the type turns blue; the filled box was removed 2026-11-10 */
+}
+.process__step::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 1.5px;
+  background: var(--dd-yellow);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+.process__step:has(.process__node:hover)::after {
+  transform: scaleX(1);
+}
+.process__num {
+  flex: 0 0 calc(56 * var(--u));
+  padding-left: calc(8 * var(--u));
+  font-family: var(--serif); /* the light serif, like Try it */
+  font-size: calc(25 * var(--u));
+  font-weight: 300;
+  line-height: 1;
+}
+.process__name {
+  font-size: calc(16 * var(--u));
+  font-weight: 700;
+}
+.tool__figure {
+  position: relative;
+  margin: 0;
+  min-height: calc(300 * var(--u));
+  overflow: hidden;
+  border: 1px solid var(--dd-line);
+  border-radius: var(--radius);
+  background: var(--dd-ink);
+}
+.tool__shot {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0;
+  transition: opacity 240ms ease;
+}
+.tool__shot.is-on {
+  opacity: 1;
+}
+.tool__label {
+  margin: 0 0 calc(16 * var(--u)); /* 2026-11-10: a little more under it (was 10) */
+  color: #ffffff; /* 2026-11-10: white (was the accent) */
+  font-size: calc(43.7 * var(--u)); /* 28, +20%, then +30% (2026-11-10) */
+  font-weight: 300;
+  font-family: var(--serif);
+  line-height: 1;
+  letter-spacing: 0;
+}
+.tool__frame {
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--dd-ink);
+}
+.tool__app {
+  display: block;
+  width: 100%;
+  height: calc(700 * var(--u)); /* a first size; sketch.js sets the real one from the app's content */
+  border: 0;
+  background: var(--dd-ink);
+}
+/* the link under the app frame (2026-11-10, after the user's mockup): right-aligned,
+   the label bold, the address plain; blue on rollover like the other links */
+.tool__link {
+  margin: calc(12 * var(--u)) 0 0;
+  text-align: right;
+  color: #ffffff;
+  font-size: calc(15 * var(--u));
+  font-weight: 400;
+  line-height: 1.3;
+}
+.tool__link strong {
+  margin-right: 0.4em;
+  font-weight: 700;
+}
+.tool__link a {
+  color: #ffffff;
+  text-decoration: none;
+  transition: color 160ms ease;
+}
+.tool__link a:hover,
+.tool__link a:focus-visible {
+  color: var(--dd-yellow);
+  outline: none;
+}
+.page.is-intro .tool,
+.page.is-opening .tool {
+  opacity: 0;
+}
+.page.is-opening .tool {
+  opacity: 1;
+  transition: opacity 900ms 900ms ease;
+}
+
+/* ── the heading under the app: two stacked lines in the light serif, white,
+   left (2026-11-10, after the user's type swatch) ── */
+.context {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* the heading left, the copy right (2026-11-10 mockup) */
+  column-gap: calc(22 * var(--u));
+  align-items: start;
+  margin: calc(128 * var(--u)) 0 0; /* 2026-11-10: doubled (was 64) */
+  color: #ffffff;
+}
+.context__title {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  font-family: var(--serif);
+  font-size: calc(72 * var(--u));
+  font-weight: 300;
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+}
+.context__body {
+  margin: calc(8 * var(--u)) 0 0; /* its first line level with the heading's top */
+  /* 2026-11-10: the same setting as the What is it body copy */
+  font-size: calc(13.5 * var(--u));
+  font-weight: 400;
+  line-height: 1.3;
+}
+.page.is-intro .context,
+.page.is-opening .context {
+  opacity: 0;
+}
+.page.is-opening .context {
+  opacity: 1;
+  transition: opacity 900ms 900ms ease;
+}
+
+/* ── gallery: the stills (2026-11-10, after the user's mockup). Each row is a
+   flex line: an image's share of the width is its aspect ratio, so every image
+   in a row is the same height and keeps its own proportions (no crop); one gap
+   between and under everything; subtle corners. ── */
+.gallery {
+  --gap: calc(12 * var(--u));
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+  margin-top: calc(28 * var(--u));
+}
+.gallery__row {
+  display: flex;
+  gap: var(--gap);
+}
+.gallery__img {
+  display: block;
+  flex: var(--ar) 1 0;
+  min-width: 0;
+  height: auto;
+  aspect-ratio: var(--ar);
+  object-fit: cover;
+  border-radius: 6px;
+  background: var(--dd-ink);
+}
+/* a slot whose photo is not in the assets yet: outlined, at the reference's ratio */
+.gallery__slot {
+  flex: var(--ar) 1 0;
+  min-width: 0;
+  aspect-ratio: var(--ar);
+  border: 1px solid var(--dd-line);
+  border-radius: 6px;
+}
+
+/* ── phones: stack ── */
+@media (max-width: 760px) {
+  .top { grid-template-columns: 1fr; row-gap: 24px; }
+  .card { height: auto; min-height: 260px; }
+  .copy { height: auto; }
+  .card__num { position: static; display: block; margin-top: 120px; }
+  .app__stage { height: 320px; }
+  .context { grid-template-columns: 1fr; row-gap: 16px; }
+  .process__grid { grid-template-columns: 1fr; row-gap: 20px; }
+  .tool__figure { aspect-ratio: 16 / 9; }
+  .gallery__row { flex-wrap: wrap; }
+  .gallery__img, .gallery__slot { flex-basis: 100%; }
+  .demo-cta { font-size: 20px; }
+}
+
+/* ── the scroll-triggered zoom-out (2026-11-10, after the user's motion
+   reference assets/DD_animref_v001.mp4): the page opens zoomed in on the demo
+   canvas, which fills the window; the first scroll plays the layout in:
+   A (0 - 1.1s)    the canvas shrinks and drops to its place while the title
+                   card slides down from above at the full content width, its
+                   bottom edge on the canvas's top edge (they never overlap);
+   B (0.6 - 2.1s)  the card narrows from the right to its column as the copy
+                   wipes in from the right edge; the frame, sidebar, CTA and
+                   stills fade up. sketch.js sets the canvas's start transform
+   (inline, from the measured layout) and the two classes, and locks the page's
+   scroll until the sequence ends (the scroll only triggers it). ── */
+.page {
+  --intro-ease: cubic-bezier(0.25, 0.8, 0.25, 1);
+  --card-w: calc(454 * var(--u)); /* the card's column (25% smaller since 2026-11-10); the full content width while entering */
+}
+.card {
+  position: relative;
+  z-index: 2; /* over the copy while it is wider than its column */
+  width: var(--card-w);
+  /* while the intro plays, sketch.js sets its margin-left, width, transform and
+     frame by frame (its corners keep the design's radius): its side edges track the canvas's
+     (the same gaps), then its right edge eases to the column from 0.6s */
+}
+.app__stage {
+  transform-origin: 0 0;
+}
+/* the start frame: only the canvas, filling the window (its transform is inline) */
+.page.is-intro .app__stage {
+  z-index: 5; /* its corners keep the design's radius throughout (sketch.js counter-scales it) */
+}
+.page.is-intro .app__hint,
+.page.is-intro .demo-cta,
+.page.is-intro .gallery {
+  opacity: 0;
+}
+/* playing: everything eases to the design */
+.page.is-opening .app__hint,
+.page.is-opening .demo-cta,
+.page.is-opening .gallery {
+  opacity: 1;
+  transition: opacity 900ms 900ms ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .page.is-opening * { transition-duration: 1ms !important; transition-delay: 0ms !important; }
+}
+

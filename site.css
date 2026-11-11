@@ -243,3 +243,48 @@ html {
 .site-footer__button--index {
   margin-right: 6px;
 }
+
+/* 2026-11-10: in dark mode every red on the home (the hero headline, the CT
+   index rules, numbers, hover banner and active row, the splash masthead,
+   the header rollover) is the user's coral swatch instead of the brand red.
+   Set on the body so it reaches the sections' shadow roots; the About page
+   keeps the brand red. */
+html[data-theme="dark"] body.site-home {
+  --accent: #ec5241;
+  --accent-rgb: 236, 82, 65;
+  --accent-tech: #ec5241;
+}
+
+/* 2026-11-11: the Motion Design index (motion.html, body.site-motion) is the
+   user's blue swatch wherever the home is red (and coral in dark mode): the
+   hero headline, the index rules, numbers, hover banner and active row, the
+   header rollover. Set on the body so it reaches the section's shadow root.
+   Dark mode keeps the rows' type white, as on the home. */
+body.site-motion,
+html[data-theme="dark"] body.site-motion {
+  --accent: #2c7eff;
+  --accent-rgb: 44, 126, 255;
+}
+body.site-motion {
+  --accent-tech: #d63a3a; /* Creative Tech's rollover keeps the red here */
+}
+html[data-theme="dark"] body.site-motion {
+  --accent-tech: #ec5241;
+}
+/* the header: Motion Design rolls over blue on every page; on the Motion
+   Design index (where the page accent is the blue) Creative Tech rolls over
+   the red */
+.site-header #site-index-md:hover,
+.site-header #site-index-md:focus-visible {
+  color: var(--accent-motion);
+}
+body.site-motion .site-header #site-index:hover,
+body.site-motion .site-header #site-index:focus-visible {
+  color: var(--accent-tech);
+}
+body.site-motion {
+  --index-ink: var(--accent);
+}
+html[data-theme="dark"] body.site-motion {
+  --index-ink: #fcf9f4; /* the rows' type: white in dark mode, as on the home */
+}

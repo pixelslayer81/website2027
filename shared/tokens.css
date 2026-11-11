@@ -3,6 +3,13 @@
   --bg: #fcf9f4; /* warm white paper; page 01 set this and every page matches it (was #f3efe7 until 2026-10-22) */
   --accent: #d63a3a;
   --accent-rgb: 214, 58, 58; /* same red, for rgba() in canvas/CSS */
+  /* 2026-11-11: the two indexes' colours by name, for the cross rollovers (the
+     Motion Design item is always blue, Creative Tech always red, whatever the
+     page's --accent): the user's blue swatch and the brand red (coral in dark
+     mode on the home / Motion Design index, site.css) */
+  --accent-motion: #2c7eff;
+  --accent-motion-rgb: 44, 126, 255;
+  --accent-tech: var(--accent);
   --pencil-rgb: 52, 52, 58; /* graphite, for pencil-style canvas marks */
   --ink: #111111;
 
@@ -11,6 +18,8 @@
   --ui-ink: #1b1a19;
   --ui-ink-contrast: #ffffff;
   --ui-rule: rgba(27, 26, 25, 0.8);
+  --index-ink: var(--accent); /* the CT index rows' type (page 01); white in dark mode */
+  --marquee-ink: #fcc9d8; /* the CT index hover banner's type: the user's pink swatch (2026-11-10; was the cream --bg); black in dark mode */
 
   --font-sans: Consolas, "Cascadia Mono", "SF Mono", Menlo, "DejaVu Sans Mono", monospace;
 
@@ -32,4 +41,6 @@
   --ui-ink: #fcf9f4;
   --ui-ink-contrast: #222221;
   --ui-rule: rgba(252, 249, 244, 0.8);
+  --index-ink: #fcf9f4; /* almost white: the warm white (was the pink, before that #fff) */
+  --marquee-ink: #000000; /* black on the coral banner (was the pink) */
 }

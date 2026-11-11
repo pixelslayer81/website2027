@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Design &amp; Motion</title>
+  <meta name="description" content="Page 11: the motion design index.">
+  <link rel="stylesheet" href="../../shared/reset.css">
+  <link rel="stylesheet" href="../../shared/tokens.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- 2026-11-11: the Motion Design index, a twin of the CT index (pages/01-intro):
+       the same markup, hero video and sketch (../01-intro/sketch.js, so the
+       layout and every animation stay identical), its own titles, and the
+       DESIGN blue (#2C7EFF) where the CT index is red (style.css). On the site
+       it is motion.html. -->
+  <main class="page" id="page" data-glyph-text="designmotion">
+    <header class="hero">
+      <video class="hero__photo" id="hero-photo" src="../01-intro/assets/splash_loop_h264.mp4" autoplay loop muted playsinline preload="auto" aria-label="Portrait with windswept hair, red lipstick and a metallic top, looking into the camera."></video>
+      <!-- Glitch layer: hold the left button on the photo to stretch its pixels outward from the cursor. -->
+      <canvas class="hero__glitch" id="hero-glitch" aria-hidden="true"></canvas>
+      <h1 class="hero__title">
+        <span class="hero__design">Design</span>
+        <span class="hero__sub"><span class="hero__amp">&amp;</span> Motion</span>
+      </h1>
+    </header>
+
+    <nav class="index" aria-label="Projects">
+      <ol class="index__list">
+        <!-- (00) Intro, as on the CT index (the AI Task Force page, intro.html on the site) -->
+        <li class="index__row">
+          <a class="index__link" href="../02-flock/index.html">
+            <span class="index__num">(00)</span>
+            <span class="index__title">Intro</span>
+            <span class="index__desc">The AI Task Force is a cross-functional team focused on identifying, developing, and scaling AI-powered solutions that improve productivity, creativity, and business outcomes. It evaluates emerging AI technologies, builds practical tools, and helps teams adopt AI responsibly.</span>
+          </a>
+        </li>
+        <li class="index__row">
+          <a class="index__link" href="#">
+            <span class="index__num">(01)</span>
+            <span class="index__title">Apple: MacBook Pro</span>
+            <span class="index__desc">[Description to come]</span>
+          </a>
+        </li>
+        <li class="index__row">
+          <a class="index__link" href="#">
+            <span class="index__num">(02)</span>
+            <span class="index__title">Microsoft: Sustainability</span>
+            <span class="index__desc">[Description to come]</span>
+          </a>
+        </li>
+        <li class="index__row">
+          <a class="index__link" href="#">
+            <span class="index__num">(03)</span>
+            <span class="index__title">Apple: WWDC</span>
+            <span class="index__desc">[Description to come]</span>
+          </a>
+        </li>
+        <li class="index__row">
+          <a class="index__link" href="#">
+            <span class="index__num">(04)</span>
+            <span class="index__title">Microsoft Concept: Sculptures of Tomorrow</span>
+            <span class="index__desc">[Description to come]</span>
+          </a>
+        </li>
+        <li class="index__row">
+          <a class="index__link" href="#">
+            <span class="index__num">(05)</span>
+            <span class="index__title">Apple: iMac</span>
+            <span class="index__desc">[Description to come]</span>
+          </a>
+        </li>
+        <li class="index__row">
+          <a class="index__link" href="#">
+            <span class="index__num">(06)</span>
+            <span class="index__title">Microsoft: Security Concept</span>
+            <span class="index__desc">[Description to come]</span>
+          </a>
+        </li>
+        <li class="index__row">
+          <a class="index__link" href="#">
+            <span class="index__num">(07)</span>
+            <span class="index__title">Microsoft: Device Concept Frames</span>
+            <span class="index__desc">[Description to come]</span>
+          </a>
+        </li>
+        <li class="index__row">
+          <a class="index__link" href="#">
+            <span class="index__num">(08)</span>
+            <span class="index__title">Microsoft: Copilot</span>
+            <span class="index__desc">[Description to come]</span>
+          </a>
+        </li>
+        <li class="index__row">
+          <a class="index__link" href="#">
+            <span class="index__num">(09)</span>
+            <span class="index__title">Microsoft: Cloud Visualisation</span>
+            <span class="index__desc">[Description to come]</span>
+          </a>
+        </li>
+        <li class="index__row">
+          <a class="index__link" href="#">
+            <span class="index__num">(10)</span>
+            <span class="index__title">Microsoft: Cloud Visualisation</span>
+            <span class="index__desc">[Description to come]</span>
+          </a>
+        </li>
+        <li class="index__row">
+          <a class="index__link" href="#">
+            <span class="index__num">(11)</span>
+            <span class="index__title">Microsoft: Azure</span>
+            <span class="index__desc">[Description to come]</span>
+          </a>
+        </li>
+      </ol>
+    </nav>
+  </main>
+
+  <script src="../01-intro/sketch.js"></script>
+  <script>
+    window.IntroSketch.mount(document.getElementById("page"));
+  </script>
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dotdasher</title>
+  <meta name="description" content="Dotdasher: a generator for dot and dash patterns. Pick a shape, a pattern and colours, then export.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Serif+Display:wght@300&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../shared/reset.css">
+  <link rel="stylesheet" href="../../shared/tokens.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Page 10: Dotdasher. Built from the user's two mockups (2026-11-10): a dark
+       page, a yellow title card with the project number, the What / Why copy in
+       pink-headed blocks, CLICK TO PLAY DEMO over a cream frame holding the app
+       (a dot canvas and a sidebar with Generator / Export and three sections),
+       then the campaign stills in a gallery. The copy is the user's (2026-11-10). -->
+  <main class="page" id="page">
+
+    <!-- ============================================================ top: title card + copy -->
+    <section class="top">
+      <div class="card">
+        <h1 class="card__title">Dotdasher</h1>
+        <span class="card__num">06</span>
+      </div>
+      <!-- the copy capsule (2026-11-10): an outlined capsule the card's height; in the
+           intro it grows in from the right as the card narrows (sketch.js), its text
+           kept at its final width and pinned to the capsule's right so it is
+           revealed rather than reflowed -->
+      <div class="copy">
+        <div class="copy__in">
+          <h2 class="copy__head">What is it:</h2>
+          <p class="copy__body copy__body--run">Dotdasher is a pattern-generation tool built to support the Microsoft Sovereign Cloud brand system. It turns the brand’s dot grids, dashed textures, and data-inspired patterns into a flexible set of controls rather than static design assets. Users can choose a shape, control how it repeats, adjust colors, swap shapes, apply on-brand presets, or upload their own assets, with the pattern updating live as they work.</p>
+          <p class="copy__body">The tool was designed around Sovereign Cloud’s minimal, sophisticated visual language, making it easier to create consistent assets while adapting them for different markets. Country-specific colors, shapes, and configurations can be introduced without rebuilding the underlying design from scratch. Finished patterns can be exported as images or vectors at any size, giving teams a fast way to create on-brand backgrounds, textures, and data-inspired visuals while maintaining the stability, clarity, and consistency of the Sovereign Cloud identity.</p>
+          <h2 class="copy__head">Why me built it:</h2>
+          <p class="copy__body copy__body--run">Dot grids and dashed textures are simple visually, but producing them across a large brand system can quickly become repetitive. While there are plenty of ASCII and pattern generators out there, Dotdasher was built to fill one specific role: creating consistent patterns that stay on-brand for Microsoft Sovereign Cloud. It turns a long, manual process into a reusable system, allowing teams to explore ideas quickly while keeping the visual language consistent. The tool is simple by design, focusing only on the controls that matter rather than overcomplicating the creative process.</p>
+          <p class="copy__body">The bigger goal was scalability. Sovereign Cloud needs to support a growing number of countries, each with its own color expression while still feeling part of one global brand. Instead of creating every asset individually, Dotdasher provides a foundation that can grow with the brand. New country palettes, presets, shapes, and pattern variations can be added quickly, making it easier to explore new ideas, expand into additional markets, and build a much larger library of Sovereign Cloud assets without starting over each time.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ demo -->
+    <p class="demo-cta"><a href="#demo" id="cta-play">Click to play demo.</a></p>
+    <!-- the demo: the whole rounded block is the dot canvas (2026-11-10: the app's
+         cream frame and sidebar were removed). The sketch draws the pattern and
+         plays it (dots sweep into dashes) when the block is clicked. -->
+    <div class="demo" id="demo">
+      <div class="app__stage" id="stage">
+        <canvas class="app__canvas" id="canvas" aria-label="Dotdasher pattern canvas"></canvas>
+        <span class="app__hint" id="hint" aria-hidden="true">Click to play</span>
+      </div>
+    </div>
+
+    <!-- ============================================================ the app itself -->
+    <!-- The real Dotdasher (2026-11-10): the geo-dot-tool's static build (its
+         Python engine runs in the browser through Pyodide, so no backend and no
+         sign-in), built with a relative base into apps/dotdasher/ at the site
+         root and framed from there (same origin). Lazy: the frame, and the
+         ~25 MB engine it fetches from cdn.jsdelivr.net, load when scrolled
+         near. Rebuild: in the geo-dot-tool repo's frontend/,
+         `npx vite build --base=./ --outDir <site>/apps/dotdasher --emptyOutDir`. -->
+    <section class="tool" aria-label="Dotdasher, the app">
+      <!-- the design process (2026-11-10, after the Always On Social page's steps): numbered
+           rows of the steps, thin rules, the number and title sliding on rollover; the step's
+           picture in the frame beside them (sketch.js swaps .is-on on rollover) -->
+      <div class="process">
+        <h3 class="process__title">Design process</h3>
+        <div class="process__grid">
+          <ol class="process__list">
+          <li class="process__step tool__step is-on" data-step="0"><span class="process__node"><span class="process__num">01</span><span class="process__name">Select a country.</span></span></li>
+          <li class="process__step tool__step" data-step="1"><span class="process__node"><span class="process__num">02</span><span class="process__name">Apply it to the canvas.</span></span></li>
+          <li class="process__step tool__step" data-step="2"><span class="process__node"><span class="process__num">03</span><span class="process__name">Select your shapes.</span></span></li>
+          <li class="process__step tool__step" data-step="3"><span class="process__node"><span class="process__num">04</span><span class="process__name">Design your pattern.</span></span></li>
+          <li class="process__step tool__step" data-step="4"><span class="process__node"><span class="process__num">05</span><span class="process__name">Select your colors.</span></span></li>
+          <li class="process__step tool__step" data-step="5"><span class="process__node"><span class="process__num">06</span><span class="process__name">Export your design.</span></span></li>
+          </ol>
+          <figure class="tool__figure" aria-label="The step, pictured">
+          <img class="tool__shot is-on" data-step="0" src="assets/Screenshot%202026-11-10%20164647.png" width="1640" height="900" loading="lazy" alt="Select a country">
+          <img class="tool__shot" data-step="1" src="assets/Screenshot%202026-11-10%20164705.png" width="1688" height="948" loading="lazy" alt="Apply it to the canvas">
+          <img class="tool__shot" data-step="2" src="assets/Screenshot%202026-11-10%20174745.png" width="1960" height="1095" loading="lazy" alt="Select your shapes">
+          <img class="tool__shot" data-step="3" src="assets/Screenshot%202026-11-10%20164904.png" width="1687" height="949" loading="lazy" alt="Design your pattern">
+          <img class="tool__shot" data-step="4" src="assets/Screenshot%202026-11-10%20175216.png" width="1950" height="1088" loading="lazy" alt="Select your colors">
+          <img class="tool__shot" data-step="5" src="assets/Screenshot%202026-11-10%20165001.png" width="1685" height="941" loading="lazy" alt="Export your design">
+          </figure>
+        </div>
+      </div>
+      <p class="tool__label">Try it.</p>
+      <div class="tool__frame">
+        <iframe class="tool__app" src="../../apps/dotdasher/index.html" title="Dotdasher app" loading="lazy" allow="clipboard-write"></iframe>
+      </div>
+      <!-- under the frame (2026-11-10): the link to the full app on VibeHub (a Microsoft sign-in) -->
+      <p class="tool__link"><strong>Full app can be found here:</strong> <a href="https://vibehub.microsoft.com/app/v-andradej-cxuh-j" target="_blank" rel="noopener">https://vibehub.microsoft.com/app/v-andradej-cxuh-j</a></p>
+    </section>
+
+    <!-- ============================================================ context: the heading and the brand copy under the app (2026-11-10, after the user's mockups: the heading left, the copy right) -->
+    <section class="context">
+      <h2 class="context__title"><span>Microsoft</span><span>Sovereign Cloud</span></h2>
+      <p class="context__body">Microsoft Sovereign Cloud is designed to give governments and enterprise organizations greater control over their data, cloud infrastructure, and AI while meeting country-specific security, privacy, and compliance requirements. The brand speaks primarily to government leaders and enterprise-level executives responsible for organizations operating at national and global scales. Its visual identity reflects that responsibility through a sophisticated, minimal system built around clarity, stability, trust, and confidence, while country-specific expressions introduce local flag colors and data-inspired visuals to connect the global brand to individual markets.</p>
+    </section>
+
+    <!-- ============================================================ gallery: the campaign stills (2026-11-10): the reference's 15 slots exactly, 13 of them the
+         page's assets at their own aspect (they match the reference's); the two e-book images in the reference are
+         not in the assets yet, so their slots are outlined placeholders at the reference's ratios -->
+    <section class="gallery" aria-label="Stills">
+      <div class="gallery__row">
+        <img class="gallery__img" style="--ar: 2.8911" src="assets/Screenshot%202026-11-10%20153059.png" width="1992" height="689" loading="lazy" alt="Échelle mondiale. Contrôle local: the French hero with a dotted map of France">
+      </div>
+      <div class="gallery__row">
+        <img class="gallery__img" style="--ar: 0.7213" src="assets/Screenshot%202026-11-10%20152545.png" width="709" height="983" loading="lazy" alt="Global scale, local control: a dotted map of the UK on black">
+        <img class="gallery__img" style="--ar: 0.9981" src="assets/Screenshot%202026-11-10%20152427.png" width="1048" height="1050" loading="lazy" alt="Global scale, local control: a dotted map of Europe on black">
+        <img class="gallery__img" style="--ar: 1.6774" src="assets/Screenshot%202026-11-10%20153113.png" width="2231" height="1330" loading="lazy" alt="Three Sovereign Cloud posters in a station">
+        <img class="gallery__img" style="--ar: 0.7198" src="assets/Screenshot%202026-11-10%20152554.png" width="714" height="992" loading="lazy" alt="A dotted pattern over the Grande Arche at night">
+      </div>
+      <div class="gallery__row">
+        <img class="gallery__img" style="--ar: 0.6102" src="assets/Screenshot%202026-11-10%20153039.png" width="573" height="939" loading="lazy" alt="A pink building on social media">
+        <img class="gallery__img" style="--ar: 1.6815" src="assets/Screenshot%202026-11-10%20153001.png" width="2233" height="1328" loading="lazy" alt="The Sovereign Cloud billboard in a wooden hall">
+        <div class="gallery__slot" style="--ar: 0.78" aria-hidden="true"><!-- missing from the assets: the reference's e-book, portrait --></div>
+      </div>
+      <div class="gallery__row">
+        <div class="gallery__slot" style="--ar: 1.8" aria-hidden="true"><!-- missing from the assets: the reference's e-book, wide --></div>
+        <img class="gallery__img" style="--ar: 1.0010" src="assets/Screenshot%202026-11-10%20152441.png" width="1052" height="1051" loading="lazy" alt="Control without complexity, light">
+        <img class="gallery__img" style="--ar: 1.0019" src="assets/Screenshot%202026-11-10%20152509.png" width="1045" height="1043" loading="lazy" alt="Control without complexity, dark">
+      </div>
+      <div class="gallery__row">
+        <img class="gallery__img" style="--ar: 0.7205" src="assets/Screenshot%202026-11-10%20152901.png" width="1294" height="1796" loading="lazy" alt="A dotted map of Europe in white">
+        <img class="gallery__img" style="--ar: 0.7242" src="assets/Screenshot%202026-11-10%20152805.png" width="646" height="892" loading="lazy" alt="Dot columns on grey">
+        <img class="gallery__img" style="--ar: 0.7208" src="assets/Screenshot%202026-11-10%20152653.png" width="697" height="967" loading="lazy" alt="Dot columns on navy">
+        <img class="gallery__img" style="--ar: 0.7237" src="assets/Screenshot%202026-11-10%20152843.png" width="1294" height="1788" loading="lazy" alt="A dotted map of Europe in light blue">
+      </div>
+    </section>
+
+  </main>
+
+  <script src="sketch.js"></script>
+  <script>
+    window.DotdasherSketch.mount(document.getElementById("page"));
+  </script>
+</body>
+</html>

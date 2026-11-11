@@ -26,7 +26,9 @@ const PAGE_HOME = {
   "06-azure-retexture": "azure-retexture.html",
   "07-excel": "excel.html",
   "08-excel-cell-art": "excel.html#excel-cell-art",
+  "10-dotdasher": "dotdasher.html", // 2026-11-10: (06) in the CT index, after Excel
   "09-about": "pages/09-about/index.html",
+  "11-motion": "motion.html", // 2026-11-11: the Motion Design index
 };
 
 const loadedScripts = new Set();
@@ -149,20 +151,88 @@ function jumpToHash() {
 //   page starts over, the Excel journey included) onto the CT index already
 //   formed, no splash (a one-shot sessionStorage flag tells the reload to).
 // Both reloads drop the hash and the restored scroll position.
+// 2026-11-11: the Motion Design index (motion.html, body.site-motion) is the
+// home's twin (pages/11-motion shares page 01's markup, sketch and styles), so
+// the two index links swap roles there: the page's OWN index link (Creative
+// Tech on the home, Motion Design on motion.html) behaves as CT Index above.
+// The OTHER index's link, pressed on the waiting start frame, switches the
+// page into that index IN PLACE (switchIndex: the rows, headline, colours,
+// header and URL; the video keeps playing, nothing reloads) and plays the
+// same transition into it. From anywhere else it simply opens that index,
+// formed (index.html#intro / motion.html).
+const INDEXES = {
+  tech: { slug: "01-intro", home: "index.html", brand: "#intro", ct: "#intro", md: "motion.html", title: "Design & Technology" },
+  motion: { slug: "11-motion", home: "motion.html", brand: "index.html", ct: "index.html#intro", md: "motion.html", title: "Design & Motion" },
+};
+const isMotion = () => document.body.classList.contains("site-motion");
+
+async function switchIndex(which) {
+  const to = INDEXES[which];
+  const section = sections[0];
+  const shadow = section && section.shadowRoot;
+  const page = shadow && (shadow.getElementById("page") || shadow.firstElementChild);
+  if (!page || !window.IntroSketch) throw new Error("no index page to switch");
+  const res = await fetch(fresh(`pages/${to.slug}/index.html`), { cache: "no-cache" });
+  if (!res.ok) throw new Error(`${res.status} for ${to.slug}`);
+  const doc = new DOMParser().parseFromString(await res.text(), "text/html");
+  for (const s of doc.querySelectorAll("script")) s.remove();
+  rebaseTree(doc.body, to.slug);
+  // the page: headline, rows (the splash hides the new rows until their wipe), glitch letters
+  const sub = doc.querySelector(".hero__sub"), list = doc.querySelector(".index__list");
+  if (sub && page.querySelector(".hero__sub")) page.querySelector(".hero__sub").innerHTML = sub.innerHTML;
+  if (list && page.querySelector(".index__list")) page.querySelector(".index__list").innerHTML = list.innerHTML;
+  window.IntroSketch.remountIndex(page);
+  const newPage = doc.getElementById("page");
+  window.IntroSketch.setGlyphText(newPage && newPage.dataset.glyphText);
+  // the site: colours (body.site-motion), header links, title and URL
+  document.body.classList.toggle("site-motion", which === "motion");
+  section.dataset.page = to.slug;
+  document.title = to.title;
+  const brand = document.querySelector("#site-header .site-brand");
+  const ct = document.getElementById("site-index"), md = document.getElementById("site-index-md");
+  if (brand) brand.setAttribute("href", to.brand);
+  if (ct) { ct.setAttribute("href", to.ct); ct.removeAttribute("aria-current"); }
+  if (md) { md.setAttribute("href", to.md); if (which === "motion") md.setAttribute("aria-current", "page"); else md.removeAttribute("aria-current"); }
+  history.replaceState(null, "", to.home);
+  if (splash) splash.setOwn(which);
+}
+
 function mountHeader() {
   const header = document.getElementById("site-header");
   if (!header) return;
+  if (splash) {
+    // the masthead's other-index button: the same in-place switch, then play
+    splash.onHandOver((which) => {
+      switchIndex(which).then(() => splash.start()).catch((err) => {
+        console.warn("site: could not switch the index in place", err);
+        try { sessionStorage.setItem("splash", "play"); } catch (e) {}
+        location.href = INDEXES[which].home;
+      });
+    });
+  }
   header.addEventListener("click", (e) => {
     const a = e.target.closest("a");
-    if (!a || a.getAttribute("href") !== "#intro") return;
-    e.preventDefault();
+    if (!a) return;
+    const motion = isMotion();
+    const ownId = motion ? "site-index-md" : "site-index";
+    const otherId = motion ? "site-index" : "site-index-md";
     const waiting = splash && splash.waiting();
-    if (a.id === "site-index" && waiting) { splash.start(); return; }
-    if (a.id !== "site-index" && waiting) return; // already on the splash
+    if (a.id === otherId) {
+      if (!waiting) return; // the link itself opens that index, formed
+      e.preventDefault();
+      splash.handOver();
+      return;
+    }
+    const isOwn = a.id === ownId;
+    const isBrand = a.classList.contains("site-brand") && a.getAttribute("href") === "#intro";
+    if (!isOwn && !isBrand) return;
+    e.preventDefault();
+    if (isOwn && waiting) { splash.start(); return; }
+    if (isBrand && waiting) return; // already on the splash
     history.replaceState(null, "", location.pathname);
     history.scrollRestoration = "manual"; // the reload opens at the top, not where the page was
-    if (a.id === "site-index") {
-      try { sessionStorage.setItem("splash", "skip"); } catch (err) {} // straight to the CT index, formed
+    if (isOwn) {
+      try { sessionStorage.setItem("splash", "skip"); } catch (err) {} // straight to the index, formed
     }
     location.reload();
   });

@@ -1,0 +1,14 @@
+/* Page 11: the Motion Design index. Page 01's styles, unchanged (one source,
+   so the two indexes stay identical), with the DESIGN blue in place of the red:
+   the user's swatch, 2026-11-11. */
+@import url("../01-intro/style.css");
+
+/* standalone (file://): the blue on the page's own root. On the site the same
+   values are set on body.site-motion in site.css (custom properties reach into
+   the section's shadow root; :root does not match there), where dark mode
+   keeps the index rows' type white, as on the home. */
+:root {
+  --accent: #2c7eff;
+  --accent-rgb: 44, 126, 255;
+  --index-ink: var(--accent);
+}

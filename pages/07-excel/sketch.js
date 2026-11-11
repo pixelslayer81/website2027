@@ -186,27 +186,31 @@ const isLand = (lon, lat) => {
 };
 
 // one frame of the globe as text, matched to the user's reference
-// hf_20261106_010908 (2026-11-05, "make it identical"): the land is solid
-// type, mostly digits, turning to dense capitals (M B H 8) where it falls
-// into shadow (the left, away from the light on the right); its coasts break
-// up into speckle (' " . , ^ :) and it crumbles at the limb; the sea is left
-// open; no graticule; an outline of * closes the circle (added 2026-11-05). Returns two layers of lines, the land (drawn
-// bold) and the speckle.
+// hf_20261106_011535 and its ascii-globe JSON (2026-11-10, "identical"; the
+// 2026-11-05 digits-and-shadow look is gone): the land is solid type in X, H
+// and M (X and H mostly, M where it is deepest), its coast a thin break-up
+// of - : . with an empty halo round it; the sea is a field of dots, thinning
+// to nothing at the limb; a graticule every 30 degrees, : down the meridians
+// and - along the parallels (dashes also cross the land); a dotted rim
+// closes the circle. Returns two layers of lines, the land (drawn bold) and
+// the rest.
 // Accuracy: a true orthographic view tilted (TILT) to look down on the
-// northern mid-latitudes; a character is land if most of its patch of the
-// surface is (3 x 3 samples), not just its centre. Each character belongs to
-// a spot on the surface (hashed from its longitude / latitude), so the type
-// travels with the land as the globe turns.
-const DIGITS = "0123456789";
-const SHADE = "MMBH8M";
-const SPECK = "'\".,^:;`";
-const TILT = 30;  // the latitude at the centre of the view (the USA's band)
+// northern tropics, as the reference does; a character is land if most of
+// its patch of the surface is (3 x 3 samples), not just its centre. Each
+// character belongs to a spot on the surface (hashed from its longitude /
+// latitude), so the type travels with the land as the globe turns.
+const LAND_CH = "XHXHHXM"; // the land's type, hashed per spot
+const COAST_CH = "-:.";    // the coast's break-up
+const GRAT_DEG = 30;       // the graticule's spacing
+const TILT = 15;  // the latitude at the centre of the view (the reference looks at the mid Atlantic)
 const surfHash = (lon, lat) => {
   const a = Math.floor(((lon % 360) + 360) % 360 * 2.2), b = Math.floor((lat + 90) * 2.2);
   let h = (a * 374761393 + b * 668265263) >>> 0;
   h = ((h ^ (h >>> 13)) * 1274126177) >>> 0;
   return (h ^ (h >>> 16)) >>> 0;
 };
+// does a multiple of `step` fall between a and b (angles, degrees)?
+const crosses = (a, b, step) => Math.floor(Math.min(a, b) / step) !== Math.floor(Math.max(a, b) / step);
 function globeLines(cols, rows, spin) {
   const land = [], rest = [];
   const R2D = 180 / Math.PI, sinT = Math.sin(TILT / R2D), cosT = Math.cos(TILT / R2D);
@@ -232,40 +236,55 @@ function globeLines(cols, rows, spin) {
   };
   const cov = [];
   for (let r = 0; r < rows; r++) { const row = []; for (let c = 0; c < cols; c++) row.push(cover(c, r)); cov.push(row); }
-  const grown = cov.map((row, r) => row.map((v, c) => {
-    let m = v;
-    for (let j = -1; j <= 1; j++) for (let i = -1; i <= 1; i++) {
-      const rr = r + j, cc = c + i;
-      if (rr >= 0 && rr < rows && cc >= 0 && cc < cols) m = Math.max(m, cov[rr][cc]);
+  // each character's neighbourhood: the most land in it (the coast's halo)
+  // and the average (how deep inside the land it is)
+  const grown = [], depth = [];
+  for (let r = 0; r < rows; r++) {
+    const g = [], d = [];
+    for (let c = 0; c < cols; c++) {
+      let m = 0, sum = 0, n = 0;
+      for (let j = -1; j <= 1; j++) for (let i = -1; i <= 1; i++) {
+        const rr = r + j, cc = c + i;
+        if (rr >= 0 && rr < rows && cc >= 0 && cc < cols) { m = Math.max(m, cov[rr][cc]); sum += cov[rr][cc]; n++; }
+      }
+      g.push(m); d.push(n ? sum / n : 0);
     }
-    return m;
-  }));
+    grown.push(g); depth.push(d);
+  }
   for (let r = 0; r < rows; r++) {
     let L = "", S = "";
     for (let c = 0; c < cols; c++) {
       const p = geoAt(cx(c), cy(r));
       if (!p) { L += " "; S += " "; continue; }
-      // 2026-11-05: an outline of * around the globe, to define it: the disc's
-      // edge characters (inside it, with a neighbour outside)
+      // the dotted rim: the disc's edge characters (inside it, with a neighbour outside)
       if (!geoAt(cx(c - 1), cy(r)) || !geoAt(cx(c + 1), cy(r)) || !geoAt(cx(c), cy(r - 1)) || !geoAt(cx(c), cy(r + 1))) {
-        L += " "; S += "*"; continue;
+        L += " "; S += "."; continue;
       }
-      // 2026-11-05: the land masses about 10% bigger: each grown by a
-      // character all round (a character takes the most land of itself and
-      // its 8 neighbours), so the coast and its speckle move out with it
-      const k = grown[r][c];
-      if (k === 0) { L += " "; S += " "; continue; }
-      const { nx, ny, nz, lat, lon } = p;
+      const { nz, lat, lon } = p;
       const h = surfHash(lon, lat);
-      // the coast: a patch only partly land breaks up into speckle
-      if (k < 0.5) { L += " "; S += (h % 3 === 0) ? SPECK[h % SPECK.length] : " "; continue; }
-      if (cov[r][c] < 0.5 && h % 5 < 2) { L += " "; S += SPECK[h % SPECK.length]; continue; }
-      // the limb crumbles
-      if (nz < 0.22 && h % 3 === 0) { L += " "; S += SPECK[(h >>> 2) % SPECK.length]; continue; }
-      // the light from the right: the land's far (left) side is shadow, set in dense capitals
-      const light = 0.6 * nx + 0.2 * ny + 0.75 * nz;
-      if (light < 0.2 && h % 4 !== 0) { L += SHADE[h % SHADE.length]; S += " "; continue; }
-      L += DIGITS[h % 10]; S += " ";
+      // the graticule: does a meridian / parallel pass through this character?
+      const pw = geoAt(cx(c) - dx / 2, cy(r)), pe = geoAt(cx(c) + dx / 2, cy(r));
+      const pn = geoAt(cx(c), cy(r) + dy / 2), ps = geoAt(cx(c), cy(r) - dy / 2);
+      const meridian = pw && pe && crosses(pw.lon, pe.lon, GRAT_DEG);
+      const parallel = pn && ps && crosses(pn.lat, ps.lat, GRAT_DEG);
+      const k = cov[r][c];
+      if (k >= 0.5) {
+        // the land: solid type, a dash where a parallel crosses it
+        if (parallel && h % 2 === 0) { L += " "; S += "-"; continue; }
+        const dp = depth[r][c];
+        const ch = dp > 0.9 ? LAND_CH[h % LAND_CH.length] : dp > 0.65 ? "XH"[h % 2] : "X";
+        L += ch; S += " "; continue;
+      }
+      if (k > 0) {
+        // the coast: a patch only partly land breaks up
+        L += " "; S += (h % 3 === 0) ? " " : COAST_CH[h % COAST_CH.length]; continue;
+      }
+      if (grown[r][c] > 0) { L += " "; S += " "; continue; } // the halo round the land
+      // the sea: the graticule, else a field of dots that thins out to the limb
+      if (meridian) { L += " "; S += ":"; continue; }
+      if (parallel) { L += " "; S += "-"; continue; }
+      const dot = (c + r) % 2 === 0 && (nz > 0.5 || (nz > 0.25 && h % 3 === 0));
+      L += " "; S += dot ? "." : " ";
     }
     land.push(L); rest.push(S);
   }
@@ -315,7 +334,7 @@ function drawStat(g, now) {
   statEl.textContent = g.stat.text.slice(0, Math.round(typed * g.stat.text.length));
 }
 let globeHold = null; // { cx, cy (spec units: the globe's centre), cells: [{x,y,w,h,delay}], downAt, upAt }
-const GLOBE_START_LON = -98; // each press starts the globe centred on the USA (98 W; TILT gives the latitude)
+const GLOBE_START_LON = -30; // each press starts the globe centred on the mid Atlantic, as the reference is (30 W; TILT gives the latitude; was the USA, 98 W, until 2026-11-10)
 let globeSpin = GLOBE_START_LON, globeLast = 0;
 
 function sizeGlobe() {

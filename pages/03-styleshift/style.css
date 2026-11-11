@@ -81,6 +81,13 @@ button {
   display: inline-block;
   transform: translateY(100%);
   transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--i, 0) * 120ms);
+  /* keep each letter on its own compositor layer for good: while the
+     transition runs the browser promotes it and rasterises the text (and the
+     SHIFT stroke) on the GPU, then drops the layer when it lands and
+     re-rasterises through the normal path, so the outline visibly popped to
+     a thinner, broken line at the end of the rise (2026-11-10) */
+  will-change: transform;
+  backface-visibility: hidden;
 }
 .title.is-in .l {
   transform: translateY(0);
@@ -97,6 +104,8 @@ button {
   display: inline-block;
   transform: translateY(100%);
   transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--i, 0) * 120ms);
+  will-change: transform; /* same reason as .title .l: no re-raster pop on landing */
+  backface-visibility: hidden;
 }
 .rise.is-in .l {
   transform: translateY(0);
