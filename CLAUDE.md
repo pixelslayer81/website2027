@@ -4,7 +4,7 @@ Scroll-through, blog-style site built one page at a time, stitched together at t
 
 ## Git
 
-- Remote: `origin` = https://github.com/pixelslayer81/StyleShiftinfo.git, branch `main`.
+- Remote: `origin` = https://github.com/pixelslayer81/website2027.git (private; was StyleShiftinfo until 2026-11-11), branch `main`.
 - Pushing from the agent shell needs the prompt blocks lifted for that command:
   `$env:GIT_TERMINAL_PROMPT="1"; $env:GCM_INTERACTIVE="always"` (the harness sets them off).
 - `.claude/memory/sessions/` is git-ignored; the curated knowledge is committed.

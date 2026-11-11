@@ -22,7 +22,7 @@ are classic `<script src>` files rather than ES modules: Chrome/Edge refuse `imp
   `Start-Process pages\NN-slug\index.html` and ask the user to report behaviour and
   console errors. State plainly that runtime was not verified by the agent.
 - Git for Windows was installed 2026-10-14 (`C:\Program Files\Git\cmd`, add it to PATH in
-  the agent shell) and the repo pushes to https://github.com/pixelslayer81/StyleShiftinfo.
+  the agent shell) and the repo pushes to https://github.com/pixelslayer81/website2027 (private; it was pixelslayer81/StyleShiftinfo until 2026-11-11, when the user moved it).
   The harness sets `GIT_TERMINAL_PROMPT=0` and `GCM_INTERACTIVE=never`, so a push that
   needs credentials fails with "could not read Username" unless the command sets
   `$env:GIT_TERMINAL_PROMPT="1"; $env:GCM_INTERACTIVE="always"` first (then Git Credential
@@ -82,4 +82,14 @@ are classic `<script src>` files rather than ES modules: Chrome/Edge refuse `imp
 - The Bash tool's git (Git for Windows under MSYS) refuses the repo with "dubious ownership"
   (seen 2026-10-21): `E:\Claude_Code\Projects\website` is owned by a different SID than the
   REDMOND user. Run `git config --global --add safe.directory E:/Claude_Code/Projects/website`
-  once, or run git from the PowerShell tool, which has worked before.
+  once, or run git from the PowerShell tool, which has worked before. On 2026-11-11 PowerShell
+  git hit it too; `git -c safe.directory=E:/Claude_Code/Projects/website ...` per command
+  works without touching global config.
+- Wrong GitHub account (2026-11-11): Git Credential Manager had the work login `v-andradej`
+  cached for github.com, so `git push origin main` failed with 403 "Permission ... denied to
+  v-andradej". Push to `https://pixelslayer81@github.com/pixelslayer81/website2027.git main` (origin now has the username in it)
+  so GCM picks/asks for the pixelslayer81 account (opens a sign-in window, which can sit
+  hidden and stall the command). Commits use the repo-local `user.email` joseph@pixelslayer.tv.
+- Big history (~800 MB packed: demo MP4s, ref PNGs) fails a first push with HTTP 408 "RPC failed". Fix
+  (2026-11-11): push one commit at a time, oldest first (`git rev-list --reverse main`, then
+  `git push origin <sha>:refs/heads/main` each) with `-c http.postBuffer=524288000`.
