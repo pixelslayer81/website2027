@@ -36,13 +36,15 @@
 const SPLASH = {
   // the start frame's masthead (2026-10-30 redesign, after the user's mockup)
   mark: "Pixelslayer",
-  tags: ["[Creative Technologist]", "[3D &middot; Motion &middot; AI]", "[20+ yrs]"],
-  meta: ["[AI Task Force] &middot; [Microsoft]", "[Est. 2005] &middot; Palm Springs"],
+  tags: ["[Creative Technologist]", "[3D &middot; Motion &middot; AI]", "[Est. 2005]"], // 2026-11-11: the last was "[20+ yrs]"
+  meta: ["[AI Task Force] &middot; [Microsoft]", "[Est. 2005] &middot; Palm Springs"], // the credentials lines: right-aligned above the buttons (restored 2026-11-12)
   ctaTech: "[Creative Tech &rarr;]", // the home's own: plays the transition, like the header's Creative Tech
   ctaMotion: "[Motion Design &rarr;]", // the Motion Design index's own; on the home it hands over to motion.html (2026-11-11)
   handoff: 150, // ms on the start frame after arriving from the other index's splash, before the photo moves
-  margin: 24, // px: the page margin; also the photo's left / right / bottom border on the start frame
-  photoGap: 18, // px between the masthead and the photo's top edge at the start
+  margin: 24, // px: the page margin; also the photo's left / right / bottom border on the start frame, at 1440 wide (live: style.css --splash-margin, measured)
+  photoGap: 18, // px between the masthead's lowest button / info line and the photo's top edge at the start; fixed at every window size (2026-11-11)
+  photoAt: 0.46, // the photo's top edge on the start frame, as a share of the window's height from its top (2026-11-11, the user's mockup); lower if the masthead needs the room
+  flexShare: 0.325, // the open space above the tags / buttons, as a share of what photoAt leaves (2026-11-11: reduced 25%, then another 10%, then 50% (2026-11-12); 1 = the photo at photoAt)
   videoWait: 1500, // ms at most to wait for the video's first picture before starting
   hold: 450, // ms on the start frame (with the picture up) before the photo moves
   glitchMs: 1400, // ms the CT index glitch keeps spawning from the start of the transition
@@ -55,7 +57,7 @@ const SPLASH = {
   rowsAt: 0.8, // the row cascade starts at this fraction of the rise (as it lands)
   rowStagger: 90, // ms between rows (each wipe runs 600ms, so they overlap)
   rowCover: 260, // ms a banner takes to cover its row before it moves on
-  headerH: 56, // the site header's height (site.css --header-h)
+  headerH: 56, // the site header's height at 1440 wide; live value from siteHeaderH() (fluid since 2026-11-11)
 };
 
 let root = null; // page 01's shadow root
@@ -65,9 +67,16 @@ let running = false; // the splash owns page 01 (start frame or transition)
 let isWaiting = false; // on the start frame, waiting for CT Index
 let started = false;
 let heroH = 0; // the photo box's CT index height
+let onResize = null; // the start frame's resize handler (2026-11-11)
+let resizeFrame = 0;
 let fill = 0; // px from the box's top to the window's bottom on the start frame
 
 const later = (ms, fn) => timers.push(setTimeout(fn, ms));
+// the site header's live height (fluid since 2026-11-11); 56 when standalone
+const siteHeaderH = () => {
+  const h = document.querySelector(".site-header");
+  return h ? h.getBoundingClientRect().height : SPLASH.headerH;
+};
 
 // which index this page is (2026-11-11): the home (Creative Tech) or the
 // Motion Design index (motion.html, body.site-motion). Its own button plays the
@@ -129,6 +138,19 @@ function mount(shadowRoot) {
   // the crop and parallax depend on the video's shape, known once it loads
   const vid = root.querySelector("video.hero__photo");
   if (vid && !vid.videoWidth) vid.addEventListener("loadedmetadata", () => { if (running && !started) layout(head); }, { once: true });
+  // 2026-11-11: the layout is fluid, so the masthead and the photo box change
+  // size with the window: re-measure both on resize (once per frame), or the
+  // photo would sit over the buttons / info after the window shrinks
+  onResize = () => {
+    if (resizeFrame) return;
+    resizeFrame = requestAnimationFrame(() => {
+      resizeFrame = 0;
+      if (!running || started) return;
+      heroH = hero.getBoundingClientRect().height;
+      layout(head);
+    });
+  };
+  window.addEventListener("resize", onResize);
 
   for (const row of root.querySelectorAll(".index__row")) row.classList.add("is-pre");
 }
@@ -140,7 +162,7 @@ function headHTML() {
   return `
     <h1 class="splash__mark">${s.mark}</h1>
     <div class="splash__info">
-      <p class="splash__meta">${meta}</p>
+      ${meta ? `<p class="splash__meta">${meta}</p>` : ""}
       <ul class="splash__tags">${tags}</ul>
       <div class="splash__ctas">
         <button type="button" class="splash__cta splash__cta--tech${own === "tech" ? " splash__cta--own" : ""}">${s.ctaTech}</button>
@@ -154,13 +176,36 @@ function headHTML() {
     the box's own bottom, so it can sit below the box (a negative inset) on a
     tall window, where the picture runs past the box. */
 function layout(head) {
-  const gap = SPLASH.margin;
-  const drop = Math.round(head.offsetTop + head.offsetHeight + SPLASH.photoGap);
+  // fluid since 2026-11-11: the margin is style.css --splash-margin (the
+  // masthead's side padding), measured; photoGap scales with it
+  const gap = parseFloat(getComputedStyle(head).paddingLeft) || SPLASH.margin;
+  // 2026-11-11: the photo always sits exactly photoGap (18px, never scaled)
+  // under the lowest of the masthead's buttons / info lines, measured, so the
+  // gap holds at every window size and however the text wraps
+  // (measured at the masthead's natural height: the least room it needs)
+  page.style.removeProperty("--splash-head-h");
+  const headTop = head.getBoundingClientRect().top;
+  let low = head.offsetHeight;
+  head.querySelectorAll("*").forEach((el) => {
+    const r = el.getBoundingClientRect();
+    if (r.height) low = Math.max(low, r.bottom - headTop);
+  });
+  const minDrop = Math.round(head.offsetTop + low + SPLASH.photoGap);
+  // 2026-11-11 (the user's mockup): the photo's top sits photoAt of the way
+  // down the window; the masthead stretches to fill the room above it, its
+  // tags and buttons at the bottom, photoGap above the photo. Never higher
+  // than the masthead needs.
+  const page0 = page.getBoundingClientRect().top + window.scrollY; // the page's top in the document (under the site header)
+  // the open space between the rule and the tags / buttons is flexShare of
+  // what photoAt alone would leave (2026-11-11: 25% less)
+  const room = Math.max(0, window.innerHeight * SPLASH.photoAt - page0 - minDrop);
+  const drop = Math.round(minDrop + room * SPLASH.flexShare);
+  page.style.setProperty("--splash-head-h", `${drop - SPLASH.photoGap - head.offsetTop}px`);
   page.style.setProperty("--splash-drop", `${drop}px`);
   page.style.setProperty("--splash-gap", `${gap}px`);
   // on the start frame the photo shows down to the window's bottom (less its
-  // border), whatever the window's shape
-  fill = window.innerHeight - SPLASH.headerH - drop;
+  // border; full bleed since 2026-11-11, so no border), whatever the window's shape
+  fill = window.innerHeight - siteHeaderH() - drop;
   // parallax: the picture starts up to this far up inside its frame and drifts
   // down to rest as the frame rises, so it moves slower than the frame. It is
   // never scaled, so it is only so tall (the width-fitted video): on tall
@@ -173,9 +218,9 @@ function layout(head) {
   const focus = parseFloat(getComputedStyle(page).getPropertyValue("--hero-focus-y")) || 0;
   const shift = Math.max(0, picH - heroH) * focus;
   page.style.setProperty("--splash-shift", `${shift.toFixed(1)}px`);
-  const par = Math.max(0, Math.min(drop * SPLASH.parallax, picH - shift - (fill - gap)));
+  const par = Math.max(0, Math.min(drop * SPLASH.parallax, picH - shift - fill));
   page.style.setProperty("--splash-par", `${Math.round(par)}px`);
-  page.style.setProperty("--splash-clip-b", `${(heroH - (fill - gap)).toFixed(1)}px`);
+  page.style.setProperty("--splash-clip-b", `${(heroH - fill).toFixed(1)}px`);
 }
 
 /** Page 01's sketch has mounted (its row banners exist): wait on the start
@@ -288,6 +333,10 @@ function wipeRow(row) {
 function finish() {
   if (!page) return;
   running = false;
+  if (onResize) window.removeEventListener("resize", onResize);
+  onResize = null;
+  if (resizeFrame) cancelAnimationFrame(resizeFrame);
+  resizeFrame = 0;
   for (const t of timers) clearTimeout(t);
   timers = [];
   const head = page.querySelector(".splash__head");
@@ -295,6 +344,7 @@ function finish() {
   for (const el of root.querySelectorAll(".splash .is-in, .splash .is-pre, .splash .is-wiping")) el.classList.remove("is-in", "is-pre", "is-wiping");
   page.classList.remove("splash", "is-wide", "is-rising");
   page.style.removeProperty("--splash-drop");
+  page.style.removeProperty("--splash-head-h");
   page.style.removeProperty("--splash-clip-b");
   page.style.removeProperty("--splash-par");
   page.style.removeProperty("--splash-shift");

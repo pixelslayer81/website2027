@@ -1932,6 +1932,29 @@ function mount(el, opts = {}) {
   scrollMode = !!opts.scroll; // before resize(): measureCopy needs it
   resize();
   on(window, "resize", resize);
+  // 2026-11-11: and whenever the container itself changes size. The layout is
+  // fluid, and on intro.html the page's height (--page-h, from the home's CT
+  // index) settles after the window's resize event, so the canvases and the
+  // letters' boxes would otherwise stay at the old size, out of step with the
+  // page and its type. Once per frame.
+  if (window.ResizeObserver) {
+    let w0 = container.clientWidth;
+    let h0 = container.clientHeight;
+    let pending = 0;
+    const ro = new ResizeObserver(() => {
+      if (pending) return;
+      pending = requestAnimationFrame(() => {
+        pending = 0;
+        if (!container) return;
+        if (container.clientWidth === w0 && container.clientHeight === h0) return;
+        w0 = container.clientWidth;
+        h0 = container.clientHeight;
+        resize();
+      });
+    });
+    ro.observe(container);
+    listeners.push(() => { ro.disconnect(); if (pending) cancelAnimationFrame(pending); });
+  }
   // the copy moves as fonts and images arrive: measure its letters again then
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (container) measureCopy(); });
   on(window, "load", measureCopy);

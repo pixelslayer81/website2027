@@ -53,7 +53,7 @@ body {
   /* Lets drags start over the text and reach the canvas beneath. */
   pointer-events: none;
   /* 2026-11-05: 100px above the page's centre (the shapes still find the letters: they read their on-screen boxes) */
-  transform: translateY(-100px);
+  transform: translateY(calc(-100 * var(--fluid)));
 }
 
 .copy__body {
@@ -76,8 +76,8 @@ body {
 .corner {
   position: absolute;
   z-index: 3;
-  top: 24px;
-  right: 24px;
+  top: calc(24 * var(--fluid));
+  right: calc(24 * var(--fluid));
   color: var(--accent);
   font-size: var(--text-sm);
   line-height: var(--leading);

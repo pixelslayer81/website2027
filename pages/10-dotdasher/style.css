@@ -14,7 +14,7 @@
   --display: "Archivo", "Inter", system-ui, sans-serif;
   --serif: "Noto Serif Display", "Tinos", "Times New Roman", serif; /* 2026-11-10: the light serif of the user's type swatch, for CLICK TO PLAY DEMO and TRY IT */
   --u: calc(min(100vw, 1560px) / 1509);
-  --radius: 14px; /* 2026-11-10: every capsule matches the app's tile radius (14px); was 28u / 22u */
+  --radius: calc(14 * var(--fluid, 1px)); /* 2026-11-10: every capsule matches the app's tile radius (14px); was 28u / 22u */
 }
 
 body {
@@ -49,11 +49,15 @@ button {
   grid-template-columns: calc(454 * var(--u)) 1fr; /* 2026-11-10: the card 25% smaller (was 605) */
   column-gap: calc(22 * var(--u));
   align-items: stretch; /* 2026-11-10: the card follows the copy capsule's height */
+  /* fluid 2026-11-11: the card's and copy capsule's padding (and the intro's
+     text offsets), one place so phones can open them up */
+  --pad-y: calc(21 * var(--u));
+  --pad-x: calc(30 * var(--u));
 }
 .card {
   position: relative;
   min-height: calc(379 * var(--u)); /* at least the design's; taller with the copy */
-  padding: calc(21 * var(--u)) calc(30 * var(--u)); /* 25% smaller: was 505 / 28 / 40 */
+  padding: var(--pad-y) var(--pad-x); /* 25% smaller: was 505 / 28 / 40 */
   background: var(--dd-yellow);
   border-radius: var(--radius);
   color: var(--dd-ink);
@@ -70,7 +74,7 @@ button {
 }
 .card__num {
   position: absolute;
-  left: calc(30 * var(--u));
+  left: var(--pad-x);
   bottom: calc(20 * var(--u));
   color: #ffffff; /* 2026-11-10: white on the blue card */
   font-family: var(--serif); /* 2026-11-10: the light serif, like the labels */
@@ -85,7 +89,7 @@ button {
   box-sizing: border-box;
   min-height: calc(379 * var(--u));
   height: var(--copy-h, auto); /* its natural height; held by sketch.js while the intro plays (the text is out of flow then) */
-  padding: calc(21 * var(--u)) calc(30 * var(--u));
+  padding: var(--pad-y) var(--pad-x);
   background: var(--dd-ink); /* 2026-11-10: filled with the canvas's black */
   border: 0; /* 2026-11-10: no outline */
   border-radius: var(--radius);
@@ -102,21 +106,21 @@ button {
 .page.is-intro .copy__in,
 .page.is-opening .copy__in {
   position: absolute;
-  top: calc(21 * var(--u));
-  right: calc(30 * var(--u));
+  top: var(--pad-y);
+  right: var(--pad-x);
   width: var(--copy-in-w, auto);
 }
 .copy__head {
   margin: 0 0 calc(14 * var(--u));
   color: #ffffff; /* 2026-11-10: white (was the pink) */
   font-family: var(--serif); /* 2026-11-10: the light serif, like Try it (was Archivo caps) */
-  font-size: calc(26 * var(--u));
+  font-size: max(calc(26 * var(--u)), 1.125rem);
   font-weight: 300;
   letter-spacing: 0;
 }
 .copy__body {
   margin: 0 0 calc(40 * var(--u)); /* 2026-11-10: the block gap (was 62) so the longer What copy fits the capsule */
-  font-size: calc(13.5 * var(--u));
+  font-size: max(calc(13.5 * var(--u)), 0.78125rem); /* fluid 2026-11-11: a readable floor (12.5px); 13.5u above ~1400 wide */
   font-weight: 400;
   line-height: 1.3;
 }
@@ -174,7 +178,7 @@ button {
   right: calc(16 * var(--u));
   bottom: calc(12 * var(--u));
   color: rgba(234, 228, 220, 0.45);
-  font-size: calc(11 * var(--u));
+  font-size: max(calc(11 * var(--u)), 0.625rem);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   pointer-events: none;
@@ -201,7 +205,7 @@ button {
   margin: 0 0 calc(24 * var(--u));
   color: #ffffff;
   font-family: var(--serif);
-  font-size: calc(43.7 * var(--u));
+  font-size: max(calc(43.7 * var(--u)), 1.375rem);
   font-weight: 300;
   line-height: 1;
   letter-spacing: 0;
@@ -241,7 +245,7 @@ button {
   transition: transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.15s, color 0.15s;
 }
 .process__node:hover {
-  transform: translateX(26px);
+  transform: translateX(calc(26 * var(--fluid, 1px)));
   color: var(--dd-yellow); /* the type turns blue; the filled box was removed 2026-11-10 */
 }
 .process__step::after {
@@ -264,12 +268,12 @@ button {
   flex: 0 0 calc(56 * var(--u));
   padding-left: calc(8 * var(--u));
   font-family: var(--serif); /* the light serif, like Try it */
-  font-size: calc(25 * var(--u));
+  font-size: max(calc(25 * var(--u)), 1rem);
   font-weight: 300;
   line-height: 1;
 }
 .process__name {
-  font-size: calc(16 * var(--u));
+  font-size: max(calc(16 * var(--u)), 0.8125rem);
   font-weight: 700;
 }
 .tool__figure {
@@ -296,7 +300,7 @@ button {
 .tool__label {
   margin: 0 0 calc(16 * var(--u)); /* 2026-11-10: a little more under it (was 10) */
   color: #ffffff; /* 2026-11-10: white (was the accent) */
-  font-size: calc(43.7 * var(--u)); /* 28, +20%, then +30% (2026-11-10) */
+  font-size: max(calc(43.7 * var(--u)), 1.375rem); /* 28, +20%, then +30% (2026-11-10) */
   font-weight: 300;
   font-family: var(--serif);
   line-height: 1;
@@ -320,7 +324,7 @@ button {
   margin: calc(12 * var(--u)) 0 0;
   text-align: right;
   color: #ffffff;
-  font-size: calc(15 * var(--u));
+  font-size: max(calc(15 * var(--u)), 0.78125rem);
   font-weight: 400;
   line-height: 1.3;
 }
@@ -362,7 +366,7 @@ button {
   flex-direction: column;
   margin: 0;
   font-family: var(--serif);
-  font-size: calc(72 * var(--u));
+  font-size: max(calc(72 * var(--u)), 1.75rem);
   font-weight: 300;
   line-height: 1.08;
   letter-spacing: -0.01em;
@@ -370,7 +374,7 @@ button {
 .context__body {
   margin: calc(8 * var(--u)) 0 0; /* its first line level with the heading's top */
   /* 2026-11-10: the same setting as the What is it body copy */
-  font-size: calc(13.5 * var(--u));
+  font-size: max(calc(13.5 * var(--u)), 0.78125rem); /* fluid 2026-11-11: a readable floor (12.5px); 13.5u above ~1400 wide */
   font-weight: 400;
   line-height: 1.3;
 }
@@ -405,7 +409,7 @@ button {
   height: auto;
   aspect-ratio: var(--ar);
   object-fit: cover;
-  border-radius: 6px;
+  border-radius: calc(6 * var(--fluid, 1px));
   background: var(--dd-ink);
 }
 /* a slot whose photo is not in the assets yet: outlined, at the reference's ratio */
@@ -414,22 +418,27 @@ button {
   min-width: 0;
   aspect-ratio: var(--ar);
   border: 1px solid var(--dd-line);
-  border-radius: 6px;
+  border-radius: calc(6 * var(--fluid, 1px));
 }
 
 /* ── phones: stack ── */
-@media (max-width: 760px) {
-  .top { grid-template-columns: 1fr; row-gap: 24px; }
-  .card { height: auto; min-height: 260px; }
+@media (max-width: 47.5em) { /* 760px */
+  .page { padding-inline: 1rem; } /* fluid 2026-11-11: phone sizes in rem (were px) */
+  .top { grid-template-columns: 1fr; row-gap: 1.5rem; --pad-y: 1.125rem; --pad-x: 1.25rem; }
+  .card { height: auto; min-height: 12rem; }
+  .card__title { font-size: 2.75rem; }
+  .card__num { font-size: 2rem; }
+  .copy__body { margin-bottom: 1.25rem; }
+  .copy__body--run { margin-bottom: 0.625rem; }
   .copy { height: auto; }
-  .card__num { position: static; display: block; margin-top: 120px; }
-  .app__stage { height: 320px; }
-  .context { grid-template-columns: 1fr; row-gap: 16px; }
-  .process__grid { grid-template-columns: 1fr; row-gap: 20px; }
+  .card__num { position: static; display: block; margin-top: 4.5rem; }
+  .app__stage { height: 20rem; }
+  .context { grid-template-columns: 1fr; row-gap: 1rem; }
+  .process__grid { grid-template-columns: 1fr; row-gap: 1.25rem; }
   .tool__figure { aspect-ratio: 16 / 9; }
   .gallery__row { flex-wrap: wrap; }
   .gallery__img, .gallery__slot { flex-basis: 100%; }
-  .demo-cta { font-size: 20px; }
+  .demo-cta { font-size: 1.25rem; }
 }
 
 /* ── the scroll-triggered zoom-out (2026-11-10, after the user's motion
@@ -478,3 +487,9 @@ button {
   .page.is-opening * { transition-duration: 1ms !important; transition-delay: 0ms !important; }
 }
 
+
+/* fluid 2026-11-11: stacked on phones, the card spans the column (after the
+   .card width rule above, so it wins; the intro still sets it inline) */
+@media (max-width: 47.5em) {
+  .page { --card-w: auto; }
+}

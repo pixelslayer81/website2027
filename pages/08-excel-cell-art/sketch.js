@@ -121,7 +121,8 @@ function mount(page) {
   // and how far into it you are sets scrollProgress. Past either end the site
   // simply scrolls on, up to page 07 or down to whatever follows.
   const runway = page.parentElement;
-  const headerH = () => parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-h')) || 0;
+  // the site header's live height (fluid since 2026-11-11; --header-h is no longer plain px)
+  const headerH = () => { const h = document.querySelector('.site-header'); return h ? h.getBoundingClientRect().height : 0; };
   const runwayProgress = () => {
     const into = headerH() - runway.getBoundingClientRect().top; // px scrolled into the runway
     return 1 + Math.max(0, Math.min(1, into / RUNWAY)) * PHASES;

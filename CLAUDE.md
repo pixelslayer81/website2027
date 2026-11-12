@@ -17,6 +17,7 @@ Scroll-through, blog-style site built one page at a time, stitched together at t
 - Each `sketch.js` is a classic script exposing `window.<Name>Sketch = { mount, unmount }`. No ES modules: pages are opened from `file://`.
 - Stitching conventions (see README): custom properties on `:root, :host`; a `:host` copy of the page's `body` colours/fonts; JS asset paths through `asset()`; no `document.getElementById` in sketches; `../NN-slug/index.html` links become section jumps, or links to the page's file via `PAGE_HOME` in `site.js`.
 - Pages are full-viewport sections; design against a 1440 x 900 reference.
+- Fluid layout (since 2026-11-11): write sizes as design px at 1440, `calc(N * var(--fluid))` (spacing, boxes) or `calc(N * var(--fluid-type))` (text up to ~24px), both defined in `shared/tokens.css`; fixed widths become `min(100%, ...)` / grid / flex-wrap; breakpoints in em; 1-2px hairlines stay px. Some pages keep their own `--u` (page width / 1440). Scripts must measure elements (e.g. `.site-header`), never parse `--header-h`. Pre-fluid version: git tag `checkpoint-2026-11-11`.
 - Preview one page: `Start-Process pages\NN-slug\index.html`.
 
 <!-- quickstart-memory -->

@@ -113,7 +113,10 @@ let lastWheel = 0;
 const compCells = () => Array.from($("#comp-grid").querySelectorAll(".comp-cell"));
 
 function lbTargetRect() {
-  const pad = 72; // room for the side arrows
+  // room for the side arrows: their inset + width + the same gap again (72 at
+  // 1440); measured, since the arrows are sized in fluid units (2026-11-11)
+  const prev = byId("comp-lightbox-prev");
+  const pad = prev && prev.offsetWidth ? prev.offsetLeft * 2 + prev.offsetWidth : 72;
   const maxW = Math.min(window.innerWidth - pad * 2, 1560);
   const maxH = window.innerHeight - 48 * 2;
   let w = maxW;

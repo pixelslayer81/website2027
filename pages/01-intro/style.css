@@ -100,8 +100,8 @@ body {
 
 .hero__title {
   position: absolute;
-  top: 18px;
-  left: 24px;
+  top: calc(18 * var(--fluid));
+  left: calc(24 * var(--fluid));
   display: flex;
   flex-direction: column;
   color: var(--accent);
@@ -287,12 +287,12 @@ body {
 
 /* ---------------------------------------------------------- responsive */
 
-@media (max-width: 900px) {
+@media (max-width: 56.25em) { /* 900px */
   :root,
   :host {
-    --row-font: 20.4px; /* 15% smaller (was 24px) */
-    --row-pad: 6px;
-    --num-width: 72px;
+    --row-font: 1.275rem; /* 15% smaller (was 24px); 20.4px (fluid 2026-11-11: rem, the narrow layouts keep their sizes) */
+    --row-pad: 0.375rem; /* 6px */
+    --num-width: 4.5rem; /* 72px */
     --hero-ratio: 4 / 3; /* taller frame on narrow screens so the face is not tiny */
   }
   .index__link {
@@ -303,11 +303,11 @@ body {
   }
 }
 
-@media (max-width: 520px) {
+@media (max-width: 32.5em) { /* 520px */
   :root,
   :host {
-    --row-font: 17px; /* 15% smaller (was 20px) */
-    --num-width: 56px;
+    --row-font: 1.0625rem; /* 15% smaller (was 20px); 17px */
+    --num-width: 3.5rem; /* 56px */
     --index-indent: var(--gutter);
   }
   .hero__title {

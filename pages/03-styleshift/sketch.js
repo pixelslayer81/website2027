@@ -272,7 +272,8 @@ function measureLibrary() {
   const inner = $("#library-scrollbar-inner");
   const ag = $("#gallery");
   if (!panel || !inner || !ag) return;
-  const pad = 28; // panel padding 14px each side
+  const cs = getComputedStyle(panel); // panel padding (14px each side at 1440; fluid 2026-11-11)
+  const pad = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight);
   const agW = panel.clientWidth - pad;
   const n = ag.children.length;
   const hero = LIB_EXPAND * agW;

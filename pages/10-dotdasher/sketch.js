@@ -229,7 +229,9 @@ function fitStageToWindow() {
   copy.style.removeProperty("--copy-in-w");
   copy.style.removeProperty("--copy-h");
   const r = stage.getBoundingClientRect();
-  const top = INTRO.headerH;
+  // the site header's live height (fluid since 2026-11-11); 56 standalone
+  const header = document.querySelector(".site-header");
+  const top = header ? header.getBoundingClientRect().height : INTRO.headerH;
   const vw = window.innerWidth;
   const vh = window.innerHeight - top;
   const s = Math.max(vw / r.width, vh / r.height); // cover

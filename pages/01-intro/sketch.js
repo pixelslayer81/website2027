@@ -140,7 +140,9 @@ let scribbleImg = null; // the pen drawing, same aspect as the photo
 let scribbleReady = false;
 let W = 0;
 let H = 0;
-let dpr = 1;
+let dpr = 1; // design px -> canvas pixels: device pixel ratio x glitchScale
+const GLITCH_REF = 1440; // the photo's width (css px) at which GLITCH's px sizes are designed
+let glitchScale = 1; // the photo's width / GLITCH_REF (2026-11-11)
 let cover = { scale: 1, ox: 0, oy: 0 }; // how the image maps into the canvas (object-fit: cover, top-aligned)
 let held = false;
 let radius = 0; // mean extent; the real boundary wobbles around it
@@ -438,13 +440,21 @@ function clearSmear() {
 // ---------------------------------------------------------------- canvas
 
 function resize() {
-  dpr = Math.min(window.devicePixelRatio || 1, 2);
-  W = hero.clientWidth;
-  H = hero.clientHeight;
-  canvas.width = Math.round(W * dpr);
-  canvas.height = Math.round(H * dpr);
-  canvas.style.width = `${W}px`;
-  canvas.style.height = `${H}px`;
+  // 2026-11-11: the glitch scales with the photo. Everything is drawn in
+  // "design px" (the photo GLITCH_REF px wide, as at 1440), so every size in
+  // GLITCH (streaks, pockets, hover trail, smear brush, glyph type) keeps its
+  // share of the image at any window size. dpr carries that scale too (it is
+  // the design-px -> canvas-pixel factor); localPoint() converts the pointer.
+  const cssW = hero.clientWidth;
+  const cssH = hero.clientHeight;
+  glitchScale = cssW ? cssW / GLITCH_REF : 1;
+  dpr = Math.min(window.devicePixelRatio || 1, 2) * glitchScale;
+  W = cssW / glitchScale;
+  H = cssH / glitchScale;
+  canvas.width = Math.round(cssW * Math.min(window.devicePixelRatio || 1, 2));
+  canvas.height = Math.round(cssH * Math.min(window.devicePixelRatio || 1, 2));
+  canvas.style.width = `${cssW}px`;
+  canvas.style.height = `${cssH}px`;
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   // Match the CSS: object-fit cover, object-position 50% (--hero-focus-y).
   const iw = mediaW() || 1;
@@ -861,7 +871,8 @@ function stopLoop() {
 
 function localPoint(e) {
   const r = canvas.getBoundingClientRect();
-  return { x: e.clientX - r.left, y: e.clientY - r.top };
+  // screen px -> the glitch's design px (see resize)
+  return { x: (e.clientX - r.left) / glitchScale, y: (e.clientY - r.top) / glitchScale };
 }
 
 function onDown(e) {

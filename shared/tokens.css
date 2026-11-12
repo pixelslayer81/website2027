@@ -23,11 +23,22 @@
 
   --font-sans: Consolas, "Cascadia Mono", "SF Mono", Menlo, "DejaVu Sans Mono", monospace;
 
-  --text-sm: 14px;
+  /* 2026-11-11: fluid layout. Every size is written as N "design pixels" at the
+     1440 x 900 reference: calc(N * var(--fluid)). One --fluid is exactly 1px at a
+     1440-wide viewport and follows the viewport width (100vw / 1440), held
+     between 0.6 and 1.333 of that (rem, so the reader's browser text size still
+     scales it). Type uses --fluid-type, which keeps closer to its designed size
+     (0.8 - 1.2) so small text never gets unreadable. Media queries cannot read
+     custom properties: they use em (px / 16). Hairlines (1-2px) stay px.
+     Retune the whole site's scaling here. */
+  --fluid: clamp(0.0375rem, 100vw / 1440, 0.083333rem);
+  --fluid-type: clamp(0.05rem, 100vw / 1440, 0.075rem);
+
+  --text-sm: calc(14 * var(--fluid-type));
   --leading: 1.45;
 
-  --gutter: 16px;
-  --measure: 370px; /* width of the centered copy block */
+  --gutter: calc(16 * var(--fluid));
+  --measure: min(100%, calc(370 * var(--fluid-type))); /* width of the centered copy block */
 }
 
 /* Dark mode (2026-11-10): shared/theme.js sets data-theme="dark" on <html> on

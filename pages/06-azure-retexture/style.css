@@ -14,7 +14,7 @@
   --display: "Archivo", "Arial Black", sans-serif;
   --sans: "Inter", system-ui, sans-serif;
   --mono: "Space Mono", ui-monospace, monospace;
-  --u: calc(min(100vw, 1560px) / 1440);
+  --u: calc(min(100vw, 97.5rem) / 1440); /* 97.5rem = the old 1560px cap (fluid 2026-11-11) */
   --gutter: calc(72 * var(--u));
 }
 
@@ -412,11 +412,11 @@ body {
 .lightbox__cap {
   position: absolute;
   left: 0;
-  bottom: 24px;
-  padding: 14px 22px;
+  bottom: calc(24 * var(--fluid));
+  padding: calc(14 * var(--fluid)) calc(22 * var(--fluid));
   background: var(--cap-bg, #111);
   color: var(--cap-ink, #fff);
-  font-size: 16px;
+  font-size: calc(16 * var(--fluid-type));
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -437,8 +437,8 @@ body {
 .lightbox__nav,
 .lightbox__close {
   position: absolute;
-  width: 44px;
-  height: 44px;
+  width: max(2.25rem, calc(44 * var(--fluid)));
+  height: max(2.25rem, calc(44 * var(--fluid)));
   border: 0;
   border-radius: 50%;
   display: flex;
@@ -457,23 +457,23 @@ body {
   background: #1a36d8;
 }
 .lightbox__nav svg {
-  width: 22px;
-  height: 22px;
+  width: calc(22 * var(--fluid));
+  height: calc(22 * var(--fluid));
   fill: none;
   stroke: #fff;
   stroke-width: 2.5;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-.lightbox__nav--prev { left: 14px; }
-.lightbox__nav--next { right: 14px; }
+.lightbox__nav--prev { left: calc(14 * var(--fluid)); }
+.lightbox__nav--next { right: calc(14 * var(--fluid)); }
 .lightbox__close {
-  top: 16px;
-  right: 18px;
+  top: calc(16 * var(--fluid));
+  right: calc(18 * var(--fluid));
   border: 1.5px solid #fff;
   background: transparent;
   color: #fff;
-  font-size: 26px;
+  font-size: calc(26 * var(--fluid));
   line-height: 1;
 }
 .lightbox__close:hover {
@@ -483,11 +483,11 @@ body {
 .lightbox__count {
   position: absolute;
   left: 50%;
-  bottom: 14px;
+  bottom: calc(14 * var(--fluid));
   transform: translateX(-50%);
   color: #fff;
   font-family: var(--mono);
-  font-size: 13px;
+  font-size: calc(13 * var(--fluid-type));
   letter-spacing: 0.2em;
   opacity: 0;
   transition: opacity 240ms ease 300ms;
@@ -498,3 +498,31 @@ body {
   opacity: 1;
 }
 
+
+/* fluid 2026-11-11: phones. Below 760 the page stops scaling the 1440
+   composition down (that shrank the copy to ~4px) and reflows instead: --u
+   becomes the site's readable type unit (0.8px a design px on phones), the
+   big titles follow the viewport, and the multi-column rows stack. */
+@media (max-width: 47.5em) {
+  :root, :host {
+    --u: var(--fluid-type);
+    --gutter: 1rem;
+  }
+  .page { width: auto; padding-top: 3rem; }
+  .head { padding-left: 0; }
+  .title { font-size: clamp(2rem, 12vw, 4.5rem); white-space: normal; }
+  .title-outline { -webkit-text-stroke-width: 0.5px; }
+  .body { font-size: 0.875rem; }
+  .lead { font-size: 1.25rem; }
+  .about { grid-template-columns: 1fr; row-gap: 2rem; }
+  .about .body { max-width: none; }
+  .block__head { flex-direction: column; }
+  .block--comp .block__head,
+  .block--flow .block__head { grid-template-columns: minmax(0, 1fr); row-gap: 1rem; }
+  .section-title--shapes,
+  .section-title--comp,
+  .section-title--flow { font-size: clamp(2.5rem, 15vw, 6rem); }
+  .section-title--comp { justify-self: start; grid-row: 1; font-size: clamp(2rem, 11vw, 5.25rem); } /* the longest word: must fit the column */
+  .results__items { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 2rem; column-gap: 1.25rem; }
+  .results__item-body { font-size: 0.875rem; }
+}

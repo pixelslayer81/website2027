@@ -10,7 +10,7 @@
   /* timings, read by sketch.js too */
   --splash-rise: 1200ms;
   --splash-widen: 1200ms; /* the border opens out over the whole rise */
-  --splash-margin: 24px; /* the page margin (sketch.js SPLASH.margin) */
+  --splash-margin: calc(24 * var(--fluid)); /* the page margin (sketch.js SPLASH.margin; fluid 2026-11-11: the sketch measures it) */
   --splash-ease: cubic-bezier(0.25, 0.8, 0.25, 1); /* the reference's rise: steady, then a long settle */
   --splash-mask-ease: cubic-bezier(0.19, 1, 0.22, 1); /* the CT index hover banner's curve */
 }
@@ -26,15 +26,27 @@
   right: 0;
   top: 0;
   z-index: 0;
-  padding: 20px var(--splash-margin) 0;
+  /* 2026-11-11: a column as tall as the space above the photo (sketch.js sets
+     --splash-head-h): the wordmark and rule at the top, the tags and buttons
+     at the bottom, photoGap above the photo. Its content width sizes the
+     wordmark (container units). */
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  min-height: var(--splash-head-h, 0px);
+  container-type: inline-size;
+  padding: calc(20 * var(--fluid)) var(--splash-margin) 0;
   color: var(--ui-ink);
 }
 .splash__mark {
   margin: 0;
   color: var(--accent);
   transition: color 320ms ease; /* 2026-11-11: red <-> blue when the start frame switches index in place */
-  font-size: 14.8vw; /* ~213px at 1440: ends ~90% across, as in the mockup */
-  font-weight: 400;
+  /* 2026-11-11: fills the width between the margins (the user's mockup):
+     100cqw is the masthead's content width; the word is 5.9628 times as wide
+     as its font size in Inter 300 at -0.04em (was 14.8vw, ending ~90% across) */
+  font-size: calc(100cqw / 5.9628); /* 2026-11-12: refit for weight 300 (was 6.0624 at 400) */
+  font-weight: 300; /* 2026-11-12: thinner (was 400) */
   line-height: 0.86;
   letter-spacing: -0.04em; /* Inter runs wider than the mockup's face */
   text-transform: uppercase;
@@ -42,17 +54,19 @@
 }
 .splash__info {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr; /* tags left, credentials and buttons right */
+  flex: 1 1 auto;
+  align-content: end; /* the tags and buttons sit at the bottom, over the photo */
+  grid-template-columns: repeat(3, minmax(0, 1fr)); /* tags left, credentials and buttons right */
   column-gap: var(--splash-margin);
-  margin-top: 30px;
-  padding-top: 20px;
+  margin-top: calc(30 * var(--fluid));
+  padding-top: calc(20 * var(--fluid));
   border-top: 1px solid var(--ui-rule);
 }
 .splash__meta,
 .splash__tags {
   margin: 0;
   font-family: "Space Mono", ui-monospace, monospace;
-  font-size: 11px;
+  font-size: calc(11 * var(--fluid-type));
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
@@ -62,17 +76,17 @@
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  line-height: 16px;
+  line-height: calc(16 * var(--fluid-type));
 }
 .splash__tags {
   grid-column: 1;
   grid-row: 2;
   align-self: end;
-  margin-top: 16px;
+  margin-top: calc(16 * var(--fluid));
   padding: 0;
   list-style: none;
   color: var(--accent);
-  line-height: 19px;
+  line-height: calc(19 * var(--fluid-type));
   transition: color 320ms ease; /* (as the wordmark) */
 }
 .splash__ctas {
@@ -81,14 +95,14 @@
   align-self: end;
   justify-self: end;
   display: flex;
-  gap: 8px;
-  margin-top: 16px;
+  gap: calc(8 * var(--fluid));
+  margin-top: calc(16 * var(--fluid));
 }
 .splash__cta {
-  height: 47px;
-  padding: 0 20px;
+  height: calc(47 * var(--fluid-type));
+  padding: 0 calc(20 * var(--fluid-type));
   font: inherit;
-  font-size: 12.5px;
+  font-size: calc(12.5 * var(--fluid-type));
   font-weight: 500;
   letter-spacing: 0.03em;
   text-transform: uppercase;
@@ -127,6 +141,27 @@
   color: #fff;
   outline: none;
 }
+/* fluid 2026-11-11: narrow windows stack the info row (credentials, tags, then
+   the buttons, which may wrap) instead of squeezing three columns; the photo's
+   start is measured from the masthead, so it follows */
+@media (max-width: 47.5em) {
+  .splash__info {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .splash__meta,
+  .splash__tags,
+  .splash__ctas {
+    grid-column: 1;
+    grid-row: auto;
+  }
+  .splash__meta {
+    align-items: flex-start;
+  }
+  .splash__ctas {
+    justify-self: start;
+    flex-wrap: wrap;
+  }
+}
 
 /* ── the photo: never scaled. The box keeps its CT index size and the picture
    its CT index scale (width-fitted, top-aligned); only the borders (a clip)
@@ -136,9 +171,10 @@
   z-index: 1;
   translate: 0 var(--splash-drop, 0px);
   overflow: visible; /* the picture may run below the box; the clip crops it */
-  /* the start frame's borders: left and right the page margin, and the bottom
-     edge that same gap above the window's bottom (sketch.js sets both) */
-  clip-path: inset(0 var(--splash-gap, 24px) var(--splash-clip-b, 0px) var(--splash-gap, 24px));
+  /* the start frame's border: the bottom edge one page margin above the
+     window's bottom (sketch.js sets it). 2026-11-11: full bleed left and right
+     (was inset by the page margin, --splash-gap, on both sides) */
+  clip-path: inset(0 0 var(--splash-clip-b, 0px) 0);
 }
 /* the picture at its natural shape (width-fitted: the CT index's own scale,
    since its frame is wider than the video) so it can show below the box on the

@@ -25,7 +25,7 @@
   --grad-card: radial-gradient(circle at 88% 92%, rgba(240, 196, 212, 0.55), transparent 45%),
     radial-gradient(circle at 10% 15%, rgba(222, 226, 246, 0.45), transparent 42%), #ffffff;
   --font: "Inter", system-ui, sans-serif;
-  --u: calc(min(100vw, 1560px) / 1440);
+  --u: calc(min(100vw, 97.5rem) / 1440); /* 97.5rem = the old 1560px cap (fluid 2026-11-11) */
 }
 
 body {
@@ -48,7 +48,7 @@ textarea {
 }
 
 .page {
-  max-width: 1560px;
+  max-width: 97.5rem;
   margin: 0 auto;
   /* spec padding: 92 top, 95 right, 108 left; the page is 2350 tall */
   padding: calc(92 * var(--u)) calc(95 * var(--u)) calc(44 * var(--u)) calc(108 * var(--u));
@@ -150,7 +150,7 @@ textarea {
 .card {
   position: relative;
   overflow: hidden;
-  border-radius: 3px;
+  border-radius: calc(3 * var(--u));
   /* black fill, white outline (2026-10-30; was var(--grad-card) with --card-dark text); the
      outline is an inset shadow so the grid keeps its exact sizes */
   background: #000;
@@ -295,7 +295,7 @@ textarea {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 4px;
+  border-radius: calc(4 * var(--u));
 }
 /* Press play, centred on the card (as the Style Shift stage button): dark
    block, white type, play triangle; hover inverts to white fill, dark outline
@@ -310,7 +310,7 @@ textarea {
   gap: 0.7em;
   padding: 0.45em 1em 0.45em 1.1em;
   border: 1.5px solid var(--app-button);
-  border-radius: 6px;
+  border-radius: calc(6 * var(--u));
   background: var(--app-button);
   color: #fff;
   font-weight: 700;
@@ -741,7 +741,7 @@ textarea {
 }
 .step:hover .step-num,
 .step:hover .step-title {
-  transform: translateX(26px);
+  transform: translateX(calc(26 * var(--u)));
 }
 .step::after {
   content: "";
@@ -778,21 +778,46 @@ textarea {
   line-height: 1.4;
   color: var(--text-body);
 }
-@media (max-width: 760px) {
-  .page { padding: 48px 16px 32px; }
-  .display { font-size: clamp(40px, 12vw, 80px); white-space: normal; }
-  .intro { grid-template-columns: 1fr; width: auto; }
+@media (max-width: 47.5em) {
+  /* fluid 2026-11-11: below 760 the layout stacks, so --u stops tracking the
+     1440 composition (it shrank the copy to ~4px on a phone) and becomes the
+     site's readable type unit (0.8px a design px on phones); every fixed
+     multi-column grid below drops to one column */
+  :root, :host { --u: var(--fluid-type); }
+  .page { padding: 3rem 1rem 2rem; }
+  .display { font-size: clamp(2.5rem, 12vw, 5rem); white-space: normal; }
+  .intro { grid-template-columns: 1fr; width: auto; min-height: 0; }
+  .intro-num, .intro-copy, .intro-why { grid-column: 1; grid-row: auto; }
+  .intro-copy { margin-top: 1rem; }
+  .intro-copy p, .intro-why p { font-size: 0.875rem; }
   .gallery { grid-template-columns: 1fr 1fr; grid-template-rows: none; grid-auto-rows: 44vw; }
   .card--3 { grid-column: 2; grid-row: 1 / span 2; }
-  .card--feature { grid-column: 1 / span 2; grid-row: 3; }
+  .card--feature { grid-column: 1 / span 2; grid-row: 3; padding: 1.5rem; }
+  .feature-line--gradient { width: auto; }
   .card--5 { grid-column: 1; grid-row: 4; }
   .card--6 { grid-column: 2; grid-row: 4; }
   .rule { width: auto; margin-left: 0; }
-  .statement { font-size: clamp(26px, 7vw, 44px); width: auto; }
+  .statement { font-size: clamp(1.625rem, 7vw, 2.75rem); width: auto; }
   .demo { grid-template-columns: 1fr; margin-left: 0; }
   .app-wrap { width: auto; height: auto; aspect-ratio: 462 / 847; }
-  .step { grid-template-columns: 40px 1fr; }
+  .step { grid-template-columns: 2.5rem 1fr; }
   .step-body { grid-column: 2; }
+  .step:hover .step-num, .step:hover .step-title { transform: none; }
+  .ts-title { font-size: clamp(2rem, 11vw, 4rem); white-space: normal; }
+  .ts-sub { font-size: clamp(1.5rem, 8vw, 2.5rem); margin-top: 3.5rem; white-space: normal; }
+  .ts-about { grid-template-columns: 1fr; row-gap: 1rem; }
+  .ts-about p { font-size: 0.875rem; }
+  .ts-layer { grid-template-columns: minmax(0, 1fr); }
+  .ts-cards--2, .ts-cards--3 { grid-template-columns: 1fr; }
+  .ts-dash--cols { columns: 1; }
+  .ts-link { padding-left: 2.5rem; }
+  .ts-link::before { left: 1.25rem; }
+  /* the loop diagram scales with its frame (container units): keep it legible
+     and let it scroll sideways inside its frame instead of shrinking to 4px type */
+  .ts-loop-frame { overflow-x: auto; padding: 1rem; }
+  .ts-loop { min-width: 37.5rem; }
+  .ts-summary { grid-template-columns: 1fr; row-gap: 2.5rem; margin-top: 3.5rem; }
+  .ts-heavy { white-space: normal; }
 }
 
 /* ── Press play viewer: the Style Shift page's expansion, in this page's palette.
@@ -816,7 +841,7 @@ textarea {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: calc(8 * var(--fluid));
   cursor: default;
 }
 .viewer img,
@@ -824,8 +849,8 @@ textarea {
   max-width: 90vw;
   max-height: 82vh; /* leaves room for the pill under a portrait card */
   object-fit: contain;
-  border-radius: 6px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  border-radius: calc(6 * var(--fluid));
+  box-shadow: 0 calc(20 * var(--fluid)) calc(60 * var(--fluid)) rgba(0, 0, 0, 0.6);
 }
 .viewer img {
   cursor: zoom-out; /* a second click shrinks it back down */
@@ -840,16 +865,16 @@ textarea {
   display: none;
 }
 .viewer-hint {
-  margin-top: 20px;
+  margin-top: calc(20 * var(--fluid));
   border: 0;
   border-radius: 999px;
   background: var(--text);
   color: var(--bg4);
   font-weight: 600;
-  font-size: 11px;
+  font-size: calc(11 * var(--fluid-type));
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  padding: 6px 14px;
+  padding: calc(6 * var(--fluid)) calc(14 * var(--fluid));
   cursor: pointer;
 }
 .viewer-hint:hover {
@@ -857,10 +882,10 @@ textarea {
 }
 .viewer-label {
   position: fixed;
-  left: 20px;
-  bottom: 16px;
+  left: calc(20 * var(--fluid));
+  bottom: calc(16 * var(--fluid));
   color: var(--text);
-  font-size: 12px;
+  font-size: calc(12 * var(--fluid-type));
   letter-spacing: 0.06em;
   text-transform: uppercase;
   opacity: 0.8;

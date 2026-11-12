@@ -4,7 +4,7 @@
    will-change on #site or the sections: page 03's lightbox and viewer are
    position: fixed and must stay viewport-relative. */
 html {
-  --header-h: 56px; /* the fixed site header; sections start below it */
+  --header-h: calc(56 * var(--fluid-type)); /* the fixed site header; sections start below it (fluid 2026-11-11: scripts measure .site-header, never parse this) */
   scrollbar-gutter: stable;
   scroll-behavior: auto; /* index links jump, they do not glide */
   scroll-padding-top: var(--header-h); /* #hash jumps land below the header */
@@ -30,11 +30,11 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 24px;
+  padding: 0 calc(24 * var(--fluid));
   background: var(--bg);
   color: var(--ui-ink);
   font-family: "Inter", "Segoe UI", system-ui, sans-serif;
-  font-size: 13px;
+  font-size: calc(13 * var(--fluid-type));
   line-height: 1;
 }
 .site-header a {
@@ -50,8 +50,8 @@ body {
 .site-index {
   display: inline-flex;
   align-items: center;
-  height: 29px;
-  font-size: 13px;
+  height: calc(29 * var(--fluid-type));
+  font-size: calc(13 * var(--fluid-type));
   font-weight: 400;
   letter-spacing: 0.01em;
   text-transform: uppercase;
@@ -66,7 +66,7 @@ body {
 .site-nav {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: calc(24 * var(--fluid));
 }
 button.site-index {
   font-family: inherit;
@@ -77,7 +77,7 @@ button.site-index {
 .site-index[aria-current="page"] {
   text-decoration: underline;
   text-decoration-thickness: 1px;
-  text-underline-offset: 6px;
+  text-underline-offset: 0.46em; /* 6px at 13px type */
 }
 /* rollover: the DESIGN red */
 .site-index,
@@ -98,8 +98,9 @@ button.site-index {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  gap: 24px;
-  padding: 20px 24px 16px; /* 2026-11-04: halved (72 / 48 -> 32 / 24), then 20% shorter */
+  flex-wrap: wrap; /* fluid 2026-11-11: the buttons drop under the title on narrow screens */
+  gap: calc(24 * var(--fluid));
+  padding: calc(20 * var(--fluid)) calc(24 * var(--fluid)) calc(16 * var(--fluid)); /* 2026-11-04: halved (72 / 48 -> 32 / 24), then 20% shorter */
   border-top: 1px solid var(--ui-ink);
   background: var(--bg);
   color: var(--ui-ink);
@@ -108,17 +109,17 @@ button.site-index {
 .site-footer__next {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: calc(6 * var(--fluid));
   margin: 0;
 }
 .site-footer__label {
-  font-size: 13px;
+  font-size: calc(13 * var(--fluid-type));
   font-weight: 400;
   letter-spacing: 0.01em;
   text-transform: uppercase;
 }
 .site-footer__title {
-  font-size: clamp(20px, 2.2vw, 32px); /* halved (was 32-64px) */
+  font-size: clamp(1.25rem, 2.2vw, 2rem); /* halved (was 32-64px) */
   font-weight: 400;
   line-height: 1;
   text-transform: uppercase;
@@ -126,15 +127,15 @@ button.site-index {
 .site-footer__button {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: calc(10 * var(--fluid-type));
   flex: none;
-  height: 34px;
-  padding: 0 18px;
+  height: calc(34 * var(--fluid-type));
+  padding: 0 calc(18 * var(--fluid-type));
   border: 1px solid var(--ui-ink);
   border-radius: 999px;
   color: var(--ui-ink);
   text-decoration: none;
-  font-size: 13px;
+  font-size: calc(13 * var(--fluid-type));
   font-weight: 400;
   letter-spacing: 0.01em;
   text-transform: uppercase;
@@ -166,7 +167,7 @@ html {
 }
 
 .site-fallback {
-  max-width: 560px;
+  max-width: min(100%, 35rem);
   margin: 10vh auto;
   padding: 0 var(--gutter);
   font-family: var(--font-sans);
@@ -194,7 +195,7 @@ html {
 /* 2026-11-05: Previous project beside Next project */
 .site-footer__buttons {
   display: flex;
-  gap: 10px;
+  gap: calc(10 * var(--fluid));
   flex: none;
 }
 
@@ -202,10 +203,10 @@ html {
    and the arrow centred in the pill: the glyph sits low in its line (its
    middle ~0.12em under the capitals'), so it is lifted by that much */
 .site-footer__button {
-  gap: 8.5px;
-  height: 28.9px;
-  padding: 0 15.3px;
-  font-size: 11.05px;
+  gap: calc(8.5 * var(--fluid-type));
+  height: calc(28.9 * var(--fluid-type));
+  padding: 0 calc(15.3 * var(--fluid-type));
+  font-size: calc(11.05 * var(--fluid-type));
 }
 .site-footer__button > span[aria-hidden] {
   display: inline-block;
@@ -216,19 +217,19 @@ html {
    middle on the title's (the footer aligns to the bottom; the title is one
    line at line-height 1, so its box is its font size tall) */
 .site-footer__buttons {
-  margin-bottom: calc((clamp(20px, 2.2vw, 32px) - 28.9px) / 2);
+  margin-bottom: calc((clamp(1.25rem, 2.2vw, 2rem) - 28.9 * var(--fluid-type)) / 2);
 }
 
 /* 2026-11-10: the light / dark switch, last in the header nav (shared/theme.js;
    the home and the About page only). It reads as a nav item naming the current
    mode, with a small dot: empty in light mode, filled in dark. */
 .site-theme {
-  gap: 8px;
+  gap: calc(8 * var(--fluid-type));
 }
 .site-theme__dot {
   box-sizing: border-box;
-  width: 10px;
-  height: 10px;
+  width: calc(10 * var(--fluid-type));
+  height: calc(10 * var(--fluid-type));
   border: 1px solid currentColor;
   border-radius: 50%;
   background: transparent;
@@ -241,7 +242,7 @@ html {
 /* 2026-11-10: Index, left of Back / Next: the home's CT index (index.html#intro,
    already formed, no splash). Same pill; a touch more room before Back. */
 .site-footer__button--index {
-  margin-right: 6px;
+  margin-right: calc(6 * var(--fluid));
 }
 
 /* 2026-11-10: in dark mode every red on the home (the hero headline, the CT
@@ -287,4 +288,42 @@ body.site-motion {
 }
 html[data-theme="dark"] body.site-motion {
   --index-ink: #fcf9f4; /* the rows' type: white in dark mode, as on the home */
+}
+
+/* fluid 2026-11-11: header labels never break mid-label; on phones (under
+   640px) the header is two rows, the brand over the nav spread across the
+   width, and --header-h grows to match (scripts measure .site-header) */
+.site-brand,
+.site-index {
+  white-space: nowrap;
+}
+@media (max-width: 40em) {
+  html {
+    --header-h: calc(76 * var(--fluid-type));
+  }
+  .site-header {
+    flex-wrap: wrap;
+    align-content: center;
+    row-gap: calc(6 * var(--fluid-type));
+  }
+  .site-nav {
+    flex: 1 0 100%;
+    justify-content: space-between;
+    gap: calc(12 * var(--fluid));
+  }
+}
+
+/* 2026-11-11: the two indexes (home and Motion Design) and the Intro (intro.html, the AI Task Force, reached from both indexes) have no visible
+   scrollbar and no gutter. The splash locks scrolling until the index forms;
+   a scrollbar (or its reserved gutter) appearing at that moment narrowed the
+   page by ~15px, a visible pop at the end of the animation. The page still
+   scrolls (wheel, touch, keys); only the bar is hidden. */
+html:has(body.site-home),
+html:has(body.site-intro) {
+  scrollbar-gutter: auto;
+  scrollbar-width: none;
+}
+html:has(body.site-home)::-webkit-scrollbar,
+html:has(body.site-intro)::-webkit-scrollbar {
+  display: none;
 }
